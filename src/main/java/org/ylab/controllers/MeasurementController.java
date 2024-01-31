@@ -6,7 +6,7 @@ import org.ylab.domain.models.Measurement;
 import org.ylab.usecases.CounterUseCase;
 import org.ylab.usecases.MeasurementUseCase;
 import org.ylab.usecases.TokenService;
-import org.ylab.util.*;
+import org.ylab.exceptions.*;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -23,10 +23,12 @@ public class MeasurementController {
     /**
      * Конструктор класса MeasurementController, инициализирующий используемые компоненты.
      */
-    public MeasurementController() {
-        measurementUseCase = new MeasurementUseCase();
-        tokenService = TokenService.getInstance();
-        counterUseCase = new CounterUseCase();
+    public MeasurementController(MeasurementUseCase measurementUseCase,
+                                 CounterUseCase counterUseCase,
+                                 TokenService tokenService) {
+        this.measurementUseCase = measurementUseCase;
+        this.counterUseCase = counterUseCase;
+        this.tokenService = tokenService;
     }
 
     /**

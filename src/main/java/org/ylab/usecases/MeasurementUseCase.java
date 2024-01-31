@@ -5,10 +5,10 @@ import org.ylab.domain.models.Measurement;
 import org.ylab.domain.models.Operation;
 import org.ylab.domain.models.enums.Action;
 import org.ylab.repositories.MeasurementRepo;
-import org.ylab.util.BadMeasurementAmountException;
-import org.ylab.util.CounterNotFoundException;
-import org.ylab.util.MeasurementNotFoundException;
-import org.ylab.util.WrongDateException;
+import org.ylab.exceptions.BadMeasurementAmountException;
+import org.ylab.exceptions.CounterNotFoundException;
+import org.ylab.exceptions.MeasurementNotFoundException;
+import org.ylab.exceptions.WrongDateException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -29,20 +29,11 @@ public class MeasurementUseCase {
     /**
      * Конструктор класса MeasurementUseCase, инициализирующий репозиторий измерений, использование операций и использование счетчиков.
      */
-    public MeasurementUseCase() {
-        measurementRepo = new MeasurementRepo();
-        operationUseCase = new OperationUseCase();
-        counterUseCase = new CounterUseCase();
-    }
-
-    /**
-     * Конструктор класса MeasurementUseCase с возможностью передачи внешнего экземпляра CounterUseCase.
-     *
-     * @param counterUseCase Экземпляр CounterUseCase для использования внутри MeasurementUseCase.
-     */
-    public MeasurementUseCase(CounterUseCase counterUseCase) {
-        measurementRepo = new MeasurementRepo();
-        operationUseCase = new OperationUseCase();
+    public MeasurementUseCase(MeasurementRepo measurementRepo,
+                              OperationUseCase operationUseCase,
+                              CounterUseCase counterUseCase) {
+        this.measurementRepo = measurementRepo;
+        this.operationUseCase = operationUseCase;
         this.counterUseCase = counterUseCase;
     }
 

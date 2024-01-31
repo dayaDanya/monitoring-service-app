@@ -7,11 +7,9 @@ import org.ylab.domain.dto.MeasurementInDto;
 import org.ylab.domain.models.Counter;
 import org.ylab.domain.models.CounterType;
 import org.ylab.domain.models.Measurement;
-import org.ylab.util.WrongDateException;
+import org.ylab.exceptions.WrongDateException;
 
 import java.time.LocalDateTime;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class MeasurementUseCaseTest {
 

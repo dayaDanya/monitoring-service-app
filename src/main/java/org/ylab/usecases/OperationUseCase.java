@@ -15,8 +15,8 @@ public class OperationUseCase {
     /**
      * Конструктор класса OperationUseCase, инициализирующий репозиторий операций.
      */
-    public OperationUseCase() {
-        operationRepo = new OperationRepo(); // Может быть использована операция для создания единственного экземпляра.
+    public OperationUseCase(OperationRepo operationRepo) {
+        this.operationRepo = operationRepo;
     }
 
     /**

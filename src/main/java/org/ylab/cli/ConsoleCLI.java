@@ -21,11 +21,12 @@ public class ConsoleCLI {
     /**
      * Конструктор класса ConsoleCLI, инициализирующий используемые компоненты.
      */
-    public ConsoleCLI() {
-        consoleReader = new ConsoleReader();
-        personController = new PersonController();
-        measurementController = new MeasurementController();
-        adminController = new AdminController();
+    public ConsoleCLI(PersonController personController, MeasurementController measurementController,
+                      AdminController adminController, ConsoleReader consoleReader) {
+        this.personController = personController;
+        this.measurementController = measurementController;
+        this.adminController = adminController;
+        this.consoleReader = consoleReader;
     }
 
     /**

@@ -8,9 +8,9 @@ import org.ylab.domain.models.Person;
 import org.ylab.domain.models.enums.Action;
 import org.ylab.domain.models.enums.Role;
 import org.ylab.usecases.*;
-import org.ylab.util.CounterTypeNotFoundException;
-import org.ylab.util.PersonNotFoundException;
-import org.ylab.util.TokenNotActualException;
+import org.ylab.exceptions.CounterTypeNotFoundException;
+import org.ylab.exceptions.PersonNotFoundException;
+import org.ylab.exceptions.TokenNotActualException;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -30,13 +30,17 @@ public class AdminController {
     /**
      * Конструктор класса AdminController, инициализирующий используемые компоненты.
      */
-    public AdminController() {
-        this.measurementUseCase = new MeasurementUseCase();
-        this.operationUseCase = new OperationUseCase();
-        this.tokenService = TokenService.getInstance();
-        this.personUseCase = new PersonUseCase();
-        counterTypeUseCase = new CounterTypeUseCase();
-        counterUseCase = new CounterUseCase();
+    public AdminController(MeasurementUseCase measurementUseCase,
+                           OperationUseCase operationUseCase,
+                           PersonUseCase personUseCase, TokenService tokenService,
+                           CounterTypeUseCase counterTypeUseCase,
+                           CounterUseCase counterUseCase) {
+        this.measurementUseCase = measurementUseCase;
+        this.operationUseCase = operationUseCase;
+        this.personUseCase = personUseCase;
+        this.tokenService = tokenService;
+        this.counterTypeUseCase = counterTypeUseCase;
+        this.counterUseCase = counterUseCase;
     }
 
     /**

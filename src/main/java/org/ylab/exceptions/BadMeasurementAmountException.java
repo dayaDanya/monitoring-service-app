@@ -1,4 +1,4 @@
-package org.ylab.util;
+package org.ylab.exceptions;
 
 public class BadMeasurementAmountException extends RuntimeException{
     public BadMeasurementAmountException() {

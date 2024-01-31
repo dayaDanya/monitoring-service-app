@@ -7,8 +7,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.ylab.domain.models.Person;
 import org.ylab.repositories.PersonRepo;
-import org.ylab.util.BadCredentialsException;
-import org.ylab.util.PersonNotFoundException;
+import org.ylab.exceptions.BadCredentialsException;
+import org.ylab.exceptions.PersonNotFoundException;
 
 import java.util.ArrayList;
 

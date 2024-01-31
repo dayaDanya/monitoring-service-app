@@ -1,6 +1,6 @@
 package org.ylab.usecases;
 
-import org.ylab.util.TokenNotActualException;
+import org.ylab.exceptions.TokenNotActualException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,27 +10,17 @@ import java.util.UUID;
  * Класс, представляющий сервис для работы с токенами.
  */
 public class TokenService {
-    private static TokenService INSTANCE;
-    private final Map<String, Long> tokens;
+    private static Map<String, Long> tokens;
 
     /**
      * Приватный конструктор, инициализирующий хранилище токенов.
      */
-    private TokenService() {
-        tokens = new HashMap<>();
+    public TokenService() {
+        if(tokens == null) {
+            tokens = new HashMap<>();
+        }
     }
 
-    /**
-     * Метод для получения единственного экземпляра класса TokenService (реализация Singleton).
-     *
-     * @return Единственный экземпляр класса TokenService.
-     */
-    public static TokenService getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new TokenService();
-        }
-        return INSTANCE;
-    }
 
     /**
      * Метод для генерации токена и связывания его с идентификатором пользователя.

@@ -6,8 +6,8 @@ import org.ylab.domain.models.Person;
 import org.ylab.domain.models.enums.Action;
 import org.ylab.domain.rules.PersonInputBoundary;
 import org.ylab.repositories.PersonRepo;
-import org.ylab.util.BadCredentialsException;
-import org.ylab.util.PersonNotFoundException;
+import org.ylab.exceptions.BadCredentialsException;
+import org.ylab.exceptions.PersonNotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,28 +30,18 @@ public class PersonUseCase implements PersonInputBoundary {
      * Конструктор класса PersonUseCase, инициализирующий репозиторий пользователей, использование паролей, операций,
      * токен-сервиса, использование счетчиков и типов счетчиков.
      */
-    public PersonUseCase() {
-        personRepo = new PersonRepo(); // Может быть использована операция для создания единственного экземпляра.
-        passwordUseCase = new PasswordUseCase();
-        operationUseCase = new OperationUseCase();
-        tokenService = TokenService.getInstance();
-        counterUseCase = new CounterUseCase();
-        counterTypeUseCase = new CounterTypeUseCase();
+    public PersonUseCase(PasswordUseCase passwordUseCase, PersonRepo personRepo,
+                         OperationUseCase operationUseCase, TokenService tokenService,
+                         CounterUseCase counterUseCase,
+                         org.ylab.usecases.CounterTypeUseCase counterTypeUseCase) {
+        this.passwordUseCase = passwordUseCase;
+        this.personRepo = personRepo;
+        this.operationUseCase = operationUseCase;
+        this.tokenService = tokenService;
+        this.counterUseCase = counterUseCase;
+        this.counterTypeUseCase = counterTypeUseCase;
     }
 
-    /**
-     * Конструктор класса PersonUseCase с возможностью передачи внешнего экземпляра PersonRepo.
-     *
-     * @param personRepo Экземпляр PersonRepo для использования внутри PersonUseCase.
-     */
-    public PersonUseCase(PersonRepo personRepo) {
-        this.personRepo = personRepo;
-        passwordUseCase = new PasswordUseCase();
-        operationUseCase = new OperationUseCase();
-        tokenService = TokenService.getInstance();
-        counterUseCase = new CounterUseCase();
-        counterTypeUseCase = new CounterTypeUseCase();
-    }
 
     /**
      * Метод для проверки уникальности адреса электронной почты при регистрации пользователя.

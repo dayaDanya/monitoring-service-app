@@ -1,4 +1,4 @@
-package org.ylab.util;
+package org.ylab.exceptions;
 
 /**
  * Исключение, сигнализирующее об ошибке при отсутствии пользователя.

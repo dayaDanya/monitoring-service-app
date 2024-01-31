@@ -3,7 +3,7 @@ package org.ylab.usecases;
 import org.ylab.domain.models.Counter;
 import org.ylab.domain.models.CounterType;
 import org.ylab.repositories.CounterRepo;
-import org.ylab.util.CounterTypeNotFoundException;
+import org.ylab.exceptions.CounterTypeNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,18 +20,9 @@ public class CounterUseCase {
     /**
      * Конструктор класса CounterUseCase, инициализирующий репозиторий счетчиков и использование типов счетчиков.
      */
-    public CounterUseCase() {
-        this.counterRepo = new CounterRepo();
-        counterTypeUseCase = new CounterTypeUseCase();
-    }
-
-    /**
-     * Конструктор класса CounterUseCase с возможностью передачи внешнего экземпляра CounterTypeUseCase.
-     *
-     * @param counterTypeUseCase Экземпляр CounterTypeUseCase для использования внутри CounterUseCase.
-     */
-    public CounterUseCase(org.ylab.usecases.CounterTypeUseCase counterTypeUseCase) {
-        this.counterRepo = new CounterRepo();
+    public CounterUseCase(CounterRepo counterRepo,
+                          CounterTypeUseCase counterTypeUseCase) {
+        this.counterRepo = counterRepo;
         this.counterTypeUseCase = counterTypeUseCase;
     }
 

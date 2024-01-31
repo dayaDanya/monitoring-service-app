@@ -20,8 +20,8 @@ public class CounterTypeUseCase {
      * Конструктор класса CounterTypeUseCase.
      * Инициализирует репозиторий для работы с типами счетчиков.
      */
-    public CounterTypeUseCase() {
-        repo = new CounterTypeRepo();
+    public CounterTypeUseCase(CounterTypeRepo repo) {
+        this.repo = repo;
     }
 
     /**
