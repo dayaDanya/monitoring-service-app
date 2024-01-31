@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: "monitoring-service-app"
+      POSTGRES_USER: "dayadanya"
+      POSTGRES_PASSWORD: "dayadanya"
+    ports:
+      - "5433:5432"
