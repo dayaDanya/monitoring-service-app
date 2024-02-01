@@ -123,7 +123,7 @@ public class PersonRepo {
      */
     public Optional<Person> findById(long id) {
         try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD)) {
-            String selectDataSQL = "SELECT * FROM entities.person WHERE email = ? ";
+            String selectDataSQL = "SELECT * FROM entities.person WHERE id = ? ";
             PreparedStatement statement = connection.prepareStatement(selectDataSQL);
             statement.setLong(1, id);
             ResultSet resultSet = statement.executeQuery();

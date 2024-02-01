@@ -18,7 +18,7 @@ public class Counter {
      */
     private long personId;
 
-    private long counterId;
+    private long counterTypeId;
     /**
      * тип счетчика
      */
@@ -38,13 +38,13 @@ public class Counter {
      * конструктор
      * @param id идентификатор
      * @param personId айди пользователя
-     * @param counterId айди пользователя
+     * @param counterTypeId айди пользователя
      * @param counterType тип счетчика
      */
-    public Counter(long id, long personId, long counterId, CounterType counterType) {
+    public Counter(long id, long personId, long counterTypeId, CounterType counterType) {
         this.id = id;
         this.personId = personId;
-        this.counterId = counterId;
+        this.counterTypeId = counterTypeId;
         this.counterType = counterType;
     }
 
@@ -94,11 +94,11 @@ public class Counter {
         this.personId = personId;
     }
 
-    public long getCounterId() {
-        return counterId;
+    public long getCounterTypeId() {
+        return counterTypeId;
     }
 
-    public void setCounterId(long counterId) {
-        this.counterId = counterId;
+    public void setCounterTypeId(long counterTypeId) {
+        this.counterTypeId = counterTypeId;
     }
 }

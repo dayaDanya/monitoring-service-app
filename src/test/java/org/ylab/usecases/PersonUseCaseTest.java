@@ -4,22 +4,22 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.ylab.domain.models.Person;
-import org.ylab.repositories.PersonRepo;
 import org.ylab.exceptions.BadCredentialsException;
 import org.ylab.exceptions.PersonNotFoundException;
-
-import java.util.ArrayList;
+import org.ylab.repositories.PersonRepo;
 
 @ExtendWith(MockitoExtension.class)
 class PersonUseCaseTest {
-
-    PersonUseCase personUseCase ;
-
+    @InjectMocks
+    PersonUseCase personUseCase;
+    @Mock
+    PersonRepo personRepo;
     @BeforeEach
     void setUp() {
-        personUseCase = new PersonUseCase(new PersonRepo(new ArrayList<>()));
     }
 
     @Test

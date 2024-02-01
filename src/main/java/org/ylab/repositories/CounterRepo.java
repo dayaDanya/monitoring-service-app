@@ -2,14 +2,11 @@ package org.ylab.repositories;
 
 import org.ylab.domain.models.Counter;
 import org.ylab.domain.models.CounterType;
-import org.ylab.domain.models.Measurement;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * репозиторий счетчиков, то есть слой взаимодействия с бд счетчиков
@@ -43,17 +40,18 @@ public class CounterRepo {
 
     /**
      * сохранение счетчика
+     *
      * @param counter
      */
-    public void save(Counter counter){
+    public void save(Counter counter) {
         try (Connection connection = DriverManager
                 .getConnection(URL, USER_NAME, PASSWORD)) {
             connection.setAutoCommit(false);
-            String insertDataSQL = "INSERT INTO entities.counter (person_id, counter_id, counter_type)" +
+            String insertDataSQL = "INSERT INTO entities.counter (person_id, counter_type_id, counter_type)" +
                     "VALUES (?, ?, ?)";
             PreparedStatement insertDataStatement = connection.prepareStatement(insertDataSQL);
             insertDataStatement.setLong(1, counter.getPersonId());
-            insertDataStatement.setLong(2, counter.getCounterId());
+            insertDataStatement.setLong(2, counter.getCounterTypeId());
             insertDataStatement.setString(3, counter.getCounterType().getName());
             insertDataStatement.executeUpdate();
             connection.commit();
@@ -65,14 +63,15 @@ public class CounterRepo {
 
     /**
      * находит ид счетчика при условии что ид пользователя и тип счетчика соответствует переданным
+     *
      * @param personId
      * @param type
      * @return айди счетчика
      */
-    public Optional<Long> findIdByPersonIdAndCounterType(long personId, String type){
+    public Optional<Long> findIdByPersonIdAndCounterType(long personId, String type) {
         try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD)) {
             String selectDataSQL = "SELECT id FROM entities.counter " +
-                    "where person_id = ?, counter_type = ?";
+                    "where person_id = ? and counter_type = ?";
             PreparedStatement statement = connection.prepareStatement(selectDataSQL);
             statement.setLong(1, personId);
             statement.setString(2, type);
@@ -91,6 +90,7 @@ public class CounterRepo {
 
     /**
      * возвращает список айди счетчиков пользователя
+     *
      * @param personId
      * @return список айди счетчиков
      */
@@ -102,11 +102,12 @@ public class CounterRepo {
             statement.setLong(1, personId);
             ResultSet resultSet = statement.executeQuery();
             List<Long> counterIds = new ArrayList<>();
-            if (resultSet.next()) {
+            while (resultSet.next()) {
                 long id = resultSet.getLong("id");
                 counterIds.add(id);
             }
-
+            return counterIds;
+            //todo удалить здесь и во всех похожих возврат collections
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -115,6 +116,7 @@ public class CounterRepo {
 
     /**
      * возвращает список счетчиков пользователя
+     *
      * @param personId
      * @return список счетчиков
      */
@@ -126,14 +128,14 @@ public class CounterRepo {
             statement.setLong(1, personId);
             ResultSet resultSet = statement.executeQuery();
             List<Counter> counters = new ArrayList<>();
-            if (resultSet.next()) {
+            while (resultSet.next()) {
                 long id = resultSet.getLong("id");
                 long pId = resultSet.getLong("person_id");
                 long cId = resultSet.getLong("counter_type_id");
                 String counterType = resultSet.getString("counter_type");
-               counters.add( new Counter(id, pId, cId, new CounterType(counterType)));
+                counters.add(new Counter(id, pId, cId, new CounterType(counterType)));
             }
-
+        return counters;
         } catch (SQLException e) {
             e.printStackTrace();
         }

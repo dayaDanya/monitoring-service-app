@@ -78,7 +78,7 @@ public class MeasurementRepo {
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
 
-                LocalDateTime date = resultSet.getTimestamp("date").toLocalDateTime();
+                LocalDateTime date = resultSet.getTimestamp("submission_date").toLocalDateTime();
 
                 return Optional.of(date);
             }
@@ -107,7 +107,7 @@ public class MeasurementRepo {
                 long cId = resultSet.getLong("counter_id");
                 double amount = resultSet.getDouble("amount");
                 String counterType = resultSet.getString("counter_type");
-                LocalDateTime date = resultSet.getTimestamp("date").toLocalDateTime();
+                LocalDateTime date = resultSet.getTimestamp("submission_date").toLocalDateTime();
 
                 return Optional.of(new Measurement(id, amount, date, counterType, cId));
             }
@@ -125,18 +125,18 @@ public class MeasurementRepo {
      */
     public List<Measurement> findAllByCounterId(long counterId) {
         try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD)) {
-            String selectDataSQL = "SELECT * FROM entities.measurements " +
+            String selectDataSQL = "SELECT * FROM entities.measurement " +
                     "where counter_id = ?";
             PreparedStatement statement = connection.prepareStatement(selectDataSQL);
             statement.setLong(1, counterId);
             ResultSet resultSet = statement.executeQuery();
             List<Measurement> measurements = new ArrayList<>();
-            if (resultSet.next()) {
+            while (resultSet.next()) {
                 long id = resultSet.getLong("id");
                 long cId = resultSet.getLong("counter_id");
                 double amount = resultSet.getDouble("amount");
                 String counterType = resultSet.getString("counter_type");
-                LocalDateTime date = resultSet.getTimestamp("date").toLocalDateTime();
+                LocalDateTime date = resultSet.getTimestamp("submission_date").toLocalDateTime();
 
                 measurements.add(new Measurement(id, amount, date, counterType, cId));
             }
@@ -154,16 +154,16 @@ public class MeasurementRepo {
      */
     public List<Measurement> findAll() {
         try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD)) {
-            String selectDataSQL = "SELECT * FROM entities.measurements";
+            String selectDataSQL = "SELECT * FROM entities.measurement";
             PreparedStatement statement = connection.prepareStatement(selectDataSQL);
             ResultSet resultSet = statement.executeQuery();
             List<Measurement> measurements = new ArrayList<>();
-            if (resultSet.next()) {
+            while (resultSet.next()) {
                 long id = resultSet.getLong("id");
                 long counterId = resultSet.getLong("counter_id");
                 double amount = resultSet.getDouble("amount");
                 String counterType = resultSet.getString("counter_type");
-                LocalDateTime date = resultSet.getTimestamp("date").toLocalDateTime();
+                LocalDateTime date = resultSet.getTimestamp("submission_date").toLocalDateTime();
 
                 measurements.add(new Measurement(id,amount, date, counterType, counterId));
             }
@@ -182,8 +182,8 @@ public class MeasurementRepo {
      */
     public Optional<Measurement> findByMonth(long counterId, int month) {
         try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD)) {
-            String selectDataSQL = "SELECT * FROM entities.measurements " +
-                    "where counter_id = ?, EXTRACT(MONTH FROM your_timestamp_column) = ?";
+            String selectDataSQL = "SELECT * FROM entities.measurement " +
+                    "where counter_id = ? and EXTRACT(MONTH FROM submission_date) = ?";
             PreparedStatement statement = connection.prepareStatement(selectDataSQL);
             statement.setLong(1, counterId);
             statement.setInt(2, month);
@@ -193,7 +193,7 @@ public class MeasurementRepo {
                 long cId = resultSet.getLong("counter_id");
                 double amount = resultSet.getDouble("amount");
                 String counterType = resultSet.getString("counter_type");
-                LocalDateTime date = resultSet.getTimestamp("date").toLocalDateTime();
+                LocalDateTime date = resultSet.getTimestamp("submission_date").toLocalDateTime();
 
                 return Optional.of(new Measurement(id, amount, date, counterType, cId));
             }

@@ -71,11 +71,11 @@ public class OperationRepo {
      */
     public List<Operation> findAll() {
         try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD)) {
-            String selectDataSQL = "SELECT * FROM entities.operations";
+            String selectDataSQL = "SELECT * FROM entities.operation";
             PreparedStatement statement = connection.prepareStatement(selectDataSQL);
             ResultSet resultSet = statement.executeQuery();
             List<Operation> operations = new ArrayList<>();
-            if (resultSet.next()) {
+            while (resultSet.next()) {
                 long id = resultSet.getLong("id");
                 long personId = resultSet.getLong("person_id");
                 Action action = Action.valueOf(resultSet.getString("action"));
@@ -96,13 +96,14 @@ public class OperationRepo {
      * @return Список всех операций для заданного пользователя
      */
     public List<Operation> findAllById(long personId) {
+        //todo нужен ли
         try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD)) {
-            String selectDataSQL = "SELECT * FROM entities.operations where person_id = ?";
+            String selectDataSQL = "SELECT * FROM entities.operation where person_id = ?";
             PreparedStatement statement = connection.prepareStatement(selectDataSQL);
             statement.setLong(1, personId);
             ResultSet resultSet = statement.executeQuery();
             List<Operation> operations = new ArrayList<>();
-            if (resultSet.next()) {
+            while (resultSet.next()) {
                 long operationId = resultSet.getLong("id");
                 long persId = resultSet.getLong("person_id");
                 Action action = Action.valueOf(resultSet.getString("action"));
@@ -117,10 +118,4 @@ public class OperationRepo {
         return Collections.emptyList();
     }
 
-//    /**
-//     * Удаление всех операций из репозитория
-//     */
-//    public void deleteAll() {
-//        operations.clear();
-//    }
 }

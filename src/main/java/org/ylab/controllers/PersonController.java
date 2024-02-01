@@ -61,5 +61,6 @@ public class PersonController {
             return "200 OK. You were logged out. Authorize again to get a new token.";
         else
             return "400 bad request";
+        //todo чекнуть почему крашиться при неправильном токене
     }
 }

@@ -37,6 +37,7 @@ public class CounterUseCase {
     public void save(Counter counter) throws CounterTypeNotFoundException {
         Optional<CounterType> found = counterTypeUseCase.findOne(counter.getCounterType().getName());
         counter.setCounterType(found.orElseThrow(CounterTypeNotFoundException::new));
+        counter.setCounterTypeId(found.get().getId());
         counterRepo.save(counter);
     }
 
