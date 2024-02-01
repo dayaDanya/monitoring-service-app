@@ -1,0 +1,29 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.10.xsd">
+
+    <changeSet id="001-create-table-measurement" author="dayaDanya">
+
+        <createTable schemaName="entities" tableName="measurement">
+            <column name="id" type="BIGINT" defaultValueComputed="nextval('entities.sequence')">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="pk_measurement"/>
+            </column>
+
+            <column name="counter_id" type="BIGINT">
+                <constraints foreignKeyName="fk_counter_id" references="entities.counter(id)"
+                             nullable="false" deleteCascade="true"/>
+            </column>
+            <column name="amount" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="submission_date" type="timestamp without time zone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="counter_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

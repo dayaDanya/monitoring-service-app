@@ -5,6 +5,7 @@ import org.ylab.controllers.AdminController;
 import org.ylab.controllers.MeasurementController;
 import org.ylab.controllers.PersonController;
 import org.ylab.infrastructure.in.ConsoleReader;
+import org.ylab.infrastructure.in.migrations.MigrationUtil;
 import org.ylab.repositories.*;
 import org.ylab.usecases.*;
 
@@ -27,6 +28,13 @@ public class Main {
                 new AdminController(measurementUseCase, operationUseCase, personUseCase,
                         tokenService, counterTypeUseCase, counterUseCase),
                 new ConsoleReader());
+
+        MigrationUtil migrationUtil = new MigrationUtil();
+        try {
+            migrationUtil.migrate();
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         try {
             cli.run();
         } catch (IOException e) {
