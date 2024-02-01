@@ -64,17 +64,9 @@ public class PersonUseCase implements PersonInputBoundary {
             person.setPassword(passwordUseCase.encrypt(person.getPassword()));
             person.setRole(Role.USER);
             personRepo.save(person);
-            long id = personRepo.findIdByEmail(person.getEmail()).get();
 
-            //todo заменить этот код на триггер в бд
 
-            // Добавляем пользователю три счетчика: для холодной и горячей воды и отопления
-//            counterUseCase.saveAll(List.of(
-//                    new Counter(id, counterTypeUseCase.findOne("HOT").get()),
-//                    new Counter(id, counterTypeUseCase.findOne("COLD").get()),
-//                    new Counter(id, counterTypeUseCase.findOne("HEAT").get())));
-
-            operationUseCase.save(new Operation(person.getId(), Action.REGISTRATION, LocalDateTime.now()));
+            operationUseCase.save(new Operation(personRepo.findIdByEmail(person.getEmail()).get(), Action.REGISTRATION, LocalDateTime.now()));
         } else {
             throw new BadCredentialsException();
         }
