@@ -4,6 +4,7 @@ import org.ylab.domain.models.Counter;
 import org.ylab.domain.models.Operation;
 import org.ylab.domain.models.Person;
 import org.ylab.domain.models.enums.Action;
+import org.ylab.domain.models.enums.Role;
 import org.ylab.domain.rules.PersonInputBoundary;
 import org.ylab.repositories.PersonRepo;
 import org.ylab.exceptions.BadCredentialsException;
@@ -63,8 +64,11 @@ public class PersonUseCase implements PersonInputBoundary {
     public void register(Person person) throws BadCredentialsException {
         if (isUnique(person.getEmail())) {
             person.setPassword(passwordUseCase.encrypt(person.getPassword()));
+            person.setRole(Role.USER);
             personRepo.save(person);
             long id = personRepo.findIdByEmail(person.getEmail()).get();
+
+            //todo заменить этот код на триггер в бд
 
             // Добавляем пользователю три счетчика: для холодной и горячей воды и отопления
             counterUseCase.saveAll(List.of(

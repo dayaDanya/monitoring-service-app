@@ -21,6 +21,15 @@ public class CounterType {
     public CounterType(String name) {
         this.name = name;
     }
+    /**
+     * конструктор
+     * @param id идентификатор
+     * @param name название типа
+     */
+    public CounterType(long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
     /**
      * геттер

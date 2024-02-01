@@ -44,6 +44,22 @@ public class Measurement {
         this.counterType = dto.getCounterType();
         this.submissionDate = submissionDate;
     }
+    /**
+     * конструктор
+     * @param id идентификатор
+     * @param counterId идентификатор счетчика
+     * @param amount значение на счетчике
+     * @param counterType значение на счетчике
+     * @param submissionDate дата подачи
+     */
+    public Measurement(long id, double amount,
+                       LocalDateTime submissionDate, String counterType, long counterId) {
+        this.id = id;
+        this.amount = amount;
+        this.submissionDate = submissionDate;
+        this.counterType = counterType;
+        this.counterId = counterId;
+    }
 
     /**
      * геттер

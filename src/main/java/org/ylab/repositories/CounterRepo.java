@@ -1,10 +1,14 @@
 package org.ylab.repositories;
 
 import org.ylab.domain.models.Counter;
+import org.ylab.domain.models.CounterType;
+import org.ylab.domain.models.Measurement;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.sql.*;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -13,23 +17,28 @@ import java.util.stream.Collectors;
  */
 public class CounterRepo {
 
-    /**
-     * количество счетчиков
-     */
-    private static long counterAmount;
-    /**
-     * список счетчиков
-     */
-    private static List<Counter> counters;
+    Properties properties;
+    private final String URL;
+    private final String USER_NAME;
+    private final String PASSWORD;
 
     /**
      * конструктор, инициализирует список единожды
      */
     public CounterRepo() {
-        if(counters == null) {
-            counterAmount = 0;
-            counters = new ArrayList<>();
+        properties = new Properties();
+        try {
+            FileInputStream fileInputStream =
+                    new FileInputStream(
+                            "src/main/resources/application.properties");
+            properties.load(fileInputStream);
+            fileInputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        URL = properties.getProperty("url");
+        USER_NAME = properties.getProperty("db-username");
+        PASSWORD = properties.getProperty("db-password");
     }
 
     /**
@@ -37,17 +46,21 @@ public class CounterRepo {
      * @param counter
      */
     public void save(Counter counter){
-        counter.setId(++counterAmount);
-        counters.add(counter);
-    }
-
-    /**
-     * сохранение списка счетчиков
-     * @param newCounters
-     */
-    public void saveAll(List<Counter> newCounters) {
-        newCounters.forEach(nc -> nc.setId(++counterAmount));
-        counters.addAll(newCounters);
+        try (Connection connection = DriverManager
+                .getConnection(URL, USER_NAME, PASSWORD)) {
+            connection.setAutoCommit(false);
+            String insertDataSQL = "INSERT INTO entities.counter (person_id, counter_id, counter_type)" +
+                    "VALUES (?, ?, ?)";
+            PreparedStatement insertDataStatement = connection.prepareStatement(insertDataSQL);
+            insertDataStatement.setLong(1, counter.getPersonId());
+            insertDataStatement.setLong(2, counter.getCounterId());
+            insertDataStatement.setString(3, counter.getCounterType().getName());
+            insertDataStatement.executeUpdate();
+            connection.commit();
+            //todo connection.rollback();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -57,12 +70,24 @@ public class CounterRepo {
      * @return айди счетчика
      */
     public Optional<Long> findIdByPersonIdAndCounterType(long personId, String type){
-        return counters.stream()
-                .filter(c -> c.getPersonId() == personId)
-                .filter(c -> c.getCounterType().getName().equals(type))
-                .map(Counter::getId)
-                .findFirst();
+        try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD)) {
+            String selectDataSQL = "SELECT id FROM entities.counter " +
+                    "where person_id = ?, counter_type = ?";
+            PreparedStatement statement = connection.prepareStatement(selectDataSQL);
+            statement.setLong(1, personId);
+            statement.setString(2, type);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                long id = resultSet.getLong("id");
+                return Optional.of(id);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return Optional.empty();
     }
+
 
     /**
      * возвращает список айди счетчиков пользователя
@@ -70,10 +95,22 @@ public class CounterRepo {
      * @return список айди счетчиков
      */
     public List<Long> findIdsByPersonId(long personId) {
-        return counters.stream()
-                .filter(c -> c.getPersonId() == personId)
-                .map(Counter::getId)
-                .collect(Collectors.toList());
+        try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD)) {
+            String selectDataSQL = "SELECT id FROM entities.counter " +
+                    "where person_id = ?";
+            PreparedStatement statement = connection.prepareStatement(selectDataSQL);
+            statement.setLong(1, personId);
+            ResultSet resultSet = statement.executeQuery();
+            List<Long> counterIds = new ArrayList<>();
+            if (resultSet.next()) {
+                long id = resultSet.getLong("id");
+                counterIds.add(id);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return Collections.emptyList();
     }
 
     /**
@@ -82,9 +119,27 @@ public class CounterRepo {
      * @return список счетчиков
      */
     public List<Counter> findByPersonId(long personId) {
-        return counters.stream()
-                .filter(c -> c.getPersonId() == personId)
-                .collect(Collectors.toList());
+        try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD)) {
+            String selectDataSQL = "SELECT * FROM entities.counter " +
+                    "where person_id = ?";
+            PreparedStatement statement = connection.prepareStatement(selectDataSQL);
+            statement.setLong(1, personId);
+            ResultSet resultSet = statement.executeQuery();
+            List<Counter> counters = new ArrayList<>();
+            if (resultSet.next()) {
+                long id = resultSet.getLong("id");
+                long pId = resultSet.getLong("person_id");
+                long cId = resultSet.getLong("counter_type_id");
+                String counterType = resultSet.getString("counter_type");
+               counters.add( new Counter(id, pId, cId, new CounterType(counterType)));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return Collections.emptyList();
+
+
     }
 
 

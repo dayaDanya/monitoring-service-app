@@ -41,6 +41,19 @@ public class Operation {
         this.action = action;
         this.date = date;
     }
+    /**
+     * Конструктор операции
+     * @param id Идентификатор
+     * @param personId Идентификатор пользователя
+     * @param action Действие, совершенное в рамках операции
+     * @param date Дата выполнения операции
+     */
+    public Operation(long id, long personId, Action action, LocalDateTime date) {
+        this.id = id;
+        this.personId = personId;
+        this.action = action;
+        this.date = date;
+    }
 
     /**
      * Геттер для уникального идентификатора операции
