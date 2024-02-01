@@ -8,7 +8,7 @@
 
         <createTable schemaName="entities" tableName="counter_type">
 
-            <column name="id" type="BIGINT" defaultValueComputed="nextval('entities.sequence')" >
+            <column name="id" type="BIGINT" defaultValueComputed="nextval('entities.sequence')">
                 <constraints primaryKey="true" nullable="false"
                              primaryKeyName="pk_counter_type"/>
             </column>
@@ -22,5 +22,15 @@
         <addUniqueConstraint schemaName="entities" tableName="counter_type"
                              columnNames="name"/>
 
+    </changeSet>
+    <changeSet id="003-2-insert-basic-types" author="dayaDanya">
+
+        <insert schemaName="entities" tableName="counter_type">
+            <column name="name" value="HOT"/>
+        </insert><insert schemaName="entities" tableName="counter_type">
+            <column name="name" value="COLD"/>
+        </insert><insert schemaName="entities" tableName="counter_type">
+            <column name="name" value="HEAT"/>
+        </insert>
     </changeSet>
 </databaseChangeLog>

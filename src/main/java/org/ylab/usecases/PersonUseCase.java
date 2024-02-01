@@ -1,17 +1,15 @@
 package org.ylab.usecases;
 
-import org.ylab.domain.models.Counter;
 import org.ylab.domain.models.Operation;
 import org.ylab.domain.models.Person;
 import org.ylab.domain.models.enums.Action;
 import org.ylab.domain.models.enums.Role;
 import org.ylab.domain.rules.PersonInputBoundary;
-import org.ylab.repositories.PersonRepo;
 import org.ylab.exceptions.BadCredentialsException;
 import org.ylab.exceptions.PersonNotFoundException;
+import org.ylab.repositories.PersonRepo;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -71,10 +69,10 @@ public class PersonUseCase implements PersonInputBoundary {
             //todo заменить этот код на триггер в бд
 
             // Добавляем пользователю три счетчика: для холодной и горячей воды и отопления
-            counterUseCase.saveAll(List.of(
-                    new Counter(id, counterTypeUseCase.findOne("HOT").get()),
-                    new Counter(id, counterTypeUseCase.findOne("COLD").get()),
-                    new Counter(id, counterTypeUseCase.findOne("HEAT").get())));
+//            counterUseCase.saveAll(List.of(
+//                    new Counter(id, counterTypeUseCase.findOne("HOT").get()),
+//                    new Counter(id, counterTypeUseCase.findOne("COLD").get()),
+//                    new Counter(id, counterTypeUseCase.findOne("HEAT").get())));
 
             operationUseCase.save(new Operation(person.getId(), Action.REGISTRATION, LocalDateTime.now()));
         } else {

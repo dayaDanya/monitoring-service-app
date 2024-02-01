@@ -26,14 +26,7 @@ public class CounterUseCase {
         this.counterTypeUseCase = counterTypeUseCase;
     }
 
-    /**
-     * Метод для сохранения списка счетчиков.
-     *
-     * @param newCounters Список счетчиков, которые требуется сохранить.
-     */
-    public void saveAll(List<Counter> newCounters) {
-        counterRepo.saveAll(newCounters);
-    }
+
 
     /**
      * Метод для сохранения счетчика с проверкой существования связанного типа счетчика.
