@@ -12,7 +12,8 @@ import org.ylab.domain.models.enums.Action;
 import org.ylab.repositories.OperationRepo;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Map;
+
 @ExtendWith(MockitoExtension.class)
 class OperationUseCaseTest {
 
@@ -37,24 +38,13 @@ class OperationUseCaseTest {
         operationUseCase.save(operation1);
         operationUseCase.save(operation2);
         operationUseCase.save(operation3);
+        Map<Long, Operation> ops = Map.of(1L, operation1, 2L, operation2, 3L, operation3);
         Mockito.when(operationRepo.findAll())
-                        .thenReturn(List.of(operation1, operation2, operation3));
-        Assertions.assertEquals(List.of(operation1, operation2, operation3),
+                        .thenReturn(ops);
+        Assertions.assertEquals(ops,
                 operationUseCase.findAll());
 
     }
 
-    @Test
-    void findAllById() {
-        Operation operation1 = new Operation(1, Action.REGISTRATION, LocalDateTime.now());
-        Operation operation2 = new Operation(1, Action.AUTHENTICATION, LocalDateTime.now());
-        Operation operation3 = new Operation(2, Action.REGISTRATION, LocalDateTime.now());
-        operationUseCase.save(operation1);
-        operationUseCase.save(operation2);
-        operationUseCase.save(operation3);
-        Mockito.when(operationRepo.findAll())
-                .thenReturn(List.of(operation1, operation2));
-        Assertions.assertEquals(List.of(operation1, operation2),
-                operationUseCase.findAll());
-    }
+
 }
