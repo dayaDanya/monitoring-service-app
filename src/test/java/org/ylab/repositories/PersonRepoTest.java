@@ -5,15 +5,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.ylab.domain.models.Person;
 
-import java.util.ArrayList;
-
 class PersonRepoTest {
 
     PersonRepo personRepo;
 
     @BeforeEach
     void setUp() {
-        personRepo = new PersonRepo(new ArrayList<>());
+
     }
 
     @Test

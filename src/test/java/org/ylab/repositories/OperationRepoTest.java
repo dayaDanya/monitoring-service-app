@@ -16,7 +16,6 @@ class OperationRepoTest {
     @BeforeEach
     void setUp() {
         repo  =  new OperationRepo();
-        repo.deleteAll();
     }
 
 

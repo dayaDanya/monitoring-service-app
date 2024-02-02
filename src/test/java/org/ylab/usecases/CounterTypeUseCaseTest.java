@@ -11,7 +11,7 @@ class CounterTypeUseCaseTest {
 
     @BeforeEach
     void setUp() {
-        counterTypeUseCase = new CounterTypeUseCase();
+
     }
 
     @Test

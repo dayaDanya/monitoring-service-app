@@ -30,11 +30,9 @@ public class Main {
                 new ConsoleReader());
 
         MigrationUtil migrationUtil = new MigrationUtil();
-        try {
+
             migrationUtil.migrate();
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+
         try {
             cli.run();
         } catch (IOException e) {

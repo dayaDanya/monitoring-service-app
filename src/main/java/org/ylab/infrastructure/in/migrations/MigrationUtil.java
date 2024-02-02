@@ -20,6 +20,12 @@ public class MigrationUtil {
 
     private String PASSWORD;
 
+    public MigrationUtil(String URL, String USER_NAME, String PASSWORD) {
+        this.URL = URL;
+        this.USER_NAME = USER_NAME;
+        this.PASSWORD = PASSWORD;
+    }
+
     //todo разобраться с path
     public MigrationUtil() {
         properties = new Properties();
@@ -40,8 +46,7 @@ public class MigrationUtil {
 
 
 
-    public void migrate() throws ClassNotFoundException {
-        Class.forName("org.postgresql.Driver");
+    public void migrate() {
         try {
             Connection connection = DriverManager.getConnection(
                     URL,
