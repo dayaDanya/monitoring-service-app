@@ -3,14 +3,15 @@ package org.ylab.controllers;
 import org.ylab.domain.dto.*;
 import org.ylab.domain.models.CounterType;
 import org.ylab.domain.models.Measurement;
+import org.ylab.exceptions.*;
 import org.ylab.usecases.CounterUseCase;
 import org.ylab.usecases.MeasurementUseCase;
 import org.ylab.usecases.TokenService;
-import org.ylab.exceptions.*;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Класс, представляющий контроллер для операций с измерениями.
@@ -56,13 +57,14 @@ public class MeasurementController {
      */
     public MeasurementOutResponse allMeasurements(String token) {
         try {
-            List<MeasurementOutDto> dtoList = measurementUseCase.findAllById(tokenService.getPersonId(token))
+            Map<Long, MeasurementOutDto> dtoMap = measurementUseCase.findAllById(tokenService.getPersonId(token))
+                    .entrySet()
                     .stream()
-                    .map(MeasurementOutDto::new)
-                    .toList();
-            return new MeasurementOutResponse("200 OK", dtoList);
+                    .collect(HashMap::new, (map, entry) -> map.put(entry.getKey(), new MeasurementOutDto(entry.getValue())),
+                            HashMap::putAll);
+            return new MeasurementOutResponse("200 OK", dtoMap);
         } catch (TokenNotActualException e) {
-            return new MeasurementOutResponse("400 bad request: " + e.getMessage(), Collections.emptyList());
+            return new MeasurementOutResponse("400 bad request: " + e.getMessage(), Collections.emptyMap());
         }
     }
 
@@ -77,11 +79,11 @@ public class MeasurementController {
     public MeasurementOutResponse lastMeasurement(CounterTypeDto dto, String token) {
         try {
             Measurement found = measurementUseCase.findLast(new CounterType(dto.getName()), tokenService.getPersonId(token));
-            return new MeasurementOutResponse("200 OK", List.of(new MeasurementOutDto(found)));
+            return new MeasurementOutResponse("200 OK", Map.of(found.getId(), new MeasurementOutDto(found)));
         } catch (TokenNotActualException | CounterNotFoundException e) {
-            return new MeasurementOutResponse("400 bad request: " + e.getMessage(), Collections.emptyList());
+            return new MeasurementOutResponse("400 bad request: " + e.getMessage(), Collections.emptyMap());
         } catch (MeasurementNotFoundException e) {
-            return new MeasurementOutResponse("200 OK", Collections.emptyList());
+            return new MeasurementOutResponse("200 OK", Collections.emptyMap());
         }
     }
 
@@ -96,11 +98,11 @@ public class MeasurementController {
     public MeasurementOutResponse measurementByMonth(String token, int month, CounterTypeDto dto) {
         try {
             Measurement found = measurementUseCase.findByMonth(tokenService.getPersonId(token), month, new CounterType(dto.getName()));
-            return new MeasurementOutResponse("200 OK", List.of(new MeasurementOutDto(found)));
+            return new MeasurementOutResponse("200 OK", Map.of(found.getId(), new MeasurementOutDto(found)));
         } catch (TokenNotActualException | CounterNotFoundException e) {
-            return new MeasurementOutResponse("400 bad request: " + e.getMessage(), Collections.emptyList());
+            return new MeasurementOutResponse("400 bad request: " + e.getMessage(), Collections.emptyMap());
         } catch (MeasurementNotFoundException e) {
-            return new MeasurementOutResponse("200 OK", Collections.emptyList());
+            return new MeasurementOutResponse("200 OK", Collections.emptyMap());
         }
     }
 
@@ -108,18 +110,19 @@ public class MeasurementController {
      * Метод для получения списка счетчиков пользователя.
      *
      * @param token Токен пользователя, для которого требуется получить список счетчиков.
-     * @return Ответ с результатом операции и списком счетчиков пользователя.
+     * @return Ответ с результатом операции и map счетчиков пользователя.
      */
     public CounterOutResponse personCounters(String token) {
         try {
-            List<CounterDto> dtoList = counterUseCase.findByPersonId(
+            Map<Long, CounterDto> dtoMap = counterUseCase.findByPersonId(
                             tokenService.getPersonId(token))
-                    .stream()
-                    .map(CounterDto::new)
-                    .toList();
-            return new CounterOutResponse("200 OK", dtoList);
+                    .entrySet().stream()
+                    .collect(HashMap::new, (map, entry) -> map.put(entry.getKey(), new CounterDto(entry.getValue())),
+                            HashMap::putAll);
+
+            return new CounterOutResponse("200 OK", dtoMap);
         } catch (TokenNotActualException e) {
-            return new CounterOutResponse("400 bad request: " + e.getMessage(), Collections.emptyList());
+            return new CounterOutResponse("400 bad request: " + e.getMessage(), Collections.emptyMap());
         }
     }
 }

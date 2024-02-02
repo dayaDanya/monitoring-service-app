@@ -6,6 +6,7 @@ import org.ylab.repositories.CounterRepo;
 import org.ylab.exceptions.CounterTypeNotFoundException;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -45,9 +46,9 @@ public class CounterUseCase {
      * Метод для поиска списка счетчиков по идентификатору человека.
      *
      * @param personId Идентификатор человека, для которого осуществляется поиск счетчиков.
-     * @return Список счетчиков, принадлежащих указанному человеку.
+     * @return Map счетчиков, принадлежащих указанному человеку.
      */
-    public List<Counter> findByPersonId(long personId) {
+    public Map<Long, Counter> findByPersonId(long personId) {
         return counterRepo.findByPersonId(personId);
     }
 

@@ -4,16 +4,14 @@ import org.ylab.domain.models.CounterType;
 import org.ylab.domain.models.Measurement;
 import org.ylab.domain.models.Operation;
 import org.ylab.domain.models.enums.Action;
-import org.ylab.repositories.MeasurementRepo;
 import org.ylab.exceptions.BadMeasurementAmountException;
 import org.ylab.exceptions.CounterNotFoundException;
 import org.ylab.exceptions.MeasurementNotFoundException;
 import org.ylab.exceptions.WrongDateException;
+import org.ylab.repositories.MeasurementRepo;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Класс, представляющий использование сущности Measurement в рамках бизнес-логики.
@@ -68,7 +66,7 @@ public class MeasurementUseCase {
      *
      * @return Список всех измерений.
      */
-    public List<Measurement> findAll() {
+    public Map<Long, Measurement> findAll() {
         return measurementRepo.findAll();
     }
 
@@ -78,10 +76,10 @@ public class MeasurementUseCase {
      * @param personId Идентификатор человека, для которого осуществляется поиск измерений.
      * @return Список измерений, принадлежащих указанному человеку.
      */
-    public List<Measurement> findAllById(long personId) {
-        List<Measurement> resultSet = new ArrayList<>();
+    public Map<Long, Measurement> findAllById(long personId) {
+        Map<Long, Measurement> resultSet = new HashMap<>();
         List<Long> counterIds = counterUseCase.findIdsByPersonId(personId);
-        counterIds.forEach(id -> resultSet.addAll(measurementRepo.findAllByCounterId(id)));
+        counterIds.forEach(id -> resultSet.putAll(measurementRepo.findAllByCounterId(id)));
         operationUseCase.save(new Operation(personId, Action.WATCH_HISTORY, LocalDateTime.now()));
         return resultSet;
     }

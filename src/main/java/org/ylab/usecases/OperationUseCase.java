@@ -3,7 +3,7 @@ package org.ylab.usecases;
 import org.ylab.domain.models.Operation;
 import org.ylab.repositories.OperationRepo;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * Класс, представляющий использование сущности Operation в рамках бизнес-логики.
@@ -34,18 +34,9 @@ public class OperationUseCase {
      *
      * @return Список всех операций.
      */
-    public List<Operation> findAll() {
+    public Map<Long, Operation> findAll() {
         return operationRepo.findAll();
     }
 
-    /**
-     * Метод для получения списка всех операций по идентификатору человека.
-     *
-     * @param id Идентификатор человека, для которого осуществляется поиск операций.
-     * @return Список операций, принадлежащих указанному человеку.
-     */
-    public List<Operation> findAllById(long id) {
-        return operationRepo.findAllById(id);
-    }
 }
 

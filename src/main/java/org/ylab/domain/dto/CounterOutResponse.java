@@ -1,6 +1,6 @@
 package org.ylab.domain.dto;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * Класс - ответ на запрос по счетчикам,
@@ -16,16 +16,16 @@ public class CounterOutResponse {
     /**
      * Список объектов CounterDto, представляющих собой информацию о счетчиках
      */
-    private List<CounterDto> dtoList;
+    private Map<Long, CounterDto> dtoMap;
 
     /**
      * Конструктор ответа по счетчикам
      * @param message Сообщение об успешном выполнении операции или информация об ошибке
-     * @param dtoList Список объектов CounterDto
+     * @param dtoMap Map объектов CounterDto
      */
-    public CounterOutResponse(String message, List<CounterDto> dtoList) {
+    public CounterOutResponse(String message, Map<Long, CounterDto> dtoMap) {
         this.message = message;
-        this.dtoList = dtoList;
+        this.dtoMap = dtoMap;
     }
 
     /**
@@ -36,13 +36,7 @@ public class CounterOutResponse {
         return message;
     }
 
-    /**
-     * Геттер для списка объектов CounterDto
-     * @return Список объектов CounterDto
-     */
-    public List<CounterDto> getDtoList() {
-        return dtoList;
-    }
+
 
     /**
      * Метод для получения строкового представления списка счетчиков
@@ -50,7 +44,7 @@ public class CounterOutResponse {
      */
     public String printDtos() {
         StringBuilder builder = new StringBuilder();
-        dtoList.forEach(d -> builder.append(d.toString()).append('\n'));
+        dtoMap.forEach((key, value) -> builder.append(value.toString()).append('\n'));
         return builder.toString();
     }
 }

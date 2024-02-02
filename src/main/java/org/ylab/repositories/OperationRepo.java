@@ -7,10 +7,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * Репозиторий для сущности Operation.
@@ -69,53 +66,27 @@ public class OperationRepo {
      * Получение списка всех операций
      * @return Список всех операций
      */
-    public List<Operation> findAll() {
+    public Map<Long, Operation> findAll() {
+        Map<Long, Operation> operations = new HashMap<>();
         try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD)) {
             String selectDataSQL = "SELECT * FROM entities.operation";
             PreparedStatement statement = connection.prepareStatement(selectDataSQL);
             ResultSet resultSet = statement.executeQuery();
-            List<Operation> operations = new ArrayList<>();
+
             while (resultSet.next()) {
                 long id = resultSet.getLong("id");
                 long personId = resultSet.getLong("person_id");
                 Action action = Action.valueOf(resultSet.getString("action"));
                 LocalDateTime date = resultSet.getTimestamp("date").toLocalDateTime();
 
-                operations.add(new Operation( id, personId, action, date));
+                operations.put(id, new Operation( id, personId, action, date));
             }
-            return operations;
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return Collections.emptyList();
+        return operations;
     }
 
-    /**
-     * Получение списка всех операций для заданного идентификатора пользователя
-     * @param personId Идентификатор пользователя
-     * @return Список всех операций для заданного пользователя
-     */
-    public List<Operation> findAllById(long personId) {
-        //todo нужен ли
-        try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD)) {
-            String selectDataSQL = "SELECT * FROM entities.operation where person_id = ?";
-            PreparedStatement statement = connection.prepareStatement(selectDataSQL);
-            statement.setLong(1, personId);
-            ResultSet resultSet = statement.executeQuery();
-            List<Operation> operations = new ArrayList<>();
-            while (resultSet.next()) {
-                long operationId = resultSet.getLong("id");
-                long persId = resultSet.getLong("person_id");
-                Action action = Action.valueOf(resultSet.getString("action"));
-                LocalDateTime date = resultSet.getTimestamp("date").toLocalDateTime();
 
-                operations.add(new Operation( operationId, persId, action, date));
-            }
-            return operations;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return Collections.emptyList();
-    }
 
 }

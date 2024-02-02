@@ -1,6 +1,6 @@
 package org.ylab.domain.dto;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * Класс - ответ на запрос по операциям,
@@ -14,18 +14,18 @@ public class OperationOutResponse {
     private String message;
 
     /**
-     * Список объектов OperationOutDto, представляющих собой информацию о операциях
+     * Map объектов OperationOutDto, представляющих собой информацию о операциях
      */
-    private List<OperationOutDto> dtoList;
+    private Map<Long,OperationOutDto> dtoMap;
 
     /**
      * Конструктор ответа по операциям
      * @param message Сообщение об успешном выполнении операции или информация об ошибке
-     * @param dtoList Список объектов OperationOutDto
+     * @param dtoMap Map объектов OperationOutDto
      */
-    public OperationOutResponse(String message, List<OperationOutDto> dtoList) {
+    public OperationOutResponse(String message, Map<Long,OperationOutDto> dtoMap) {
         this.message = message;
-        this.dtoList = dtoList;
+        this.dtoMap = dtoMap;
     }
 
     /**
@@ -36,21 +36,14 @@ public class OperationOutResponse {
         return message;
     }
 
-    /**
-     * Геттер для списка объектов OperationOutDto
-     * @return Список объектов OperationOutDto
-     */
-    public List<OperationOutDto> getDtoList() {
-        return dtoList;
-    }
 
     /**
      * Метод для получения строкового представления списка операций
-     * @return Строковое представление списка операций
+     * @return Строковое представление map операций
      */
     public String printDtos() {
         StringBuilder builder = new StringBuilder();
-        dtoList.forEach(d -> builder.append(d.toString()).append('\n'));
+        dtoMap.forEach((key, value) -> builder.append(value.toString()).append('\n'));
         return builder.toString();
     }
 }

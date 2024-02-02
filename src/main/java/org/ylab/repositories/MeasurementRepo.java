@@ -51,7 +51,7 @@ public class MeasurementRepo {
                     "VALUES (?, ?, ?, ?)";
             PreparedStatement insertDataStatement = connection.prepareStatement(insertDataSQL);
             insertDataStatement.setLong(1, measurement.getCounterId());
-            insertDataStatement.setDouble(2, measurement.getCounterId());
+            insertDataStatement.setDouble(2, measurement.getAmount());
             insertDataStatement.setTimestamp(3,
                     Timestamp.valueOf(measurement.getSubmissionDate()));
             insertDataStatement.setString(4, measurement.getCounterType());
@@ -123,14 +123,15 @@ public class MeasurementRepo {
      * @param counterId Идентификатор счетчика
      * @return Список всех измерений для заданного счетчика
      */
-    public List<Measurement> findAllByCounterId(long counterId) {
+    public Map<Long,Measurement> findAllByCounterId(long counterId) {
+        Map<Long, Measurement> measurements = new HashMap<>();
         try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD)) {
             String selectDataSQL = "SELECT * FROM entities.measurement " +
                     "where counter_id = ?";
             PreparedStatement statement = connection.prepareStatement(selectDataSQL);
             statement.setLong(1, counterId);
             ResultSet resultSet = statement.executeQuery();
-            List<Measurement> measurements = new ArrayList<>();
+
             while (resultSet.next()) {
                 long id = resultSet.getLong("id");
                 long cId = resultSet.getLong("counter_id");
@@ -138,13 +139,13 @@ public class MeasurementRepo {
                 String counterType = resultSet.getString("counter_type");
                 LocalDateTime date = resultSet.getTimestamp("submission_date").toLocalDateTime();
 
-                measurements.add(new Measurement(id, amount, date, counterType, cId));
+                measurements.put(id, new Measurement(id, amount, date, counterType, cId));
             }
-            return measurements;
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return Collections.emptyList();
+        return measurements;
     }
 
 
@@ -152,12 +153,13 @@ public class MeasurementRepo {
      * Поиск всех измерений
      * @return Список всех измерений
      */
-    public List<Measurement> findAll() {
+    public Map<Long, Measurement> findAll() {
+        Map<Long, Measurement> measurements = new HashMap<>();
         try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD)) {
             String selectDataSQL = "SELECT * FROM entities.measurement";
             PreparedStatement statement = connection.prepareStatement(selectDataSQL);
             ResultSet resultSet = statement.executeQuery();
-            List<Measurement> measurements = new ArrayList<>();
+
             while (resultSet.next()) {
                 long id = resultSet.getLong("id");
                 long counterId = resultSet.getLong("counter_id");
@@ -165,13 +167,12 @@ public class MeasurementRepo {
                 String counterType = resultSet.getString("counter_type");
                 LocalDateTime date = resultSet.getTimestamp("submission_date").toLocalDateTime();
 
-                measurements.add(new Measurement(id,amount, date, counterType, counterId));
+                measurements.put(id, new Measurement(id,amount, date, counterType, counterId));
             }
-            return measurements;
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return Collections.emptyList();
+        return measurements;
     }
 
     /**

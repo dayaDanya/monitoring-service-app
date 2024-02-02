@@ -26,4 +26,12 @@
             </column>
         </createTable>
     </changeSet>
+    <changeSet id="001-2-alter-column-amount" author="dayaDanya">
+
+        <modifyDataType
+                schemaName="entities"
+                tableName="measurement"
+                columnName="amount"
+                newDataType="double precision"/>
+    </changeSet>
 </databaseChangeLog>

@@ -95,23 +95,22 @@ public class CounterRepo {
      * @return список айди счетчиков
      */
     public List<Long> findIdsByPersonId(long personId) {
+        List<Long> counterIds = new ArrayList<>();
         try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD)) {
             String selectDataSQL = "SELECT id FROM entities.counter " +
                     "where person_id = ?";
             PreparedStatement statement = connection.prepareStatement(selectDataSQL);
             statement.setLong(1, personId);
             ResultSet resultSet = statement.executeQuery();
-            List<Long> counterIds = new ArrayList<>();
             while (resultSet.next()) {
                 long id = resultSet.getLong("id");
                 counterIds.add(id);
             }
-            return counterIds;
             //todo удалить здесь и во всех похожих возврат collections
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return Collections.emptyList();
+        return counterIds;
     }
 
     /**
@@ -120,26 +119,26 @@ public class CounterRepo {
      * @param personId
      * @return список счетчиков
      */
-    public List<Counter> findByPersonId(long personId) {
+    public Map<Long, Counter> findByPersonId(long personId) {
+        Map<Long,Counter> counters = new HashMap<>();
         try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD)) {
             String selectDataSQL = "SELECT * FROM entities.counter " +
                     "where person_id = ?";
             PreparedStatement statement = connection.prepareStatement(selectDataSQL);
             statement.setLong(1, personId);
             ResultSet resultSet = statement.executeQuery();
-            List<Counter> counters = new ArrayList<>();
             while (resultSet.next()) {
                 long id = resultSet.getLong("id");
                 long pId = resultSet.getLong("person_id");
                 long cId = resultSet.getLong("counter_type_id");
                 String counterType = resultSet.getString("counter_type");
-                counters.add(new Counter(id, pId, cId, new CounterType(counterType)));
+                counters.put(id, new Counter(id, pId, cId, new CounterType(counterType)));
             }
         return counters;
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return Collections.emptyList();
+        return counters;
 
 
     }
