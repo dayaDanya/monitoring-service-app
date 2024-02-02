@@ -3,18 +3,23 @@ package org.ylab.usecases;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.ylab.domain.models.Counter;
 import org.ylab.domain.models.CounterType;
+import org.ylab.exceptions.CounterTypeNotFoundException;
+import org.ylab.repositories.CounterRepo;
 
-import java.util.List;
-
+import java.util.Optional;
+@ExtendWith(MockitoExtension.class)
 class CounterUseCaseTest {
     @Mock
     CounterTypeUseCase counterTypeUseCase;
     @Mock
-    PasswordUseCase passwordUseCase;
+    CounterRepo counterRepo;
     @InjectMocks
     CounterUseCase counterUseCase;
 
@@ -23,11 +28,21 @@ class CounterUseCaseTest {
 
     }
 
+    @Test
+    void save_withWrongCounterType_throwsException(){
+        Counter counter = new Counter(1, new CounterType("BAD_TYPE"));
+        Mockito.when(counterTypeUseCase.findOne(counter.getCounterType().getName()))
+                .thenReturn(Optional.empty());
+        Assertions.assertThrows(CounterTypeNotFoundException.class, () -> counterUseCase.save(counter));
+    }
 
     @Test
-    void findByPersonId() {
-        Counter counter = new Counter(1, new CounterType("cold"));
+    void save_withCorrectCounterType_saves() {
+        Counter counter = new Counter(1, new CounterType("COLD"));
+        Mockito.when(counterTypeUseCase.findOne(counter.getCounterType().getName()))
+                .thenReturn(Optional.of(new CounterType("COLD")));
         counterUseCase.save(counter);
-        Assertions.assertEquals(List.of(counter), counterUseCase.findByPersonId(1));
+        Mockito.verify(counterRepo, Mockito.times(1))
+                .save(counter);
     }
 }

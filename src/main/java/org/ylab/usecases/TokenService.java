@@ -9,6 +9,7 @@ import java.util.UUID;
 /**
  * Класс, представляющий сервис для работы с токенами.
  */
+//todo перенести в бд
 public class TokenService {
     private static Map<String, Long> tokens;
 
