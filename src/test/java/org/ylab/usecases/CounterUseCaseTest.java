@@ -1,7 +1,6 @@
 package org.ylab.usecases;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,11 +22,6 @@ class CounterUseCaseTest {
     @InjectMocks
     CounterUseCase counterUseCase;
 
-    @BeforeEach
-    void setUp() {
-
-    }
-
     @Test
     void save_withWrongCounterType_throwsException(){
         Counter counter = new Counter(1, new CounterType("BAD_TYPE"));
@@ -45,4 +39,5 @@ class CounterUseCaseTest {
         Mockito.verify(counterRepo, Mockito.times(1))
                 .save(counter);
     }
+
 }

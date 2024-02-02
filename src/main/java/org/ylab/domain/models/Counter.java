@@ -89,15 +89,25 @@ public class Counter {
     public void setId(long id) {
         this.id = id;
     }
-    //todo doc
+
+    /**
+     * сеттер
+     * @param personId устанавливает айди person
+     */
     public void setPersonId(long personId) {
         this.personId = personId;
     }
-
+    /**
+     * геттер
+     * @return айди типа счетчика
+     */
     public long getCounterTypeId() {
         return counterTypeId;
     }
-
+    /**
+     * сеттер
+     * @param counterTypeId устанавливает айди counterType
+     */
     public void setCounterTypeId(long counterTypeId) {
         this.counterTypeId = counterTypeId;
     }

@@ -1,6 +1,7 @@
 package org.ylab.usecases;
 
 import org.ylab.domain.models.CounterType;
+import org.ylab.exceptions.CounterTypeAlreadyExistsException;
 import org.ylab.repositories.CounterTypeRepo;
 
 import java.util.Optional;
@@ -43,5 +44,6 @@ public class CounterTypeUseCase {
     public void save(CounterType counterType) {
         if (findOne(counterType.getName()).isEmpty())
             repo.save(counterType);
+        else throw new CounterTypeAlreadyExistsException(counterType.getName());
     }
 }

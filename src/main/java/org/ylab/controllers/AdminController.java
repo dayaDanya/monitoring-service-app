@@ -7,6 +7,7 @@ import org.ylab.domain.models.Operation;
 import org.ylab.domain.models.Person;
 import org.ylab.domain.models.enums.Action;
 import org.ylab.domain.models.enums.Role;
+import org.ylab.exceptions.CounterTypeAlreadyExistsException;
 import org.ylab.usecases.*;
 import org.ylab.exceptions.CounterTypeNotFoundException;
 import org.ylab.exceptions.PersonNotFoundException;
@@ -104,8 +105,12 @@ public class AdminController {
             Person person = personUseCase.findById(personId);
 
             if (person.getRole() == Role.ADMIN) {
-                counterTypeUseCase.save(new CounterType(dto.getName()));
-                return "201 created.";
+                try {
+                    counterTypeUseCase.save(new CounterType(dto.getName()));
+                    return "201 created.";
+                } catch (CounterTypeAlreadyExistsException e){
+                    return "400 bad request: " + e.getMessage();
+                }
             }
             return "400 bad request";
         } catch (TokenNotActualException e) {
