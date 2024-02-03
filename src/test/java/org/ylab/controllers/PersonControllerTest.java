@@ -11,6 +11,11 @@ import org.ylab.repositories.OperationRepo;
 import org.ylab.repositories.PersonRepo;
 import org.ylab.usecases.*;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 class PersonControllerTest {
 
     PersonController personController;
@@ -45,8 +50,26 @@ class PersonControllerTest {
         personController = new PersonController(personUseCase);
     }
 
+    @AfterEach
+    void tearDown() {
+        try (Connection connection = DriverManager
+                .getConnection(postgres.getJdbcUrl(),
+                        postgres.getUsername(),
+                        postgres.getPassword())) {
+            connection.setAutoCommit(false);
+            String insertDataSQL = "delete from entities.person";
+            PreparedStatement deleteDataStatement = connection.prepareStatement(insertDataSQL);
+            deleteDataStatement.executeUpdate();
+            connection.commit();
+            //todo connection.rollback();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     @AfterAll
     static void afterAll() {
+
         postgres.stop();
     }
 
@@ -70,5 +93,12 @@ class PersonControllerTest {
         String result = personController.authenticate(person);
         Assertions.assertEquals("200 OK. Your authorization token is:",
                  result.substring(0, result.indexOf(":")+1));
+    }
+    @Test
+    void authenticate_400() {
+        PersonInDto person = new PersonInDto("email", "password");
+        String result = personController.authenticate(person);
+        Assertions.assertEquals("400 bad request:",
+                result.substring(0, result.indexOf(":")+1));
     }
 }
