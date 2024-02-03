@@ -1,5 +1,7 @@
 package org.ylab.repositories;
 
+import org.ylab.domain.models.Token;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.*;
@@ -80,7 +82,7 @@ public class TokenRepo {
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
-                return Optional.of(resultSet.getLong("id"));
+                return Optional.of(resultSet.getLong("person_id"));
 
             }
 
@@ -89,15 +91,19 @@ public class TokenRepo {
         }
         return Optional.empty();
     }
-    public Optional<Long> findIdByPersonId(Long personId){
+    public Optional<Token> findByPersonId(Long personId){
         try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD)) {
-            String selectDataSQL = "SELECT id FROM entities.token WHERE person_id = ? ";
+            String selectDataSQL = "SELECT * FROM entities.token WHERE person_id = ? ";
             PreparedStatement statement = connection.prepareStatement(selectDataSQL);
             statement.setLong(1, personId);
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
-                return Optional.of(resultSet.getLong("id"));
+
+
+                return Optional.of(new Token(resultSet.getLong("id"),
+                        resultSet.getLong("person_id"),
+                        resultSet.getString("value")));
 
             }
 

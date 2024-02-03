@@ -38,7 +38,7 @@ public class TokenService {
         }
         byte[] hashedBytes = messageDigest.digest(String.valueOf(personId).getBytes());
         String token = UUID.nameUUIDFromBytes(hashedBytes).toString();
-        if(tokenRepo.findIdByPersonId(personId).isEmpty())
+        if(tokenRepo.findByPersonId(personId).isEmpty())
             tokenRepo.saveToken(token, personId);
         else
             tokenRepo.updateToken(token, personId);

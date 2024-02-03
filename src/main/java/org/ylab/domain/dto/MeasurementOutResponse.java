@@ -35,8 +35,13 @@ public class MeasurementOutResponse {
     public String getMessage() {
         return message;
     }
-
-
+    /**
+     * Геттер для получения map
+     * @return Map
+     */
+    public Map<Long, MeasurementOutDto> getDtoMap() {
+        return dtoMap;
+    }
 
     /**
      * Метод для получения строкового представления списка измерений

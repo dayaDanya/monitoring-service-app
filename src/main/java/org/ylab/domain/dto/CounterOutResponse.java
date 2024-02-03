@@ -35,8 +35,13 @@ public class CounterOutResponse {
     public String getMessage() {
         return message;
     }
-
-
+    /**
+     * Геттер для map
+     * @return Map
+     */
+    public Map<Long, CounterDto> getDtoMap() {
+        return dtoMap;
+    }
 
     /**
      * Метод для получения строкового представления списка счетчиков

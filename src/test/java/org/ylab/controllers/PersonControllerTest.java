@@ -5,10 +5,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.ylab.domain.dto.PersonInDto;
 import org.ylab.infrastructure.in.migrations.MigrationUtil;
-import org.ylab.repositories.CounterRepo;
-import org.ylab.repositories.CounterTypeRepo;
-import org.ylab.repositories.OperationRepo;
-import org.ylab.repositories.PersonRepo;
+import org.ylab.repositories.*;
 import org.ylab.usecases.*;
 
 import java.sql.Connection;
@@ -46,7 +43,7 @@ class PersonControllerTest {
         CounterUseCase counterUseCase = new CounterUseCase(new CounterRepo(), counterTypeUseCase);
         OperationUseCase operationUseCase = new OperationUseCase(operationRepo);
         PersonUseCase personUseCase = new PersonUseCase(new PasswordUseCase(), personRepo, operationUseCase,
-                new TokenService(personRepo), counterUseCase, counterTypeUseCase);
+                new TokenService(new TokenRepo(), personRepo), counterUseCase, counterTypeUseCase);
         personController = new PersonController(personUseCase);
     }
 
@@ -78,8 +75,9 @@ class PersonControllerTest {
         PersonInDto person = new PersonInDto("email", "password");
         Assertions.assertEquals("201 created", personController.register(person));
     }
+
     @Test
-    void register_400(){
+    void register_400() {
         PersonInDto person = new PersonInDto("email", "password");
         personController.register(person);
         Assertions.assertEquals("400 bad request",
@@ -92,13 +90,14 @@ class PersonControllerTest {
         personController.register(person);
         String result = personController.authenticate(person);
         Assertions.assertEquals("200 OK. Your authorization token is:",
-                 result.substring(0, result.indexOf(":")+1));
+                result.substring(0, result.indexOf(":") + 1));
     }
+
     @Test
     void authenticate_400() {
         PersonInDto person = new PersonInDto("email", "password");
         String result = personController.authenticate(person);
         Assertions.assertEquals("400 bad request:",
-                result.substring(0, result.indexOf(":")+1));
+                result.substring(0, result.indexOf(":") + 1));
     }
 }
