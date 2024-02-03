@@ -20,8 +20,7 @@ public class PersonRepo {
 
 
     /**
-     * Конструктор, инициализирующий список (вызывается один раз).
-     * Создается администратор по умолчанию.
+     * Конструктор
      */
     public PersonRepo() {
         properties = new Properties();
@@ -37,15 +36,18 @@ public class PersonRepo {
         URL = properties.getProperty("url");
         USER_NAME = properties.getProperty("db-username");
         PASSWORD = properties.getProperty("db-password");
-        //todo админ
 
-//            save(new Person("admin",
-//                    "agSlkyvn99dVB6pKeD6MVA==:EvJ6J8w/LwveTJ+WA5AgTu9OzI7+FNakNFuZO8JqDCM2OUWL/82UXOAwVjPEpkxH5Apw65Pdp8iogVfDwIXbDQ==", Role.ADMIN));
+    }
 
+    public PersonRepo(String URL, String USER_NAME, String PASSWORD) {
+        this.URL = URL;
+        this.USER_NAME = USER_NAME;
+        this.PASSWORD = PASSWORD;
     }
 
     /**
      * Поиск пользователя по электронной почте.
+     *
      * @param email Электронная почта пользователя
      * @return Пользователь (Optional)
      */
@@ -74,6 +76,7 @@ public class PersonRepo {
 
     /**
      * Поиск идентификатора пользователя по электронной почте.
+     *
      * @param email Электронная почта пользователя
      * @return Идентификатор пользователя (Optional)
      */
@@ -96,6 +99,7 @@ public class PersonRepo {
 
     /**
      * Сохранение пользователя.
+     *
      * @param person Пользователь для сохранения
      */
     public void save(Person person) {
@@ -118,6 +122,7 @@ public class PersonRepo {
 
     /**
      * Поиск пользователя по идентификатору.
+     *
      * @param id Идентификатор пользователя
      * @return Пользователь (Optional)
      */
@@ -141,4 +146,40 @@ public class PersonRepo {
         }
         return Optional.empty();
     }
+    //todo во всех репо пробрасывать исключение в сервис
+    //todo doc
+    public void saveToken(String token, long personId){
+        try (Connection connection = DriverManager
+                .getConnection(URL, USER_NAME, PASSWORD)) {
+            connection.setAutoCommit(false);
+            String insertDataSQL = "update entities.person set token = ?" +
+                    " WHERE id = ?";
+            PreparedStatement insertDataStatement = connection.prepareStatement(insertDataSQL);
+            insertDataStatement.setString(1, token);
+            insertDataStatement.setLong(2, personId);
+            insertDataStatement.executeUpdate();
+            connection.commit();
+            //todo connection.rollback();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public Optional<Long> findIdByToken(String token){
+        try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD)) {
+            String selectDataSQL = "SELECT id FROM entities.person WHERE token = ? ";
+            PreparedStatement statement = connection.prepareStatement(selectDataSQL);
+            statement.setString(1, token);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                return Optional.of(resultSet.getLong("id"));
+
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return Optional.empty();
+    }
+
 }

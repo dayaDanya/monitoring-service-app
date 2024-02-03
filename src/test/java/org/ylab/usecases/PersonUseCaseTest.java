@@ -1,8 +1,6 @@
 package org.ylab.usecases;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -33,25 +31,6 @@ class PersonUseCaseTest {
 
     @Mock
     OperationUseCase operationUseCase;
-//    @Container
-//    private static PostgreSQLContainer postgres =
-//            new PostgreSQLContainer<>("postgres:13.3");
-
-    @BeforeAll
-    static void beforeAll() {
-//        postgres.start();
-//        MigrationUtil migrationConfig = new MigrationUtil(
-//                postgres.getJdbcUrl(),
-//                postgres.getUsername(),
-//                postgres.getPassword()
-//        );
-//        migrationConfig.migrate();
-    }
-
-    @AfterAll
-    static void afterAll() {
-//       postgres.stop();
-    }
 
 
     @Test

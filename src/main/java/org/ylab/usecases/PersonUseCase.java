@@ -93,16 +93,7 @@ public class PersonUseCase implements PersonInputBoundary {
         }
     }
 
-    /**
-     * Метод для выхода пользователя из системы (удаление токена).
-     *
-     * @param token Токен пользователя, который требуется удалить.
-     * @return {@code true}, если токен успешно удален, иначе {@code false}.
-     */
-    public boolean logout(String token) {
-        operationUseCase.save(new Operation(tokenService.getPersonId(token), Action.LOGOUT, LocalDateTime.now()));
-        return tokenService.deleteToken(token) != null;
-    }
+
 
     /**
      * Метод для поиска пользователя по его идентификатору.

@@ -87,4 +87,12 @@
                         EXECUTE PROCEDURE insert_into_counter();
                 </sql>
     </changeSet>
+    <changeSet id="002-5-add-token_column" author="dayaDanya">
+        <addColumn schemaName="entities" tableName="person">
+            <column name="token" type="VARCHAR(255)">
+                <constraints unique="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

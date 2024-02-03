@@ -21,7 +21,7 @@ public class OperationRepo {
 
 
     /**
-     * Конструктор, инициализирующий список (вызывается один раз)
+     * Конструктор
      */
     public OperationRepo() {
         properties = new Properties();
@@ -37,6 +37,12 @@ public class OperationRepo {
         URL = properties.getProperty("url");
         USER_NAME = properties.getProperty("db-username");
         PASSWORD = properties.getProperty("db-password");
+    }
+
+    public OperationRepo(String URL, String USER_NAME, String PASSWORD) {
+        this.URL = URL;
+        this.USER_NAME = USER_NAME;
+        this.PASSWORD = PASSWORD;
     }
 
     /**

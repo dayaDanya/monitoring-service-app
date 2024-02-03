@@ -20,7 +20,7 @@ public class MeasurementRepo {
 
 
     /**
-     * Конструктор, инициализирующий список (вызывается один раз)
+     * Конструктор
      */
     public MeasurementRepo() {
         properties = new Properties();
@@ -36,6 +36,12 @@ public class MeasurementRepo {
         URL = properties.getProperty("url");
         USER_NAME = properties.getProperty("db-username");
         PASSWORD = properties.getProperty("db-password");
+    }
+
+    public MeasurementRepo(String URL, String USER_NAME, String PASSWORD) {
+        this.URL = URL;
+        this.USER_NAME = USER_NAME;
+        this.PASSWORD = PASSWORD;
     }
 
     /**

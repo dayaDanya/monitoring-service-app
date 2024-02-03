@@ -1,9 +1,11 @@
 package org.ylab.usecases;
 
 import org.ylab.exceptions.TokenNotActualException;
+import org.ylab.repositories.PersonRepo;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -11,17 +13,12 @@ import java.util.UUID;
  */
 //todo перенести в бд
 public class TokenService {
-    private static Map<String, Long> tokens;
 
-    /**
-     * Приватный конструктор, инициализирующий хранилище токенов.
-     */
-    public TokenService() {
-        if(tokens == null) {
-            tokens = new HashMap<>();
-        }
+    private PersonRepo personRepo;
+
+    public TokenService(PersonRepo personRepo) {
+        this.personRepo = personRepo;
     }
-
 
     /**
      * Метод для генерации токена и связывания его с идентификатором пользователя.
@@ -29,10 +26,17 @@ public class TokenService {
      * @param personId Идентификатор пользователя, с которым связывается токен.
      * @return Сгенерированный токен.
      */
-    public String getToken(long personId) {
-        String uuid = UUID.randomUUID().toString();
-        tokens.put(uuid, personId);
-        return uuid;
+    public String getToken(long personId)  {
+        MessageDigest messageDigest = null;
+        try {
+            messageDigest = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+        byte[] hashedBytes = messageDigest.digest(String.valueOf(personId).getBytes());
+        String token = UUID.nameUUIDFromBytes(hashedBytes).toString();
+        personRepo.saveToken(token, personId);
+        return token;
     }
 
     /**
@@ -43,21 +47,8 @@ public class TokenService {
      * @throws TokenNotActualException Выбрасывается, если токен не актуален (не существует).
      */
     public long getPersonId(String token) throws TokenNotActualException {
-        Long personId = tokens.get(token);
-        if (personId != null) {
-            return personId;
-        } else {
-            throw new TokenNotActualException();
-        }
+        Optional<Long> personId = personRepo.findIdByToken(token);
+        return personId.orElseThrow(TokenNotActualException::new);
     }
 
-    /**
-     * Метод для удаления токена из хранилища.
-     *
-     * @param token Токен, который требуется удалить.
-     * @return Идентификатор пользователя, связанный с удаленным токеном.
-     */
-    public Long deleteToken(String token) {
-        return tokens.remove(token);
-    }
 }

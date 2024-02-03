@@ -47,7 +47,6 @@ public class ConsoleCLI {
             System.out.println("9. Watch audit (admin)");
             System.out.println("10. Add new counter type (admin)");
             System.out.println("11. Give new counter to a person (admin)");
-            System.out.println("12. Log out");
             int num;
             num = consoleReader.readInt();
 
@@ -159,11 +158,6 @@ public class ConsoleCLI {
                     number = consoleReader.readInt();
                     System.out.println(adminController.giveCounter(
                             new CounterTypeDto(counterType), number, answer));
-                    break;
-                case 12:
-                    System.out.print("Enter your token: ");
-                    answer = consoleReader.readString();
-                    System.out.println(personController.logout(answer));
                     break;
                 default:
                     System.out.println("Wrong number");

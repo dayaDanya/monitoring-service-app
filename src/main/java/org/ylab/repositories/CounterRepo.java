@@ -20,7 +20,7 @@ public class CounterRepo {
     private final String PASSWORD;
 
     /**
-     * конструктор, инициализирует список единожды
+     * конструктор
      */
     public CounterRepo() {
         properties = new Properties();
@@ -36,6 +36,13 @@ public class CounterRepo {
         URL = properties.getProperty("url");
         USER_NAME = properties.getProperty("db-username");
         PASSWORD = properties.getProperty("db-password");
+    }
+
+    public CounterRepo(String URL, String USER_NAME, String PASSWORD) {
+        this.URL = URL;
+        this.USER_NAME = USER_NAME;
+        this.PASSWORD = PASSWORD;
+
     }
 
     /**

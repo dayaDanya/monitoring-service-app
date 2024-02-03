@@ -50,17 +50,5 @@ public class PersonController {
         }
     }
 
-    /**
-     * Метод для выхода пользователя из системы (отзыв токена).
-     *
-     * @param token Токен пользователя, который требуется отозвать.
-     * @return Строка с результатом операции.
-     */
-    public String logout(String token) {
-        if (personUseCase.logout(token))
-            return "200 OK. You were logged out. Authorize again to get a new token.";
-        else
-            return "400 bad request";
-        //todo чекнуть почему крашиться при неправильном токене
-    }
 }
+

@@ -22,7 +22,7 @@ public class CounterTypeRepo {
 
 
     /**
-     * конструктор, инициализирующий список и добавляющий несколько типов счетчиков
+     * конструктор
      */
     //todo migration
     public CounterTypeRepo() {
@@ -39,6 +39,12 @@ public class CounterTypeRepo {
         URL = properties.getProperty("url");
         USER_NAME = properties.getProperty("db-username");
         PASSWORD = properties.getProperty("db-password");
+    }
+
+    public CounterTypeRepo(String URL, String USER_NAME, String PASSWORD) {
+        this.URL = URL;
+        this.USER_NAME = USER_NAME;
+        this.PASSWORD = PASSWORD;
     }
 
     /**
