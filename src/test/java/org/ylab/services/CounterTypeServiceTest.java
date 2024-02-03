@@ -1,6 +1,7 @@
 package org.ylab.services;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,15 +20,16 @@ class CounterTypeServiceTest {
     CounterTypeService counterTypeUseCase;
     @Mock
     CounterTypeRepo counterTypeRepo;
-
+    @DisplayName("Проверяет нахождение типа счетчика с переданным названием")
     @Test
     void findOne_correctCounterType_finds() {
         CounterType counterType = new CounterType("hot");
+
         Mockito.when(counterTypeRepo.findOne("hot"))
                         .thenReturn(Optional.of(counterType));
         Assertions.assertEquals(counterType, counterTypeUseCase.findOne(counterType.getName()).get());
     }
-
+    @DisplayName("Проверяет то, что при добавлении нового типа счетчика, репозиторий отработает")
     @Test
     void save_newCounterType_saves(){
         CounterType counterType = new CounterType("hot");
@@ -38,6 +40,7 @@ class CounterTypeServiceTest {
                 .times(1))
                 .save(counterType);
     }
+    @DisplayName("Проверяет то, что при добавлении существующего типа счетчика, будет выброшено исключение")
     @Test
     void save_existingCounterType_throwsException(){
         CounterType counterType = new CounterType("hot");

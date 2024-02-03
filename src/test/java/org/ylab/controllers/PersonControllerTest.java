@@ -58,7 +58,7 @@ class PersonControllerTest {
             PreparedStatement deleteDataStatement = connection.prepareStatement(insertDataSQL);
             deleteDataStatement.executeUpdate();
             connection.commit();
-            //todo connection.rollback();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }

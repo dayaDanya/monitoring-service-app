@@ -114,7 +114,7 @@ public class CounterRepo implements ICounterRepo {
                 long id = resultSet.getLong("id");
                 counterIds.add(id);
             }
-            //todo удалить здесь и во всех похожих возврат collections
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -122,10 +122,10 @@ public class CounterRepo implements ICounterRepo {
     }
 
     /**
-     * возвращает список счетчиков пользователя
+     * возвращает map счетчиков пользователя
      *
-     * @param personId
-     * @return список счетчиков
+     * @param personId айди пользователя
+     * @return map счетчиков
      */
     public Map<Long, Counter> findByPersonId(long personId) {
         Map<Long,Counter> counters = new HashMap<>();

@@ -95,6 +95,7 @@ class MeasurementControllerTest {
     }
 
     @Test
+    @DisplayName("Добавление измерения: успешно добавляет")
     void add_adds() {
         personController.register(new PersonInDto(person.getEmail(), person.getPassword()));
         String token = personUseCase.authenticate(person);
@@ -105,6 +106,8 @@ class MeasurementControllerTest {
     }
 
     @Test
+    @DisplayName("Получение всех измерений: возвращает правильное количество записей")
+
     void allMeasurements() {
         String token = personUseCase.authenticate(person);
         MeasurementInDto m1 = new MeasurementInDto(3244, "HOT");
@@ -118,6 +121,7 @@ class MeasurementControllerTest {
     }
 
     @Test
+    @DisplayName("Получение счетчиков пользователя: возвращает правильное количество счетчиков")
     void personCounters() {
         String token = personUseCase.authenticate(person);
         Assertions.assertEquals(3, measurementController.personCounters(token).getDtoMap().size());

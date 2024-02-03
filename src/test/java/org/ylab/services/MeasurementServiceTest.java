@@ -1,6 +1,7 @@
 package org.ylab.services;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -9,6 +10,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.ylab.domain.dto.MeasurementInDto;
 import org.ylab.domain.models.Measurement;
 import org.ylab.exceptions.BadMeasurementAmountException;
 import org.ylab.exceptions.CounterNotFoundException;
@@ -17,6 +19,7 @@ import org.ylab.repositories.implementations.MeasurementRepo;
 
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.Map;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,6 +37,8 @@ class MeasurementServiceTest {
     OperationService operationUseCase;
 
     @Test
+    @DisplayName("Сохранение: счетчик не существует - " +
+            "выбрасывает исключение CounterNotFoundException")
     void save_ifCounterNotExists_throwsException() {
         LocalDateTime localDateTime = LocalDateTime.of(
                 2023, Month.DECEMBER, 25, 10, 15, 1
@@ -46,6 +51,7 @@ class MeasurementServiceTest {
                 () -> measurementUseCase.save(measurement, 3));
     }
     @Test
+    @DisplayName("Сохранение: некорректная дата - выбрасывает исключение WrongDateException")
     void save_incorrectDate_throwsException() {
         LocalDateTime localDateTime = LocalDateTime.of(
                 2023, Month.DECEMBER, 25, 10, 15, 1
@@ -60,6 +66,7 @@ class MeasurementServiceTest {
                 () -> measurementUseCase.save(measurement, 3));
     }
     @Test
+    @DisplayName("Сохранение: новое измерение меньше предыдущего - выбрасывает исключение BadMeasurementAmountException")
     void save_smallerAmount_throwsException() {
         LocalDateTime localDateTime = LocalDateTime.of(
                 2023, Month.DECEMBER, 25, 10, 15, 1
@@ -76,23 +83,17 @@ class MeasurementServiceTest {
         Assertions.assertThrows(BadMeasurementAmountException.class,
                 () -> measurementUseCase.save(measurement, 3));
     }
-    //todo other tests
     @Test
+    @DisplayName("Получение всех измерений")
     void findAll() {
+        Measurement hot = new Measurement(
+                new MeasurementInDto(4324, "HOT"),
+                LocalDateTime.now()
+        );
+        Map<Long,Measurement> map = Map.of(2L, hot);
+        Mockito.when(measurementRepo.findAll())
+                        .thenReturn(map);
+        Assertions.assertEquals(1, measurementUseCase.findAll().size());
     }
 
-    @Test
-    void findAllById() {
-    }
-
-    @Test
-    void findLast() {
-
-    }
-
-    @Test
-    void findByMonth() {
-
-
-    }
 }

@@ -11,7 +11,7 @@ import java.util.Properties;
 
 /**
  * Репозиторий типов счетчиков, представляющий слой взаимодействия с базой данных типов счетчиков.
- * На текущий момент реализован с использованием коллекции.
+ *
  */
 public class CounterTypeRepo implements ICounterTypeRepo {
 

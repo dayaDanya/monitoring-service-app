@@ -1,6 +1,7 @@
 package org.ylab.services;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -34,23 +35,25 @@ class PersonServiceTest {
 
 
     @Test
+    @DisplayName("Регистрация: существующий email - выбрасывает исключение BadCredentialsException")
     void register_withUsedEmail_throwsException() {
         Person person = new Person("user@user.com", "password");
-        //подмена логики шифрования пароля
         Mockito.when(passwordUseCase.encrypt("password"))
                 .thenReturn("xCfNDSIR3Xnfz5Sdq4d4jA==:/MUq+hTBBM2u1ZwLOlUBFS+JpkKQGUWqYngV8N5XybrwyrJI2No7kwy2aEQpfpPhbjdACL1BE0aisWUn1WPuAQ==");
-        //подмена логики предварительной регистрации пользователя с таким email
+
         Mockito.when(personRepo.findByEmail("user@user.com"))
                 .thenReturn(Optional.of(person));
-        //подмена логики поиска пользователя по email
+
         Optional<Long> id = Optional.of(1L);
         Mockito.when(personRepo.findIdByEmail("user@user.com"))
                 .thenReturn(id);
-        Assertions.assertThrows(BadCredentialsException.class, () -> personUseCase.register(person));
 
+        Assertions.assertThrows(BadCredentialsException.class, () -> personUseCase.register(person));
     }
+
     @Test
-    void register_withNewEmail_savesPerson(){
+    @DisplayName("Регистрация: новый email - успешно сохраняет пользователя")
+    void register_withNewEmail_savesPerson() {
         Person person = new Person("user@user.com", "password");
         Mockito.when(passwordUseCase.encrypt("password"))
                 .thenReturn("xCfNDSIR3Xnfz5Sdq4d4jA==:/MUq+hTBBM2u1ZwLOlUBFS+JpkKQGUWqYngV8N5XybrwyrJI2No7kwy2aEQpfpPhbjdACL1BE0aisWUn1WPuAQ==");
@@ -64,12 +67,15 @@ class PersonServiceTest {
     }
 
     @Test
+    @DisplayName("Аутентификация: новый email - выбрасывает исключение PersonNotFoundException")
     void authenticate_withNewEmail_throwsException() {
         Person person = new Person("user@user.com", "password");
         Assertions.assertThrows(PersonNotFoundException.class, () -> personUseCase.authenticate(person));
     }
+
     @Test
-    void authenticate_withWrongPassword_throwsException(){
+    @DisplayName("Аутентификация: неверный пароль - выбрасывает исключение BadCredentialsException")
+    void authenticate_withWrongPassword_throwsException() {
         Person person = new Person("user@user.com", "password_wrong");
         Mockito.when(personRepo.findByEmail("user@user.com")).thenReturn(Optional.of(person));
         Assertions.assertThrows(BadCredentialsException.class, () -> personUseCase.authenticate(person));

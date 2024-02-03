@@ -1,6 +1,7 @@
 package org.ylab.services;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,7 +22,8 @@ class CounterServiceTest {
     CounterRepo counterRepo;
     @InjectMocks
     CounterService counterUseCase;
-
+    @DisplayName("Проверяет, что при случае передачи неправильного типа счетчика, " +
+            "будет выброшено исключение")
     @Test
     void save_withWrongCounterType_throwsException(){
         Counter counter = new Counter(1, new CounterType("BAD_TYPE"));
@@ -29,7 +31,8 @@ class CounterServiceTest {
                 .thenReturn(Optional.empty());
         Assertions.assertThrows(CounterTypeNotFoundException.class, () -> counterUseCase.save(counter));
     }
-
+    @DisplayName("Проверяет, что при передаче правильных параметров, " +
+            "сущность будет сохранена")
     @Test
     void save_withCorrectCounterType_saves() {
         Counter counter = new Counter(1, new CounterType("COLD"));
