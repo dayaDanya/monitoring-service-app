@@ -2,6 +2,7 @@ package org.ylab.usecases;
 
 import org.ylab.exceptions.TokenNotActualException;
 import org.ylab.repositories.PersonRepo;
+import org.ylab.repositories.TokenRepo;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -13,10 +14,12 @@ import java.util.UUID;
  */
 //todo перенести в бд
 public class TokenService {
+    private TokenRepo tokenRepo;
 
     private PersonRepo personRepo;
 
-    public TokenService(PersonRepo personRepo) {
+    public TokenService(TokenRepo tokenRepo, PersonRepo personRepo) {
+        this.tokenRepo = tokenRepo;
         this.personRepo = personRepo;
     }
 
@@ -35,7 +38,10 @@ public class TokenService {
         }
         byte[] hashedBytes = messageDigest.digest(String.valueOf(personId).getBytes());
         String token = UUID.nameUUIDFromBytes(hashedBytes).toString();
-        personRepo.saveToken(token, personId);
+        if(tokenRepo.findIdByPersonId(personId).isEmpty())
+            tokenRepo.saveToken(token, personId);
+        else
+            tokenRepo.updateToken(token, personId);
         return token;
     }
 
@@ -47,7 +53,7 @@ public class TokenService {
      * @throws TokenNotActualException Выбрасывается, если токен не актуален (не существует).
      */
     public long getPersonId(String token) throws TokenNotActualException {
-        Optional<Long> personId = personRepo.findIdByToken(token);
+        Optional<Long> personId = tokenRepo.findPersonIdByToken(token);
         return personId.orElseThrow(TokenNotActualException::new);
     }
 

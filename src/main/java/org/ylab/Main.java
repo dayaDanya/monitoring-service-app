@@ -17,7 +17,7 @@ public class Main {
         OperationUseCase operationUseCase = new OperationUseCase(new OperationRepo());
         CounterTypeUseCase counterTypeUseCase = new CounterTypeUseCase(new CounterTypeRepo());
         CounterUseCase counterUseCase = new CounterUseCase(new CounterRepo() ,counterTypeUseCase);
-        TokenService tokenService = new TokenService(personRepo);
+        TokenService tokenService = new TokenService(new TokenRepo(), personRepo);
         MeasurementUseCase measurementUseCase = new MeasurementUseCase(
                 new MeasurementRepo(), operationUseCase, counterUseCase);
         PersonUseCase personUseCase = new PersonUseCase(

@@ -12,4 +12,5 @@
     <include file="004-create-table-counter.xml" relativeToChangelogFile="true"/>
     <include file="006-create-table-measurement.xml" relativeToChangelogFile="true"/>
     <include file="007-create-table-operation.xml" relativeToChangelogFile="true"/>
+    <include file="008-create-table-token.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

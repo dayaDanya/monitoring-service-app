@@ -94,5 +94,8 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet id="002-5-delete-token_column" author="">
+        <dropColumn schemaName="entities" tableName="person" columnName="token"/>
+    </changeSet>
 
 </databaseChangeLog>

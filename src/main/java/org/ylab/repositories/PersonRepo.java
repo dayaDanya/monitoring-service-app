@@ -147,39 +147,6 @@ public class PersonRepo {
         return Optional.empty();
     }
     //todo во всех репо пробрасывать исключение в сервис
-    //todo doc
-    public void saveToken(String token, long personId){
-        try (Connection connection = DriverManager
-                .getConnection(URL, USER_NAME, PASSWORD)) {
-            connection.setAutoCommit(false);
-            String insertDataSQL = "update entities.person set token = ?" +
-                    " WHERE id = ?";
-            PreparedStatement insertDataStatement = connection.prepareStatement(insertDataSQL);
-            insertDataStatement.setString(1, token);
-            insertDataStatement.setLong(2, personId);
-            insertDataStatement.executeUpdate();
-            connection.commit();
-            //todo connection.rollback();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-    public Optional<Long> findIdByToken(String token){
-        try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD)) {
-            String selectDataSQL = "SELECT id FROM entities.person WHERE token = ? ";
-            PreparedStatement statement = connection.prepareStatement(selectDataSQL);
-            statement.setString(1, token);
-            ResultSet resultSet = statement.executeQuery();
 
-            if (resultSet.next()) {
-                return Optional.of(resultSet.getLong("id"));
-
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return Optional.empty();
-    }
 
 }
