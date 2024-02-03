@@ -6,6 +6,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.ylab.domain.dto.MeasurementInDto;
 import org.ylab.domain.dto.PersonInDto;
 import org.ylab.domain.models.Person;
+import org.ylab.infrastructure.in.db.ConnectionAdapter;
 import org.ylab.infrastructure.in.db.MigrationUtil;
 import org.ylab.repositories.implementations.*;
 import org.ylab.services.*;
@@ -30,34 +31,33 @@ class MeasurementControllerTest {
     @BeforeAll
     static void beforeAll() {
         postgres.start();
-        MigrationUtil migrationConfig = new MigrationUtil(
-                postgres.getJdbcUrl(),
+        MigrationUtil migrationConfig = new MigrationUtil(new ConnectionAdapter(postgres.getJdbcUrl(),
                 postgres.getUsername(),
-                postgres.getPassword()
+                postgres.getPassword())
         );
         migrationConfig.migrate();
     }
 
     @BeforeEach
     void setUp() {
-        PersonRepo personRepo = new PersonRepo(postgres.getJdbcUrl(),
+        PersonRepo personRepo = new PersonRepo(new ConnectionAdapter(postgres.getJdbcUrl(),
                 postgres.getUsername(),
-                postgres.getPassword());
-        MeasurementRepo measurementRepo = new MeasurementRepo(postgres.getJdbcUrl(),
+                postgres.getPassword()));
+        MeasurementRepo measurementRepo = new MeasurementRepo(new ConnectionAdapter(postgres.getJdbcUrl(),
                 postgres.getUsername(),
-                postgres.getPassword());
-        OperationRepo operationRepo = new OperationRepo(postgres.getJdbcUrl(),
+                postgres.getPassword()));
+        OperationRepo operationRepo = new OperationRepo(new ConnectionAdapter(postgres.getJdbcUrl(),
                 postgres.getUsername(),
-                postgres.getPassword());
-        CounterTypeRepo repo = new CounterTypeRepo(postgres.getJdbcUrl(),
+                postgres.getPassword()));
+        CounterTypeRepo repo = new CounterTypeRepo(new ConnectionAdapter(postgres.getJdbcUrl(),
                 postgres.getUsername(),
-                postgres.getPassword());
-        CounterRepo counterRepo = new CounterRepo(postgres.getJdbcUrl(),
+                postgres.getPassword()));
+        CounterRepo counterRepo = new CounterRepo(new ConnectionAdapter(postgres.getJdbcUrl(),
                 postgres.getUsername(),
-                postgres.getPassword());
-        TokenRepo tokenRepo = new TokenRepo(postgres.getJdbcUrl(),
+                postgres.getPassword()));
+        TokenRepo tokenRepo = new TokenRepo(new ConnectionAdapter(postgres.getJdbcUrl(),
                 postgres.getUsername(),
-                postgres.getPassword());
+                postgres.getPassword()));
         CounterTypeService counterTypeUseCase = new CounterTypeService(repo);
         CounterService counterService = new CounterService(counterRepo, counterTypeUseCase);
         OperationService operationService = new OperationService(operationRepo);

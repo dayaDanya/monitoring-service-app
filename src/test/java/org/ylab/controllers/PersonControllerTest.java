@@ -4,8 +4,12 @@ import org.junit.jupiter.api.*;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.ylab.domain.dto.PersonInDto;
+import org.ylab.infrastructure.in.db.ConnectionAdapter;
 import org.ylab.infrastructure.in.db.MigrationUtil;
-import org.ylab.repositories.implementations.*;
+import org.ylab.repositories.implementations.CounterTypeRepo;
+import org.ylab.repositories.implementations.OperationRepo;
+import org.ylab.repositories.implementations.PersonRepo;
+import org.ylab.repositories.implementations.TokenRepo;
 import org.ylab.services.*;
 
 import java.sql.Connection;
@@ -23,27 +27,25 @@ class PersonControllerTest {
     @BeforeAll
     static void beforeAll() {
         postgres.start();
-        MigrationUtil migrationConfig = new MigrationUtil(
-                postgres.getJdbcUrl(),
+        MigrationUtil migrationConfig = new MigrationUtil(new ConnectionAdapter(postgres.getJdbcUrl(),
                 postgres.getUsername(),
-                postgres.getPassword()
+                postgres.getPassword())
         );
         migrationConfig.migrate();
     }
 
     @BeforeEach
     void setUp() {
-        PersonRepo personRepo = new PersonRepo(postgres.getJdbcUrl(),
+        PersonRepo personRepo = new PersonRepo(new ConnectionAdapter(postgres.getJdbcUrl(),
                 postgres.getUsername(),
-                postgres.getPassword());
-        OperationRepo operationRepo = new OperationRepo(postgres.getJdbcUrl(),
+                postgres.getPassword()));
+        OperationRepo operationRepo = new OperationRepo(new ConnectionAdapter(postgres.getJdbcUrl(),
                 postgres.getUsername(),
-                postgres.getPassword());
-        CounterTypeService counterTypeUseCase = new CounterTypeService(new CounterTypeRepo());
-        CounterService counterUseCase = new CounterService(new CounterRepo(), counterTypeUseCase);
+                postgres.getPassword()));
+        CounterTypeService counterTypeUseCase = new CounterTypeService(new CounterTypeRepo(new ConnectionAdapter()));
         OperationService operationUseCase = new OperationService(operationRepo);
         PersonService personUseCase = new PersonService(new PasswordService(), personRepo, operationUseCase,
-                new TokenService(new TokenRepo()));
+                new TokenService(new TokenRepo(new ConnectionAdapter())));
         personController = new PersonController(personUseCase);
     }
 

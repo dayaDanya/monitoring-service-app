@@ -5,6 +5,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.ylab.domain.models.Person;
 import org.ylab.domain.models.enums.Role;
+import org.ylab.infrastructure.in.db.ConnectionAdapter;
 import org.ylab.infrastructure.in.db.MigrationUtil;
 
 import java.sql.Connection;
@@ -22,10 +23,9 @@ class PersonRepoTest {
     static void beforeAll() {
         postgres.start();
         MigrationUtil migrationConfig = new MigrationUtil(
-                postgres.getJdbcUrl(),
+                new ConnectionAdapter(postgres.getJdbcUrl(),
                 postgres.getUsername(),
-                postgres.getPassword()
-        );
+                postgres.getPassword()));
         migrationConfig.migrate();
     }
 
@@ -37,9 +37,9 @@ class PersonRepoTest {
 
     @BeforeEach
     void setUp() {
-        personRepo = new PersonRepo(postgres.getJdbcUrl(),
+        personRepo = new PersonRepo(new ConnectionAdapter(postgres.getJdbcUrl(),
                 postgres.getUsername(),
-                postgres.getPassword());
+                postgres.getPassword()));
 
 
     }

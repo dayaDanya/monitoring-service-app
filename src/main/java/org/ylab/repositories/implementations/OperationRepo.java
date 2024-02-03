@@ -2,48 +2,32 @@ package org.ylab.repositories.implementations;
 
 import org.ylab.domain.models.Operation;
 import org.ylab.domain.models.enums.Action;
+import org.ylab.infrastructure.in.db.ConnectionAdapter;
 import org.ylab.repositories.IOperationRepo;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Репозиторий для сущности Operation.
  */
 public class OperationRepo implements IOperationRepo {
 
-    Properties properties;
-    private final String URL;
-    private final String USER_NAME;
-    private final String PASSWORD;
+    private ConnectionAdapter connectionAdapter;
+
+//    Properties properties;
+//    private final String URL;
+//    private final String USER_NAME;
+//    private final String PASSWORD;
 
 
     /**
      * Конструктор
      */
-    public OperationRepo() {
-        properties = new Properties();
-        try {
-            FileInputStream fileInputStream =
-                    new FileInputStream(
-                            "src/main/resources/application.properties");
-            properties.load(fileInputStream);
-            fileInputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        URL = properties.getProperty("url");
-        USER_NAME = properties.getProperty("db-username");
-        PASSWORD = properties.getProperty("db-password");
-    }
-
-    public OperationRepo(String URL, String USER_NAME, String PASSWORD) {
-        this.URL = URL;
-        this.USER_NAME = USER_NAME;
-        this.PASSWORD = PASSWORD;
+    public OperationRepo(ConnectionAdapter connectionAdapter) {
+        this.connectionAdapter = connectionAdapter;
     }
 
     /**
@@ -51,8 +35,8 @@ public class OperationRepo implements IOperationRepo {
      * @param operation Операция для сохранения
      */
     public void save(Operation operation) {
-        try (Connection connection = DriverManager
-                .getConnection(URL, USER_NAME, PASSWORD)) {
+        try (Connection connection = connectionAdapter
+                .getConnection()) {
             connection.setAutoCommit(false);
             String insertDataSQL = "INSERT INTO entities.operation (person_id, action, date)" +
                     "VALUES (?, ?, ?)";
@@ -63,7 +47,7 @@ public class OperationRepo implements IOperationRepo {
                     Timestamp.valueOf(operation.getDate()));
             insertDataStatement.executeUpdate();
             connection.commit();
-            //todo connection.rollback();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -75,7 +59,7 @@ public class OperationRepo implements IOperationRepo {
      */
     public Map<Long, Operation> findAll() {
         Map<Long, Operation> operations = new HashMap<>();
-        try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD)) {
+        try (Connection connection = connectionAdapter.getConnection()) {
             String selectDataSQL = "SELECT * FROM entities.operation";
             PreparedStatement statement = connection.prepareStatement(selectDataSQL);
             ResultSet resultSet = statement.executeQuery();

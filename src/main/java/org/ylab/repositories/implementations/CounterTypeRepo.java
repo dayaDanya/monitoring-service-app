@@ -1,13 +1,14 @@
 package org.ylab.repositories.implementations;
 
 import org.ylab.domain.models.CounterType;
+import org.ylab.infrastructure.in.db.ConnectionAdapter;
 import org.ylab.repositories.ICounterTypeRepo;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Optional;
-import java.util.Properties;
 
 /**
  * Репозиторий типов счетчиков, представляющий слой взаимодействия с базой данных типов счетчиков.
@@ -15,37 +16,13 @@ import java.util.Properties;
  */
 public class CounterTypeRepo implements ICounterTypeRepo {
 
-    Properties properties;
-    private final String URL;
-    private final String USER_NAME;
-    private final String PASSWORD;
-
-
+    private ConnectionAdapter connectionAdapter;
 
     /**
      * конструктор
      */
-    //todo migration
-    public CounterTypeRepo() {
-        properties = new Properties();
-        try {
-            FileInputStream fileInputStream =
-                    new FileInputStream(
-                            "src/main/resources/application.properties");
-            properties.load(fileInputStream);
-            fileInputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        URL = properties.getProperty("url");
-        USER_NAME = properties.getProperty("db-username");
-        PASSWORD = properties.getProperty("db-password");
-    }
-
-    public CounterTypeRepo(String URL, String USER_NAME, String PASSWORD) {
-        this.URL = URL;
-        this.USER_NAME = USER_NAME;
-        this.PASSWORD = PASSWORD;
+    public CounterTypeRepo(ConnectionAdapter connectionAdapter) {
+        this.connectionAdapter = connectionAdapter;
     }
 
     /**
@@ -54,8 +31,8 @@ public class CounterTypeRepo implements ICounterTypeRepo {
      * @param type Тип счетчика для сохранения
      */
     public void save(CounterType type) {
-        try (Connection connection = DriverManager
-                .getConnection(URL, USER_NAME, PASSWORD)) {
+        try (Connection connection = connectionAdapter
+                .getConnection()) {
             connection.setAutoCommit(false);
             String insertDataSQL = "INSERT INTO entities.counter_type" +
                     " (name) VALUES (?)";
@@ -63,7 +40,7 @@ public class CounterTypeRepo implements ICounterTypeRepo {
             insertDataStatement.setString(1, type.getName());
             insertDataStatement.executeUpdate();
             connection.commit();
-            //todo connection.rollback();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -76,7 +53,8 @@ public class CounterTypeRepo implements ICounterTypeRepo {
      * @return Тип счетчика (Optional)
      */
     public Optional<CounterType> findOne(String name) {
-        try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD)) {
+        try (Connection connection = connectionAdapter
+                .getConnection()) {
             String selectDataSQL = "SELECT * FROM entities.counter_type WHERE name = ? ";
             PreparedStatement statement = connection.prepareStatement(selectDataSQL);
             statement.setString(1, name);

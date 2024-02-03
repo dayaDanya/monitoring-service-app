@@ -5,6 +5,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.ylab.domain.models.Operation;
 import org.ylab.domain.models.enums.Action;
+import org.ylab.infrastructure.in.db.ConnectionAdapter;
 import org.ylab.infrastructure.in.db.MigrationUtil;
 
 import java.sql.Connection;
@@ -27,9 +28,9 @@ class OperationRepoTest {
     static void beforeAll() {
         postgres.start();
         MigrationUtil migrationConfig = new MigrationUtil(
-                postgres.getJdbcUrl(),
+                new ConnectionAdapter(postgres.getJdbcUrl(),
                 postgres.getUsername(),
-                postgres.getPassword()
+                postgres.getPassword())
         );
         migrationConfig.migrate();
     }
@@ -42,9 +43,10 @@ class OperationRepoTest {
 
     @BeforeEach
     void setUp() {
-        repo = new OperationRepo(postgres.getJdbcUrl(),
+        repo = new OperationRepo(new ConnectionAdapter(postgres.getJdbcUrl(),
                 postgres.getUsername(),
-                postgres.getPassword());
+                postgres.getPassword())
+                );
 
 
     }

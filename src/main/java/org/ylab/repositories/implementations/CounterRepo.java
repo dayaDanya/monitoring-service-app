@@ -2,11 +2,13 @@ package org.ylab.repositories.implementations;
 
 import org.ylab.domain.models.Counter;
 import org.ylab.domain.models.CounterType;
+import org.ylab.infrastructure.in.db.ConnectionAdapter;
 import org.ylab.repositories.ICounterRepo;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -15,35 +17,13 @@ import java.util.*;
  */
 public class CounterRepo implements ICounterRepo {
 
-    Properties properties;
-    private final String URL;
-    private final String USER_NAME;
-    private final String PASSWORD;
+    private ConnectionAdapter connectionAdapter;
 
     /**
      * конструктор
      */
-    public CounterRepo() {
-        properties = new Properties();
-        try {
-            FileInputStream fileInputStream =
-                    new FileInputStream(
-                            "src/main/resources/application.properties");
-            properties.load(fileInputStream);
-            fileInputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        URL = properties.getProperty("url");
-        USER_NAME = properties.getProperty("db-username");
-        PASSWORD = properties.getProperty("db-password");
-    }
-
-    public CounterRepo(String URL, String USER_NAME, String PASSWORD) {
-        this.URL = URL;
-        this.USER_NAME = USER_NAME;
-        this.PASSWORD = PASSWORD;
-
+    public CounterRepo(ConnectionAdapter connectionAdapter) {
+        this.connectionAdapter = connectionAdapter;
     }
 
     /**
@@ -52,8 +32,8 @@ public class CounterRepo implements ICounterRepo {
      * @param counter
      */
     public void save(Counter counter) {
-        try (Connection connection = DriverManager
-                .getConnection(URL, USER_NAME, PASSWORD)) {
+        try (Connection connection = connectionAdapter
+                .getConnection()) {
             connection.setAutoCommit(false);
             String insertDataSQL = "INSERT INTO entities.counter (person_id, counter_type_id, counter_type)" +
                     "VALUES (?, ?, ?)";
@@ -63,7 +43,7 @@ public class CounterRepo implements ICounterRepo {
             insertDataStatement.setString(3, counter.getCounterType().getName());
             insertDataStatement.executeUpdate();
             connection.commit();
-            //todo connection.rollback();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -77,7 +57,8 @@ public class CounterRepo implements ICounterRepo {
      * @return айди счетчика
      */
     public Optional<Long> findIdByPersonIdAndCounterType(long personId, String type) {
-        try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD)) {
+        try (Connection connection = connectionAdapter
+                .getConnection()) {
             String selectDataSQL = "SELECT id FROM entities.counter " +
                     "where person_id = ? and counter_type = ?";
             PreparedStatement statement = connection.prepareStatement(selectDataSQL);
@@ -104,7 +85,8 @@ public class CounterRepo implements ICounterRepo {
      */
     public List<Long> findIdsByPersonId(long personId) {
         List<Long> counterIds = new ArrayList<>();
-        try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD)) {
+        try (Connection connection = connectionAdapter
+                .getConnection()) {
             String selectDataSQL = "SELECT id FROM entities.counter " +
                     "where person_id = ?";
             PreparedStatement statement = connection.prepareStatement(selectDataSQL);
@@ -129,7 +111,8 @@ public class CounterRepo implements ICounterRepo {
      */
     public Map<Long, Counter> findByPersonId(long personId) {
         Map<Long,Counter> counters = new HashMap<>();
-        try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD)) {
+        try (Connection connection = connectionAdapter
+                .getConnection()) {
             String selectDataSQL = "SELECT * FROM entities.counter " +
                     "where person_id = ?";
             PreparedStatement statement = connection.prepareStatement(selectDataSQL);

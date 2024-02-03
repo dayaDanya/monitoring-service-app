@@ -1,56 +1,30 @@
 package org.ylab.repositories.implementations;
 
 import org.ylab.domain.models.Token;
+import org.ylab.infrastructure.in.db.ConnectionAdapter;
 import org.ylab.repositories.ITokenRepo;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Optional;
-import java.util.Properties;
 
 /**
  * Реализация интерфейса {@link ITokenRepo} для управления токенами в базе данных.
  */
 public class TokenRepo implements ITokenRepo {
 
-    private Properties properties;
-    private final String URL;
-    private final String USER_NAME;
-    private final String PASSWORD;
+    private ConnectionAdapter connectionAdapter;
 
     /**
-     * Конструктор по умолчанию, который считывает свойства подключения к базе данных из файла application.properties.
-     * Этот конструктор предполагает, что файл application.properties находится в каталоге src/main/resources.
+     * конструктор
      */
-    public TokenRepo() {
-        properties = new Properties();
-        try {
-            FileInputStream fileInputStream =
-                    new FileInputStream(
-                            "src/main/resources/application.properties");
-            properties.load(fileInputStream);
-            fileInputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        URL = properties.getProperty("url");
-        USER_NAME = properties.getProperty("db-username");
-        PASSWORD = properties.getProperty("db-password");
+    public TokenRepo(ConnectionAdapter connectionAdapter) {
+        this.connectionAdapter = connectionAdapter;
     }
 
-    /**
-     * Параметризованный конструктор для инициализации TokenRepo с определенными свойствами подключения к базе данных.
-     *
-     * @param URL      URL подключения к базе данных.
-     * @param USER_NAME Имя пользователя для аутентификации в базе данных.
-     * @param PASSWORD Пароль для аутентификации в базе данных.
-     */
-    public TokenRepo(String URL, String USER_NAME, String PASSWORD) {
-        this.URL = URL;
-        this.USER_NAME = USER_NAME;
-        this.PASSWORD = PASSWORD;
-    }
+
 
     /**
      * Сохраняет токен и связанный с ним идентификатор пользователя в базе данных.
@@ -59,7 +33,8 @@ public class TokenRepo implements ITokenRepo {
      * @param personId Идентификатор пользователя, связанный с токеном.
      */
     public void saveToken(String token, long personId) {
-        try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD)) {
+        try (Connection connection = connectionAdapter
+                .getConnection()) {
             connection.setAutoCommit(false);
             String insertDataSQL = "insert into entities.token (value, person_id) VALUES (?,?)";
             PreparedStatement insertDataStatement = connection.prepareStatement(insertDataSQL);
@@ -79,7 +54,8 @@ public class TokenRepo implements ITokenRepo {
      * @param personId Идентификатор пользователя, связанный с токеном, который нужно обновить.
      */
     public void updateToken(String token, long personId) {
-        try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD)) {
+        try (Connection connection = connectionAdapter
+                .getConnection()) {
             connection.setAutoCommit(false);
             String updateDataSQL = "update entities.token set value = ? WHERE person_id = ?";
             PreparedStatement updateDataStatement = connection.prepareStatement(updateDataSQL);
@@ -99,7 +75,8 @@ public class TokenRepo implements ITokenRepo {
      * @return {@link Optional}, содержащий идентификатор пользователя при наличии, в противном случае пустой {@link Optional}.
      */
     public Optional<Long> findPersonIdByToken(String token) {
-        try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD)) {
+        try (Connection connection = connectionAdapter
+                .getConnection()) {
             String selectDataSQL = "SELECT person_id FROM entities.token WHERE value = ?";
             PreparedStatement statement = connection.prepareStatement(selectDataSQL);
             statement.setString(1, token);
@@ -122,7 +99,8 @@ public class TokenRepo implements ITokenRepo {
      * @return {@link Optional}, содержащий {@link Token} при наличии, в противном случае пустой {@link Optional}.
      */
     public Optional<Token> findByPersonId(Long personId) {
-        try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD)) {
+        try (Connection connection = connectionAdapter
+                .getConnection()) {
             String selectDataSQL = "SELECT * FROM entities.token WHERE person_id = ?";
             PreparedStatement statement = connection.prepareStatement(selectDataSQL);
             statement.setLong(1, personId);

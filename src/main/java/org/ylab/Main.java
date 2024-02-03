@@ -5,6 +5,7 @@ import org.ylab.controllers.AdminController;
 import org.ylab.controllers.MeasurementController;
 import org.ylab.controllers.PersonController;
 import org.ylab.infrastructure.in.console.ConsoleReader;
+import org.ylab.infrastructure.in.db.ConnectionAdapter;
 import org.ylab.infrastructure.in.db.MigrationUtil;
 import org.ylab.repositories.implementations.*;
 import org.ylab.services.*;
@@ -13,13 +14,14 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-        PersonRepo personRepo = new PersonRepo();
-        OperationService operationUseCase = new OperationService(new OperationRepo());
-        CounterTypeService counterTypeUseCase = new CounterTypeService(new CounterTypeRepo());
-        CounterService counterUseCase = new CounterService(new CounterRepo() ,counterTypeUseCase);
-        TokenService tokenService = new TokenService(new TokenRepo());
+        ConnectionAdapter connectionAdapter = new ConnectionAdapter();
+        PersonRepo personRepo = new PersonRepo(connectionAdapter);
+        OperationService operationUseCase = new OperationService(new OperationRepo(connectionAdapter));
+        CounterTypeService counterTypeUseCase = new CounterTypeService(new CounterTypeRepo(connectionAdapter));
+        CounterService counterUseCase = new CounterService(new CounterRepo(connectionAdapter) ,counterTypeUseCase);
+        TokenService tokenService = new TokenService(new TokenRepo(connectionAdapter));
         MeasurementService measurementUseCase = new MeasurementService(
-                new MeasurementRepo(), operationUseCase, counterUseCase);
+                new MeasurementRepo(connectionAdapter), operationUseCase, counterUseCase);
         PersonService personUseCase = new PersonService(
                 new PasswordService(), personRepo, operationUseCase,
                 tokenService);
@@ -29,7 +31,7 @@ public class Main {
                         tokenService, counterTypeUseCase, counterUseCase),
                 new ConsoleReader());
 
-        MigrationUtil migrationUtil = new MigrationUtil();
+        MigrationUtil migrationUtil = new MigrationUtil(connectionAdapter);
 
             migrationUtil.migrate();
 

@@ -1,48 +1,27 @@
 package org.ylab.repositories.implementations;
 
 import org.ylab.domain.models.Measurement;
+import org.ylab.infrastructure.in.db.ConnectionAdapter;
 import org.ylab.repositories.IMeasurementRepo;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Репозиторий измерений, представляющий слой взаимодействия с базой данных измерений.
  *
  */
 public class MeasurementRepo implements IMeasurementRepo {
-    Properties properties;
-    private final String URL;
-    private final String USER_NAME;
-    private final String PASSWORD;
-
+    private ConnectionAdapter connectionAdapter;
 
     /**
-     * Конструктор
+     * конструктор
      */
-    public MeasurementRepo() {
-        properties = new Properties();
-        try {
-            FileInputStream fileInputStream =
-                    new FileInputStream(
-                            "src/main/resources/application.properties");
-            properties.load(fileInputStream);
-            fileInputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        URL = properties.getProperty("url");
-        USER_NAME = properties.getProperty("db-username");
-        PASSWORD = properties.getProperty("db-password");
-    }
-
-    public MeasurementRepo(String URL, String USER_NAME, String PASSWORD) {
-        this.URL = URL;
-        this.USER_NAME = USER_NAME;
-        this.PASSWORD = PASSWORD;
+    public MeasurementRepo(ConnectionAdapter connectionAdapter) {
+        this.connectionAdapter = connectionAdapter;
     }
 
     /**
@@ -50,8 +29,8 @@ public class MeasurementRepo implements IMeasurementRepo {
      * @param measurement Измерение для сохранения
      */
     public void save(Measurement measurement) {
-        try (Connection connection = DriverManager
-                .getConnection(URL, USER_NAME, PASSWORD)) {
+        try (Connection connection = connectionAdapter
+                .getConnection()) {
             connection.setAutoCommit(false);
             String insertDataSQL = "INSERT INTO entities.measurement (counter_id, amount, submission_date," +
                     " counter_type)" +
@@ -76,7 +55,8 @@ public class MeasurementRepo implements IMeasurementRepo {
      * @return Последняя дата измерения (Optional)
      */
     public Optional<LocalDateTime> findLastDate(long counterId) {
-        try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD)) {
+        try (Connection connection = connectionAdapter
+                .getConnection()) {
             String selectDataSQL = "SELECT submission_date FROM entities.measurement WHERE counter_id = ? " +
                     "ORDER BY submission_date DESC LIMIT 1;";
             PreparedStatement statement = connection.prepareStatement(selectDataSQL);
@@ -102,7 +82,8 @@ public class MeasurementRepo implements IMeasurementRepo {
      * @return Последнее измерение (Optional)
      */
     public Optional<Measurement> findLast(long counterId) {
-        try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD)) {
+        try (Connection connection = connectionAdapter
+                .getConnection()) {
             String selectDataSQL = "SELECT * FROM entities.measurement WHERE counter_id = ? " +
                     "ORDER BY submission_date DESC LIMIT 1;";
             PreparedStatement statement = connection.prepareStatement(selectDataSQL);
@@ -132,7 +113,8 @@ public class MeasurementRepo implements IMeasurementRepo {
      */
     public Map<Long,Measurement> findAllByCounterId(long counterId) {
         Map<Long, Measurement> measurements = new HashMap<>();
-        try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD)) {
+        try (Connection connection = connectionAdapter
+                .getConnection()) {
             String selectDataSQL = "SELECT * FROM entities.measurement " +
                     "where counter_id = ?";
             PreparedStatement statement = connection.prepareStatement(selectDataSQL);
@@ -162,7 +144,8 @@ public class MeasurementRepo implements IMeasurementRepo {
      */
     public Map<Long, Measurement> findAll() {
         Map<Long, Measurement> measurements = new HashMap<>();
-        try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD)) {
+        try (Connection connection = connectionAdapter
+                .getConnection()) {
             String selectDataSQL = "SELECT * FROM entities.measurement";
             PreparedStatement statement = connection.prepareStatement(selectDataSQL);
             ResultSet resultSet = statement.executeQuery();
@@ -189,7 +172,8 @@ public class MeasurementRepo implements IMeasurementRepo {
      * @return Измерение для заданного счетчика и месяца (Optional)
      */
     public Optional<Measurement> findByMonth(long counterId, int month) {
-        try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD)) {
+        try (Connection connection = connectionAdapter
+                .getConnection()) {
             String selectDataSQL = "SELECT * FROM entities.measurement " +
                     "where counter_id = ? and EXTRACT(MONTH FROM submission_date) = ?";
             PreparedStatement statement = connection.prepareStatement(selectDataSQL);
