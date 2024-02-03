@@ -6,9 +6,9 @@ import org.testcontainers.junit.jupiter.Container;
 import org.ylab.domain.dto.MeasurementInDto;
 import org.ylab.domain.dto.PersonInDto;
 import org.ylab.domain.models.Person;
-import org.ylab.infrastructure.in.migrations.MigrationUtil;
-import org.ylab.repositories.*;
-import org.ylab.usecases.*;
+import org.ylab.infrastructure.in.db.MigrationUtil;
+import org.ylab.repositories.implementations.*;
+import org.ylab.services.*;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -23,7 +23,7 @@ class MeasurementControllerTest {
     @Container
     private static PostgreSQLContainer postgres =
             new PostgreSQLContainer<>("postgres:13.3");
-    private PersonUseCase personUseCase;
+    private PersonService personUseCase;
 
     private PersonController personController;
 
@@ -58,14 +58,14 @@ class MeasurementControllerTest {
         TokenRepo tokenRepo = new TokenRepo(postgres.getJdbcUrl(),
                 postgres.getUsername(),
                 postgres.getPassword());
-        CounterTypeUseCase counterTypeUseCase = new CounterTypeUseCase(repo);
-        CounterUseCase counterUseCase = new CounterUseCase(counterRepo, counterTypeUseCase);
-        OperationUseCase operationUseCase = new OperationUseCase(operationRepo);
-        personUseCase = new PersonUseCase(new PasswordUseCase(), personRepo, operationUseCase,
-                new TokenService(tokenRepo, personRepo), counterUseCase, counterTypeUseCase);
+        CounterTypeService counterTypeUseCase = new CounterTypeService(repo);
+        CounterService counterService = new CounterService(counterRepo, counterTypeUseCase);
+        OperationService operationService = new OperationService(operationRepo);
+        personUseCase = new PersonService(new PasswordService(), personRepo, operationService,
+                new TokenService(tokenRepo));
         personController = new PersonController(personUseCase);
-        MeasurementUseCase measurementUseCase = new MeasurementUseCase(measurementRepo, operationUseCase, counterUseCase);
-        measurementController = new MeasurementController(measurementUseCase, counterUseCase, new TokenService(tokenRepo, personRepo));
+        MeasurementService measurementService = new MeasurementService(measurementRepo, operationService, counterService);
+        measurementController = new MeasurementController(measurementService, counterService, new TokenService(tokenRepo));
         person = new Person("person",
                 "password");
         personController.register(new PersonInDto(person.getEmail(), person.getPassword()));

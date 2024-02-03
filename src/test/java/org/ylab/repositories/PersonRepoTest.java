@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.ylab.domain.models.Person;
+import org.ylab.repositories.implementations.PersonRepo;
 
 class PersonRepoTest {
 

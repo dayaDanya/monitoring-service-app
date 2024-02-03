@@ -7,11 +7,12 @@ import org.ylab.domain.models.Operation;
 import org.ylab.domain.models.Person;
 import org.ylab.domain.models.enums.Action;
 import org.ylab.domain.models.enums.Role;
+import org.ylab.domain.usecases.PersonUseCase;
 import org.ylab.exceptions.CounterTypeAlreadyExistsException;
 import org.ylab.exceptions.CounterTypeNotFoundException;
 import org.ylab.exceptions.PersonNotFoundException;
 import org.ylab.exceptions.TokenNotActualException;
-import org.ylab.usecases.*;
+import org.ylab.services.*;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -22,21 +23,21 @@ import java.util.Map;
  * Класс, представляющий контроллер для административных операций.
  */
 public class AdminController {
-    private final MeasurementUseCase measurementUseCase;
-    private final OperationUseCase operationUseCase;
+    private final MeasurementService measurementUseCase;
+    private final OperationService operationUseCase;
     private final PersonUseCase personUseCase;
     private final TokenService tokenService;
-    private final CounterTypeUseCase counterTypeUseCase;
-    private final CounterUseCase counterUseCase;
+    private final CounterTypeService counterTypeUseCase;
+    private final CounterService counterUseCase;
 
     /**
      * Конструктор класса AdminController, инициализирующий используемые компоненты.
      */
-    public AdminController(MeasurementUseCase measurementUseCase,
-                           OperationUseCase operationUseCase,
-                           PersonUseCase personUseCase, TokenService tokenService,
-                           CounterTypeUseCase counterTypeUseCase,
-                           CounterUseCase counterUseCase) {
+    public AdminController(MeasurementService measurementUseCase,
+                           OperationService operationUseCase,
+                           PersonService personUseCase, TokenService tokenService,
+                           CounterTypeService counterTypeUseCase,
+                           CounterService counterUseCase) {
         this.measurementUseCase = measurementUseCase;
         this.operationUseCase = operationUseCase;
         this.personUseCase = personUseCase;
@@ -66,6 +67,8 @@ public class AdminController {
             }
             return new OperationOutResponse("400 bad request", Collections.emptyMap());
         } catch (TokenNotActualException e) {
+            return new OperationOutResponse("400 bad request", Collections.emptyMap());
+        } catch (PersonNotFoundException e){
             return new OperationOutResponse("400 bad request", Collections.emptyMap());
         }
     }

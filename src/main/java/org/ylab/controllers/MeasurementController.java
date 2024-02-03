@@ -4,9 +4,9 @@ import org.ylab.domain.dto.*;
 import org.ylab.domain.models.CounterType;
 import org.ylab.domain.models.Measurement;
 import org.ylab.exceptions.*;
-import org.ylab.usecases.CounterUseCase;
-import org.ylab.usecases.MeasurementUseCase;
-import org.ylab.usecases.TokenService;
+import org.ylab.services.CounterService;
+import org.ylab.services.MeasurementService;
+import org.ylab.services.TokenService;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -17,15 +17,15 @@ import java.util.Map;
  * Класс, представляющий контроллер для операций с измерениями.
  */
 public class MeasurementController {
-    private final MeasurementUseCase measurementUseCase;
-    private final CounterUseCase counterUseCase;
+    private final MeasurementService measurementUseCase;
+    private final CounterService counterUseCase;
     private final TokenService tokenService;
 
     /**
      * Конструктор класса MeasurementController, инициализирующий используемые компоненты.
      */
-    public MeasurementController(MeasurementUseCase measurementUseCase,
-                                 CounterUseCase counterUseCase,
+    public MeasurementController(MeasurementService measurementUseCase,
+                                 CounterService counterUseCase,
                                  TokenService tokenService) {
         this.measurementUseCase = measurementUseCase;
         this.counterUseCase = counterUseCase;

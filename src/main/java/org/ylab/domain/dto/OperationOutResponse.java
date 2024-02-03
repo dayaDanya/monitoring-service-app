@@ -35,7 +35,13 @@ public class OperationOutResponse {
     public String getMessage() {
         return message;
     }
-
+    /**
+     * Геттер для map
+     * @return Map
+     */
+    public Map<Long, OperationOutDto> getDtoMap() {
+        return dtoMap;
+    }
 
     /**
      * Метод для получения строкового представления списка операций

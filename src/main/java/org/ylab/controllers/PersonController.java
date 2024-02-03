@@ -2,9 +2,10 @@ package org.ylab.controllers;
 
 import org.ylab.domain.dto.PersonInDto;
 import org.ylab.domain.models.Person;
-import org.ylab.usecases.PersonUseCase;
+import org.ylab.domain.usecases.PersonUseCase;
 import org.ylab.exceptions.BadCredentialsException;
 import org.ylab.exceptions.PersonNotFoundException;
+import org.ylab.services.PersonService;
 
 /**
  * Класс, представляющий контроллер для операций с пользователями.
@@ -16,8 +17,8 @@ public class PersonController {
     /**
      * Конструктор класса PersonController, инициализирующий используемые компоненты.
      */
-    public PersonController(PersonUseCase personUseCase) {
-        this.personUseCase = personUseCase;
+    public PersonController(PersonService personService) {
+        this.personUseCase = personService;
     }
 
     /**

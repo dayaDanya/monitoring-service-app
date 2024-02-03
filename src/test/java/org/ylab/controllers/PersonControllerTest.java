@@ -4,9 +4,9 @@ import org.junit.jupiter.api.*;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.ylab.domain.dto.PersonInDto;
-import org.ylab.infrastructure.in.migrations.MigrationUtil;
-import org.ylab.repositories.*;
-import org.ylab.usecases.*;
+import org.ylab.infrastructure.in.db.MigrationUtil;
+import org.ylab.repositories.implementations.*;
+import org.ylab.services.*;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -39,11 +39,11 @@ class PersonControllerTest {
         OperationRepo operationRepo = new OperationRepo(postgres.getJdbcUrl(),
                 postgres.getUsername(),
                 postgres.getPassword());
-        CounterTypeUseCase counterTypeUseCase = new CounterTypeUseCase(new CounterTypeRepo());
-        CounterUseCase counterUseCase = new CounterUseCase(new CounterRepo(), counterTypeUseCase);
-        OperationUseCase operationUseCase = new OperationUseCase(operationRepo);
-        PersonUseCase personUseCase = new PersonUseCase(new PasswordUseCase(), personRepo, operationUseCase,
-                new TokenService(new TokenRepo(), personRepo), counterUseCase, counterTypeUseCase);
+        CounterTypeService counterTypeUseCase = new CounterTypeService(new CounterTypeRepo());
+        CounterService counterUseCase = new CounterService(new CounterRepo(), counterTypeUseCase);
+        OperationService operationUseCase = new OperationService(operationRepo);
+        PersonService personUseCase = new PersonService(new PasswordService(), personRepo, operationUseCase,
+                new TokenService(new TokenRepo()));
         personController = new PersonController(personUseCase);
     }
 

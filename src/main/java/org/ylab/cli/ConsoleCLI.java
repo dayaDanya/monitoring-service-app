@@ -5,7 +5,7 @@ import org.ylab.controllers.AdminController;
 import org.ylab.controllers.MeasurementController;
 import org.ylab.controllers.PersonController;
 import org.ylab.domain.dto.*;
-import org.ylab.infrastructure.in.ConsoleReader;
+import org.ylab.infrastructure.in.console.ConsoleReader;
 
 import java.io.IOException;
 
