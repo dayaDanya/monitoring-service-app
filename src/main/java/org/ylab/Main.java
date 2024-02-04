@@ -32,7 +32,7 @@ public class Main {
                 new ConsoleReader());
 
         MigrationUtil migrationUtil = new MigrationUtil(connectionAdapter);
-
+            //запуск миграций
             migrationUtil.migrate();
 
         try {
