@@ -11,6 +11,7 @@ import org.ylab.exceptions.BadCredentialsException;
 import org.ylab.exceptions.PersonNotFoundException;
 import org.ylab.repositories.IPersonRepo;
 import org.ylab.repositories.implementations.PersonRepo;
+import org.ylab.security.services.JwtService;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -24,19 +25,18 @@ public class PersonService implements org.ylab.domain.usecases.PersonUseCase {
     private final PasswordEncoder passwordUseCase;
     private final IPersonRepo personRepo;
     private final OperationUseCase operationUseCase;
-    private final TokenUseCase tokenService;
+
 
 
     /**
      * Конструктор класса PersonUseCase, инициализирующий репозиторий пользователей, использование паролей, операций,
-     * токен-сервиса, использование счетчиков и типов счетчиков.
+     * сервис счетчиков и типов счетчиков.
      */
     public PersonService(PasswordService passwordUseCase, PersonRepo personRepo,
-                         OperationService operationUseCase, TokenService tokenService) {
+                         OperationService operationUseCase) {
         this.passwordUseCase = passwordUseCase;
         this.personRepo = personRepo;
         this.operationUseCase = operationUseCase;
-        this.tokenService = tokenService;
 
     }
 
@@ -89,7 +89,7 @@ public class PersonService implements org.ylab.domain.usecases.PersonUseCase {
             throw new BadCredentialsException();
         } else {
             operationUseCase.save(new Operation(found.get().getId(), Action.AUTHENTICATION, LocalDateTime.now()));
-            return tokenService.getToken(found.get().getId());
+            return JwtService.generateToken(found.get().getEmail());
         }
     }
 
