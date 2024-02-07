@@ -44,6 +44,7 @@ public class AuthServlet extends HttpServlet {
         PersonInDto personDto = new PersonInDto(req.getHeader("email"),
                 req.getHeader("password"));
         try {
+            //todo заменить на mapper
             String token = personUseCase.authenticate(new Person(personDto.getEmail(), personDto.getPassword()));
             resp.setContentType("application/json");
             resp.getOutputStream().write(token.getBytes());
