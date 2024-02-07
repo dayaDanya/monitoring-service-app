@@ -14,10 +14,28 @@
         <jbcrypt.version>0.4</jbcrypt.version>
         <junit.upiter.version>5.7.2</junit.upiter.version>
         <mockito.version>5.9.0</mockito.version>
-        <mockito.junit.jupiter>5.9.0</mockito.junit.jupiter>
+        <mockito.junit.jupiter.version>5.9.0</mockito.junit.jupiter.version>
+        <liquibase.version>4.24.0</liquibase.version>
+        <postgresql.version>42.6.0</postgresql.version>
+        <testcontainers.version>1.19.1</testcontainers.version>
+        <testcontainerspostgres.version>1.15.3</testcontainerspostgres.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>1.19.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>1.15.3</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.mindrot</groupId>
             <artifactId>jbcrypt</artifactId>
@@ -38,8 +56,18 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
-            <version>${mockito.junit.jupiter}</version>
+            <version>${mockito.junit.jupiter.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>${liquibase.version}</version>
         </dependency>
     </dependencies>
 </project>

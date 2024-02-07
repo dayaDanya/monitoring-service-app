@@ -28,19 +28,16 @@ public class Person {
      */
     private Role role;
 
+
     /**
      * Конструктор пользователя с указанием электронной почты, пароля и роли
-     * @param email Электронная почта пользователя
-     * @param password Пароль пользователя
-     * @param role Роль пользователя в системе
-     */
-    /**
-     * Конструктор пользователя с указанием электронной почты, пароля и роли
+     * @param id идентификатор пользователя
      * @param email Электронная почта пользователя
      * @param password Пароль пользователя
      * @param role Роль пользователя
      */
-    public Person(String email, String password, Role role) {
+    public Person(long id, String email, String password, Role role) {
+        this.id = id;
         this.email = email;
         this.password = password;
         this.role = role;
@@ -91,10 +88,17 @@ public class Person {
 
     /**
      * Сеттер для пароля пользователя
-     * @param password Новый пароль пользователя
+     * @param password Пароль пользователя
      */
     public void setPassword(String password) {
         this.password = password;
+    }
+    /**
+     * Сеттер для роли пользователя
+     * @param role роль пользователя
+     */
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     /**

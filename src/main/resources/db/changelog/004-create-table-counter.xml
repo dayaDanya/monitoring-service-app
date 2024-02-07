@@ -1,0 +1,27 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.10.xsd">
+
+    <changeSet id="004-create-table-counter" author="dayaDanya">
+
+        <createTable schemaName="entities" tableName="counter">
+            <column name="id" type="BIGINT" defaultValueComputed="nextval('entities.sequence')">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="pk_counter"/>
+            </column>
+            <column name="person_id" type="BIGINT">
+                <constraints foreignKeyName="fk_person_id" references="entities.person(id)"
+                             nullable="false" deleteCascade="true"/>
+            </column>
+            <column name="counter_type_id" type="BIGINT">
+                <constraints foreignKeyName="fk_counter_id"
+                             references="entities.counter_type(id)"
+                             nullable="false" deleteCascade="true"/>
+            </column>
+            <column name="counter_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

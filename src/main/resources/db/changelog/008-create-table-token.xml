@@ -1,0 +1,21 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.10.xsd">
+
+    <changeSet id="008-create-table-token" author="dayaDanya">
+
+        <createTable schemaName="entities" tableName="token">
+            <column name="id" type="BIGINT" defaultValueComputed="nextval('entities.sequence')">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="pk_token"/>
+            </column>
+            <column name="person_id" type="BIGINT">
+                <constraints foreignKeyName="fk_person_id" references="entities.person(id)"
+                             nullable="false" deleteCascade="true"/>
+            </column>
+            <column name="value" type="VARCHAR(255)">
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

@@ -1,7 +1,5 @@
 package org.ylab.domain.models;
 
-import java.util.List;
-
 /**
  * Сущность - счетчик
  * Класс описывающий счетчик, имеющий поля
@@ -20,11 +18,7 @@ public class Counter {
      */
     private long personId;
 
-    /**
-     * список показаний
-     */
-    private List<Measurement> measurements;
-
+    private long counterTypeId;
     /**
      * тип счетчика
      */
@@ -38,6 +32,19 @@ public class Counter {
      */
     public Counter(long personId, CounterType counterType) {
         this.personId = personId;
+        this.counterType = counterType;
+    }
+    /**
+     * конструктор
+     * @param id идентификатор
+     * @param personId айди пользователя
+     * @param counterTypeId айди пользователя
+     * @param counterType тип счетчика
+     */
+    public Counter(long id, long personId, long counterTypeId, CounterType counterType) {
+        this.id = id;
+        this.personId = personId;
+        this.counterTypeId = counterTypeId;
         this.counterType = counterType;
     }
 
@@ -83,7 +90,25 @@ public class Counter {
         this.id = id;
     }
 
-
-
-
+    /**
+     * сеттер
+     * @param personId устанавливает айди person
+     */
+    public void setPersonId(long personId) {
+        this.personId = personId;
+    }
+    /**
+     * геттер
+     * @return айди типа счетчика
+     */
+    public long getCounterTypeId() {
+        return counterTypeId;
+    }
+    /**
+     * сеттер
+     * @param counterTypeId устанавливает айди counterType
+     */
+    public void setCounterTypeId(long counterTypeId) {
+        this.counterTypeId = counterTypeId;
+    }
 }

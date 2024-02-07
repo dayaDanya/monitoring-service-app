@@ -1,6 +1,6 @@
 package org.ylab.domain.dto;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * Класс - ответ на запрос по измерениям,
@@ -14,18 +14,18 @@ public class MeasurementOutResponse {
     private String message;
 
     /**
-     * Список объектов MeasurementOutDto, представляющих собой информацию о измерениях
+     * Map объектов MeasurementOutDto, представляющих собой информацию о измерениях
      */
-    private List<MeasurementOutDto> dtoList;
+    private Map<Long,MeasurementOutDto> dtoMap;
 
     /**
      * Конструктор ответа по измерениям
      * @param message Сообщение об успешном выполнении операции или информация об ошибке
-     * @param dtoList Список объектов MeasurementOutDto
+     * @param dtoMap Список объектов MeasurementOutDto
      */
-    public MeasurementOutResponse(String message, List<MeasurementOutDto> dtoList) {
+    public MeasurementOutResponse(String message, Map<Long,MeasurementOutDto> dtoMap) {
         this.message = message;
-        this.dtoList = dtoList;
+        this.dtoMap = dtoMap;
     }
 
     /**
@@ -35,13 +35,12 @@ public class MeasurementOutResponse {
     public String getMessage() {
         return message;
     }
-
     /**
-     * Геттер для списка объектов MeasurementOutDto
-     * @return Список объектов MeasurementOutDto
+     * Геттер для получения map
+     * @return Map
      */
-    public List<MeasurementOutDto> getDtoList() {
-        return dtoList;
+    public Map<Long, MeasurementOutDto> getDtoMap() {
+        return dtoMap;
     }
 
     /**
@@ -50,7 +49,7 @@ public class MeasurementOutResponse {
      */
     public String printDtos() {
         StringBuilder builder = new StringBuilder();
-        dtoList.forEach(d -> builder.append(d.toString()).append('\n'));
+        dtoMap.forEach((key, value) -> builder.append(value.toString()).append('\n'));
         return builder.toString();
     }
 }

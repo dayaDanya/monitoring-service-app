@@ -2,9 +2,10 @@ package org.ylab.controllers;
 
 import org.ylab.domain.dto.PersonInDto;
 import org.ylab.domain.models.Person;
-import org.ylab.usecases.PersonUseCase;
+import org.ylab.domain.usecases.PersonUseCase;
 import org.ylab.exceptions.BadCredentialsException;
 import org.ylab.exceptions.PersonNotFoundException;
+import org.ylab.services.PersonService;
 
 /**
  * Класс, представляющий контроллер для операций с пользователями.
@@ -16,8 +17,8 @@ public class PersonController {
     /**
      * Конструктор класса PersonController, инициализирующий используемые компоненты.
      */
-    public PersonController(PersonUseCase personUseCase) {
-        this.personUseCase = personUseCase;
+    public PersonController(PersonService personService) {
+        this.personUseCase = personService;
     }
 
     /**
@@ -50,16 +51,5 @@ public class PersonController {
         }
     }
 
-    /**
-     * Метод для выхода пользователя из системы (отзыв токена).
-     *
-     * @param token Токен пользователя, который требуется отозвать.
-     * @return Строка с результатом операции.
-     */
-    public String logout(String token) {
-        if (personUseCase.logout(token))
-            return "200 OK. You were logged out. Authorize again to get a new token.";
-        else
-            return "400 bad request";
-    }
 }
+
