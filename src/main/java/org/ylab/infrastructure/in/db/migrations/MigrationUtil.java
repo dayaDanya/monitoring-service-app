@@ -1,10 +1,11 @@
-package org.ylab.infrastructure.in.db;
+package org.ylab.infrastructure.in.db.migrations;
 
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.ClassLoaderResourceAccessor;
+import org.ylab.infrastructure.in.db.ConnectionAdapter;
 
 import java.sql.Connection;
 

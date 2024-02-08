@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   db:
-    image: postgres:latest
+    image: postgres:14-alpine3.15
     environment:
       POSTGRES_DB: "monitoring-service-app"
       POSTGRES_USER: "dayadanya"

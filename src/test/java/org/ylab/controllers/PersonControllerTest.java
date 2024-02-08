@@ -5,7 +5,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.ylab.domain.dto.PersonInDto;
 import org.ylab.infrastructure.in.db.ConnectionAdapter;
-import org.ylab.infrastructure.in.db.MigrationUtil;
+import org.ylab.infrastructure.in.db.migrations.MigrationUtil;
 import org.ylab.repositories.implementations.CounterTypeRepo;
 import org.ylab.repositories.implementations.OperationRepo;
 import org.ylab.repositories.implementations.PersonRepo;
@@ -44,8 +44,7 @@ class PersonControllerTest {
                 postgres.getPassword()));
         CounterTypeService counterTypeUseCase = new CounterTypeService(new CounterTypeRepo(new ConnectionAdapter()));
         OperationService operationUseCase = new OperationService(operationRepo);
-        PersonService personUseCase = new PersonService(new PasswordService(), personRepo, operationUseCase,
-                new TokenService(new TokenRepo(new ConnectionAdapter())));
+        PersonService personUseCase = new PersonService(new PasswordService(), personRepo, operationUseCase);
         personController = new PersonController(personUseCase);
     }
 

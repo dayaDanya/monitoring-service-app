@@ -1,7 +1,7 @@
 Требования к запуску: 
 - jdk 17
     
-- docker engine(docker compose v2)З
+- docker engine(docker compose v2)
 
 Запуск:
 

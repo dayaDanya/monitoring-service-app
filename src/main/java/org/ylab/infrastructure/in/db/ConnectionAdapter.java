@@ -24,7 +24,7 @@ public class ConnectionAdapter {
         try {
             FileInputStream fileInputStream =
                     new FileInputStream(
-                            "src/main/resources/application.properties");
+                            "/home/danya/IdeaProjects/monitoring-service-app-web/src/main/resources/application.properties");
             properties.load(fileInputStream);
             fileInputStream.close();
         } catch (IOException e) {
@@ -35,6 +35,11 @@ public class ConnectionAdapter {
         PASSWORD = properties.getProperty("db-password");
     }
     public  Connection getConnection() throws SQLException {
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         return DriverManager.getConnection(URL, USER_NAME, PASSWORD);
     }
 }

@@ -7,7 +7,7 @@ import org.ylab.domain.dto.MeasurementInDto;
 import org.ylab.domain.dto.PersonInDto;
 import org.ylab.domain.models.Person;
 import org.ylab.infrastructure.in.db.ConnectionAdapter;
-import org.ylab.infrastructure.in.db.MigrationUtil;
+import org.ylab.infrastructure.in.db.migrations.MigrationUtil;
 import org.ylab.repositories.implementations.*;
 import org.ylab.services.*;
 
@@ -61,8 +61,7 @@ class MeasurementControllerTest {
         CounterTypeService counterTypeUseCase = new CounterTypeService(repo);
         CounterService counterService = new CounterService(counterRepo, counterTypeUseCase);
         OperationService operationService = new OperationService(operationRepo);
-        personUseCase = new PersonService(new PasswordService(), personRepo, operationService,
-                new TokenService(tokenRepo));
+        personUseCase = new PersonService(new PasswordService(), personRepo, operationService);
         personController = new PersonController(personUseCase);
         MeasurementService measurementService = new MeasurementService(measurementRepo, operationService, counterService);
         measurementController = new MeasurementController(measurementService, counterService, new TokenService(tokenRepo));

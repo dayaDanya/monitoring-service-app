@@ -1,5 +1,6 @@
 package org.ylab.domain.models;
 
+import org.ylab.annotations.Default;
 import org.ylab.domain.models.enums.Role;
 
 /**
@@ -48,10 +49,10 @@ public class Person {
      * @param email Электронная почта пользователя
      * @param password Пароль пользователя
      */
+    @Default
     public Person(String email, String password) {
         this.email = email;
         this.password = password;
-        this.role = Role.USER;
     }
 
     /**

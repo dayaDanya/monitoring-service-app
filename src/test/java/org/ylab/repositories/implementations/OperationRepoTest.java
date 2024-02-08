@@ -6,7 +6,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.ylab.domain.models.Operation;
 import org.ylab.domain.models.enums.Action;
 import org.ylab.infrastructure.in.db.ConnectionAdapter;
-import org.ylab.infrastructure.in.db.MigrationUtil;
+import org.ylab.infrastructure.in.db.migrations.MigrationUtil;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

@@ -6,7 +6,6 @@ import org.ylab.domain.models.enums.Action;
 import org.ylab.domain.models.enums.Role;
 import org.ylab.domain.usecases.OperationUseCase;
 import org.ylab.domain.usecases.PasswordEncoder;
-import org.ylab.domain.usecases.TokenUseCase;
 import org.ylab.exceptions.BadCredentialsException;
 import org.ylab.exceptions.PersonNotFoundException;
 import org.ylab.repositories.IPersonRepo;

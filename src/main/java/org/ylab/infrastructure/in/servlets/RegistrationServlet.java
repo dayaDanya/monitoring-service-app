@@ -2,6 +2,10 @@ package org.ylab.infrastructure.in.servlets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.mapstruct.factory.Mappers;
 import org.ylab.domain.dto.PersonInDto;
 import org.ylab.domain.models.Person;
@@ -15,17 +19,13 @@ import org.ylab.services.OperationService;
 import org.ylab.services.PasswordService;
 import org.ylab.services.PersonService;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
 
 @WebServlet("/register")
 public class RegistrationServlet extends HttpServlet {
     private final PersonUseCase personUseCase;
-    private final PersonInputMapper transactionMapper;
+    private final PersonInputMapper personInputMapper;
     private final ObjectMapper objectMapper;
 
 
@@ -34,17 +34,24 @@ public class RegistrationServlet extends HttpServlet {
         this.personUseCase = new PersonService(new PasswordService(),
                 new PersonRepo(connectionAdapter),
                 new OperationService(new OperationRepo(connectionAdapter)));
-        this.transactionMapper = Mappers.getMapper(PersonInputMapper.class);
+        this.personInputMapper = Mappers.getMapper(PersonInputMapper.class);
         this.objectMapper = new ObjectMapper();
         this.objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        PersonInDto personDto = new PersonInDto(req.getHeader("email"),
-                req.getHeader("password"));
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        BufferedReader reader = req.getReader();
+        StringBuilder jsonBuilder = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            jsonBuilder.append(line);
+        }
+        PersonInDto personDto = objectMapper.readValue(jsonBuilder.toString(),
+                PersonInDto.class);
         try {
-            personUseCase.register(new Person(personDto.getEmail(), personDto.getPassword()));
+            Person person = personInputMapper.dtoToObj(personDto);
+            personUseCase.register(person);
             resp.setStatus(HttpServletResponse.SC_CREATED);
             resp.setContentType("application/json");
         } catch (BadCredentialsException e) {
