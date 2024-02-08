@@ -21,9 +21,13 @@ public class MeasurementInDto {
      * @param amount Значение на счетчике
      * @param counterType Тип счетчика
      */
+
     public MeasurementInDto(double amount, String counterType) {
         this.amount = amount;
         this.counterType = counterType;
+    }
+
+    public MeasurementInDto() {
     }
 
     /**
@@ -40,5 +44,13 @@ public class MeasurementInDto {
      */
     public String getCounterType() {
         return counterType;
+    }
+    //todo javadoc
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
+    public void setCounterType(String counterType) {
+        this.counterType = counterType;
     }
 }

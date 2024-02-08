@@ -88,11 +88,9 @@ public class PersonService implements org.ylab.domain.usecases.PersonUseCase {
             throw new BadCredentialsException();
         } else {
             operationUseCase.save(new Operation(found.get().getId(), Action.AUTHENTICATION, LocalDateTime.now()));
-            return JwtService.generateToken(found.get().getEmail());
+            return JwtService.generateToken(String.valueOf(found.get().getId()));
         }
     }
-
-
 
     /**
      * Метод для поиска пользователя по его идентификатору.

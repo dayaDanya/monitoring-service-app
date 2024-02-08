@@ -41,8 +41,8 @@ public class MeasurementController {
      */
     public String add(MeasurementInDto dto, String token) {
         try {
-            measurementUseCase.save(new Measurement(dto, LocalDateTime.now()),
-                    tokenService.getPersonId(token));
+//            measurementUseCase.save(new Measurement(dto, LocalDateTime.now()),
+//                    tokenService.getPersonId(token));
         } catch (WrongDateException | TokenNotActualException | BadMeasurementAmountException e) {
             return "400 bad request: " + e.getMessage();
         }

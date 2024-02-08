@@ -49,8 +49,8 @@ public class AuthServlet extends HttpServlet {
         }
         PersonInDto personDto = objectMapper.readValue(jsonBuilder.toString(),
                 PersonInDto.class);
+        Person person = personInputMapper.dtoToObj(personDto);
         try {
-            Person person = personInputMapper.dtoToObj(personDto);
             String token = personUseCase.authenticate(person);
             resp.setContentType("application/json");
             resp.getOutputStream().write(token.getBytes());

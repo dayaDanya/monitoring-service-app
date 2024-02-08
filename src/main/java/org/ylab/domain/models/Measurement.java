@@ -1,5 +1,6 @@
 package org.ylab.domain.models;
 
+import org.ylab.annotations.Default;
 import org.ylab.domain.dto.MeasurementInDto;
 
 import java.time.LocalDateTime;
@@ -33,17 +34,19 @@ public class Measurement {
      */
     private long counterId;
 
-
     /**
      * конструктор
-     * @param dto data transfer object для показания
-     * @param submissionDate дата подачи
+     * @param amount текущее значение
+     * @param counterType тип счетчика
      */
-    public Measurement(MeasurementInDto dto, LocalDateTime submissionDate) {
-        this.amount = dto.getAmount();
-        this.counterType = dto.getCounterType();
-        this.submissionDate = submissionDate;
+    @Default
+    public Measurement(double amount, String counterType) {
+        this.amount = amount;
+        this.counterType = counterType;
     }
+
+
+
     /**
      * конструктор
      * @param id идентификатор
@@ -91,6 +94,13 @@ public class Measurement {
      */
     public LocalDateTime getSubmissionDate() {
         return submissionDate;
+    }
+    /**
+     * геттер
+     * @param submissionDate дата подачи
+     */
+    public void setSubmissionDate(LocalDateTime submissionDate) {
+        this.submissionDate = submissionDate;
     }
 
     /**

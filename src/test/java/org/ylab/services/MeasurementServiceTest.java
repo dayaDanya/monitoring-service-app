@@ -86,9 +86,7 @@ class MeasurementServiceTest {
     @Test
     @DisplayName("Получение всех измерений")
     void findAll() {
-        Measurement hot = new Measurement(
-                new MeasurementInDto(4324, "HOT"),
-                LocalDateTime.now()
+        Measurement hot = new Measurement(4234.3, "HOT"
         );
         Map<Long,Measurement> map = Map.of(2L, hot);
         Mockito.when(measurementRepo.findAll())

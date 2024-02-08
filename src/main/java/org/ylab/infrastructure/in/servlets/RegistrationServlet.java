@@ -49,8 +49,8 @@ public class RegistrationServlet extends HttpServlet {
         }
         PersonInDto personDto = objectMapper.readValue(jsonBuilder.toString(),
                 PersonInDto.class);
+        Person person = personInputMapper.dtoToObj(personDto);
         try {
-            Person person = personInputMapper.dtoToObj(personDto);
             personUseCase.register(person);
             resp.setStatus(HttpServletResponse.SC_CREATED);
             resp.setContentType("application/json");
