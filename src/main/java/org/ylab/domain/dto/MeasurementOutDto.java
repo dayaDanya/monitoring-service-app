@@ -1,5 +1,6 @@
 package org.ylab.domain.dto;
 
+import org.ylab.annotations.Default;
 import org.ylab.domain.models.Measurement;
 
 import java.time.LocalDateTime;
@@ -30,28 +31,51 @@ public class MeasurementOutDto {
      */
     private LocalDateTime submissionDate;
 
-    /**
-     * Конструктор выходных данных для измерения на основе объекта Measurement
-     * @param measurement Объект Measurement
-     */
-    public MeasurementOutDto(Measurement measurement) {
-        this.amount = measurement.getAmount();
-        this.counterType = measurement.getCounterType();
-        this.counterId = measurement.getCounterId();
-        this.submissionDate = measurement.getSubmissionDate();
-    }
+
 
     /**
-     * Переопределение метода toString для удобного вывода информации о измерении
-     * @return Строковое представление объекта MeasurementOutDto
+     * Конструктор выходных данных для измерения
+     *
      */
-    @Override
-    public String toString() {
-        return "MeasurementOutDto{" +
-                "counterId=" + counterId +
-                ", amount=" + amount +
-                ", counterType=" + counterType +
-                ", submissionDate=" + submissionDate +
-                '}';
+    @Default
+    public MeasurementOutDto(long counterId, double amount,
+                             String counterType, LocalDateTime submissionDate) {
+        this.counterId = counterId;
+        this.amount = amount;
+        this.counterType = counterType;
+        this.submissionDate = submissionDate;
+    }
+    //todo javadoc
+
+    public long getCounterId() {
+        return counterId;
+    }
+
+    public void setCounterId(long counterId) {
+        this.counterId = counterId;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
+    public String getCounterType() {
+        return counterType;
+    }
+
+    public void setCounterType(String counterType) {
+        this.counterType = counterType;
+    }
+
+    public LocalDateTime getSubmissionDate() {
+        return submissionDate;
+    }
+
+    public void setSubmissionDate(LocalDateTime submissionDate) {
+        this.submissionDate = submissionDate;
     }
 }

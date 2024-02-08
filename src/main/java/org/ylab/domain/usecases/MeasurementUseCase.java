@@ -49,7 +49,7 @@ public interface MeasurementUseCase {
      * @return Последнее измерение указанного типа счетчика, принадлежащее указанному человеку.
      * @throws MeasurementNotFoundException Выбрасывается в случае, если измерение не найдено.
      */
-    Measurement findLast(CounterType type, long personId);
+    Measurement findLast(String type, long personId);
 
     /**
      * Метод для получения измерения за указанный месяц по типу счетчика и идентификатору человека.
@@ -60,7 +60,7 @@ public interface MeasurementUseCase {
      * @return Измерение за указанный месяц, принадлежащее указанному человеку и типу счетчика.
      * @throws MeasurementNotFoundException Выбрасывается в случае, если измерение не найдено.
      */
-    Measurement findByMonth(long personId, int month, CounterType type);
+    Measurement findByMonth(long personId, int month, String type);
 
     /**
      * Метод для проверки, что дата текущего измерения не превышает следующий месяц после последнего измерения.

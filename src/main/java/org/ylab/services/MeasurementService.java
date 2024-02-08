@@ -58,7 +58,7 @@ public class MeasurementService implements MeasurementUseCase {
         if (lastMeasurementDate.isPresent() && isNotNextMonth(lastMeasurementDate.get(), measurement.getSubmissionDate())) {
             throw new WrongDateException(lastMeasurementDate.get());
         } else if (lastMeasurementDate.isPresent()
-                && findLast( new CounterType(measurement.getCounterType()), personId)
+                && findLast( measurement.getCounterType(), personId)
                 .getAmount() >= measurement.getAmount() ) {
             throw new BadMeasurementAmountException();
         } else {
@@ -99,8 +99,8 @@ public class MeasurementService implements MeasurementUseCase {
      * @return Последнее измерение указанного типа счетчика, принадлежащее указанному человеку.
      * @throws MeasurementNotFoundException Выбрасывается в случае, если измерение не найдено.
      */
-    public Measurement findLast(CounterType type, long personId) throws MeasurementNotFoundException {
-        long counterId = counterUseCase.findIdByPersonIdAndCounterType(personId, type.getName())
+    public Measurement findLast(String type, long personId) throws MeasurementNotFoundException {
+        long counterId = counterUseCase.findIdByPersonIdAndCounterType(personId, type)
                 .orElseThrow(CounterNotFoundException::new);
         operationUseCase.save(new Operation(personId, Action.WATCH_LAST, LocalDateTime.now()));
         return measurementRepo.findLast(counterId).orElseThrow(MeasurementNotFoundException::new);
@@ -115,8 +115,8 @@ public class MeasurementService implements MeasurementUseCase {
      * @return Измерение за указанный месяц, принадлежащее указанному человеку и типу счетчика.
      * @throws MeasurementNotFoundException Выбрасывается в случае, если измерение не найдено.
      */
-    public Measurement findByMonth(long personId, int month, CounterType type) throws MeasurementNotFoundException {
-        long counterId = counterUseCase.findIdByPersonIdAndCounterType(personId, type.getName())
+    public Measurement findByMonth(long personId, int month, String type) throws MeasurementNotFoundException {
+        long counterId = counterUseCase.findIdByPersonIdAndCounterType(personId, type)
                 .orElseThrow(CounterNotFoundException::new);
         operationUseCase.save(new Operation(personId, Action.WATCH_BY_MONTH, LocalDateTime.now()));
         return measurementRepo.findByMonth(counterId, month).orElseThrow(MeasurementNotFoundException::new);
