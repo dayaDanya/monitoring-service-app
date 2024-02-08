@@ -1,5 +1,6 @@
 package org.ylab.services;
 
+import org.ylab.aop.annotations.Recordable;
 import org.ylab.domain.models.Operation;
 import org.ylab.domain.models.Person;
 import org.ylab.domain.models.enums.Action;
@@ -19,6 +20,7 @@ import java.util.Optional;
  * Класс, представляющий использование сущности Person в рамках бизнес-логики.
  * Реализует методы для регистрации, аутентификации, выхода из системы и поиска информации о пользователе.
  */
+@Recordable
 public class PersonService implements org.ylab.domain.usecases.PersonUseCase {
 
     private final PasswordEncoder passwordUseCase;
@@ -87,7 +89,7 @@ public class PersonService implements org.ylab.domain.usecases.PersonUseCase {
         } else if (!passwordUseCase.isPswCorrect(person.getPassword(), found.get().getPassword())) {
             throw new BadCredentialsException();
         } else {
-            operationUseCase.save(new Operation(found.get().getId(), Action.AUTHENTICATION, LocalDateTime.now()));
+           // operationUseCase.save(new Operation(found.get().getId(), Action.AUTHENTICATION, LocalDateTime.now()));
             return JwtService.generateToken(String.valueOf(found.get().getId()));
         }
     }
