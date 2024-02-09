@@ -46,8 +46,6 @@ public class RecordableAspect {
     public void recording(JoinPoint joinPoint) {
         long id = 0L;
         String name = joinPoint.getSignature().getName();
-
-
         Object[] args = joinPoint.getArgs();
         if (args != null) {
             for (Object arg : args) {

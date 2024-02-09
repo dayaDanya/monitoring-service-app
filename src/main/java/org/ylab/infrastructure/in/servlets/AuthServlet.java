@@ -32,8 +32,7 @@ public class AuthServlet extends HttpServlet {
     public AuthServlet() {
         ConnectionAdapter connectionAdapter = new ConnectionAdapter();
         this.personUseCase = new PersonService(new PasswordService(),
-                new PersonRepo(connectionAdapter),
-                new OperationService(new OperationRepo(connectionAdapter)));
+                new PersonRepo(connectionAdapter));
         this.personInputMapper = Mappers.getMapper(PersonInputMapper.class);
         this.objectMapper = new ObjectMapper();
         this.objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
