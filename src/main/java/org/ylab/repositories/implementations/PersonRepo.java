@@ -1,7 +1,7 @@
 package org.ylab.repositories.implementations;
 
 import org.ylab.domain.models.Person;
-import org.ylab.domain.models.enums.Role;
+import org.ylab.domain.enums.Role;
 import org.ylab.infrastructure.in.db.ConnectionAdapter;
 import org.ylab.repositories.IPersonRepo;
 

@@ -4,7 +4,7 @@ import org.junit.jupiter.api.*;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.ylab.domain.models.Operation;
-import org.ylab.domain.models.enums.Action;
+import org.ylab.domain.enums.Action;
 import org.ylab.infrastructure.in.db.ConnectionAdapter;
 import org.ylab.infrastructure.in.db.migrations.MigrationUtil;
 

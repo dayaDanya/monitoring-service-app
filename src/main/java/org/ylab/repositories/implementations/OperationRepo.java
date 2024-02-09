@@ -1,7 +1,7 @@
 package org.ylab.repositories.implementations;
 
 import org.ylab.domain.models.Operation;
-import org.ylab.domain.models.enums.Action;
+import org.ylab.domain.enums.Action;
 import org.ylab.infrastructure.in.db.ConnectionAdapter;
 import org.ylab.repositories.IOperationRepo;
 

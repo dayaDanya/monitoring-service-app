@@ -9,7 +9,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.ylab.domain.models.Operation;
-import org.ylab.domain.models.enums.Action;
+import org.ylab.domain.enums.Action;
 import org.ylab.repositories.implementations.OperationRepo;
 
 import java.time.LocalDateTime;

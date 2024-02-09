@@ -1,4 +1,4 @@
-package org.ylab.domain.models.enums;
+package org.ylab.domain.enums;
 
 /**
  * Перечисление - действия,
@@ -48,6 +48,9 @@ public enum Action {
      * Выдача нового счетчика
      */
     GIVE_COUNTER,
+    //todo javadoc
+    WATCH_AUDIT,
+
     WATCH_COUNTERS;
 
     public static Action find(String name) {
@@ -72,6 +75,18 @@ public enum Action {
             }
             case "findByPersonId" -> {
                 return Action.WATCH_COUNTERS;
+            }
+            case "saveCounter" -> {
+                return Action.GIVE_COUNTER;
+            }
+            case "saveCounterType" -> {
+                return Action.ADD_NEW_COUNTER_TYPE;
+            }
+            case "findAllOperations" -> {
+                return Action.WATCH_ALL;
+            }
+            case "findAllMeasurements" ->{
+                return Action.WATCH_AUDIT;
             }
         }
 

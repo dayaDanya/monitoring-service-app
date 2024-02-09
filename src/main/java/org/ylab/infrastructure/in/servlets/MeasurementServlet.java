@@ -64,9 +64,9 @@ public class MeasurementServlet extends HttpServlet {
         javaTimeModule.addDeserializer(LocalDateTime.class,
                 new LocalDateTimeDeserializer(DateTimeFormatter.ISO_DATE_TIME));
         this.objectMapper.registerModule(javaTimeModule);
+        this.objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         this.measurementInMapper = Mappers.getMapper(MeasurementInMapper.class);
         this.measurementOutMapper = Mappers.getMapper(MeasurementOutMapper.class);
-        this.objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         counterUseCase = new CounterService(counterRepo, counterTypeUseCase);
         counterMapper = Mappers.getMapper(CounterMapper.class);
     }

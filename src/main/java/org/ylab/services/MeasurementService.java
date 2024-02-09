@@ -1,13 +1,9 @@
 package org.ylab.services;
 
 import org.ylab.aop.annotations.Recordable;
-import org.ylab.domain.models.CounterType;
 import org.ylab.domain.models.Measurement;
-import org.ylab.domain.models.Operation;
-import org.ylab.domain.models.enums.Action;
 import org.ylab.domain.usecases.CounterUseCase;
 import org.ylab.domain.usecases.MeasurementUseCase;
-import org.ylab.domain.usecases.OperationUseCase;
 import org.ylab.exceptions.BadMeasurementAmountException;
 import org.ylab.exceptions.CounterNotFoundException;
 import org.ylab.exceptions.MeasurementNotFoundException;

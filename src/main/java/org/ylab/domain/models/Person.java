@@ -1,7 +1,7 @@
 package org.ylab.domain.models;
 
 import org.ylab.annotations.Default;
-import org.ylab.domain.models.enums.Role;
+import org.ylab.domain.enums.Role;
 
 /**
  * Сущность - пользователь,

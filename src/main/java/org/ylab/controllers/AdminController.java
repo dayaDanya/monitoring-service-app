@@ -1,24 +1,5 @@
 package org.ylab.controllers;
 
-import org.ylab.domain.dto.*;
-import org.ylab.domain.models.Counter;
-import org.ylab.domain.models.CounterType;
-import org.ylab.domain.models.Operation;
-import org.ylab.domain.models.Person;
-import org.ylab.domain.models.enums.Action;
-import org.ylab.domain.models.enums.Role;
-import org.ylab.domain.usecases.PersonUseCase;
-import org.ylab.exceptions.CounterTypeAlreadyExistsException;
-import org.ylab.exceptions.CounterTypeNotFoundException;
-import org.ylab.exceptions.PersonNotFoundException;
-import org.ylab.exceptions.TokenNotActualException;
-import org.ylab.services.*;
-
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Класс, представляющий контроллер для административных операций.
  */

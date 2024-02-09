@@ -1,4 +1,4 @@
-package org.ylab.domain.models.enums;
+package org.ylab.domain.enums;
 
 /**
  * Перечисление - роли пользователя,

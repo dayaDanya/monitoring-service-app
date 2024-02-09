@@ -1,11 +1,8 @@
 package org.ylab.services;
 
 import org.ylab.aop.annotations.Recordable;
-import org.ylab.domain.models.Operation;
 import org.ylab.domain.models.Person;
-import org.ylab.domain.models.enums.Action;
-import org.ylab.domain.models.enums.Role;
-import org.ylab.domain.usecases.OperationUseCase;
+import org.ylab.domain.enums.Role;
 import org.ylab.domain.usecases.PasswordEncoder;
 import org.ylab.exceptions.BadCredentialsException;
 import org.ylab.exceptions.PersonNotFoundException;
@@ -13,7 +10,6 @@ import org.ylab.repositories.IPersonRepo;
 import org.ylab.repositories.implementations.PersonRepo;
 import org.ylab.security.services.JwtService;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 /**

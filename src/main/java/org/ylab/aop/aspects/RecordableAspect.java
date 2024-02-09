@@ -6,7 +6,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.ylab.domain.models.Operation;
 import org.ylab.domain.models.Person;
-import org.ylab.domain.models.enums.Action;
+import org.ylab.domain.enums.Action;
 import org.ylab.domain.usecases.OperationUseCase;
 import org.ylab.domain.usecases.PersonUseCase;
 import org.ylab.infrastructure.in.db.ConnectionAdapter;
@@ -17,7 +17,6 @@ import org.ylab.services.PasswordService;
 import org.ylab.services.PersonService;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Aspect
 public class RecordableAspect {

@@ -1,7 +1,7 @@
 package org.ylab.domain.dto;
 
 import org.ylab.domain.models.Operation;
-import org.ylab.domain.models.enums.Action;
+import org.ylab.domain.enums.Action;
 
 import java.time.LocalDateTime;
 

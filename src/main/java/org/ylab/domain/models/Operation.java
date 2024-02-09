@@ -1,6 +1,6 @@
 package org.ylab.domain.models;
 
-import org.ylab.domain.models.enums.Action;
+import org.ylab.domain.enums.Action;
 
 import java.time.LocalDateTime;
 
