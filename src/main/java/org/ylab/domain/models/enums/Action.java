@@ -48,9 +48,33 @@ public enum Action {
      * Выдача нового счетчика
      */
     GIVE_COUNTER,
+    WATCH_COUNTERS;
 
-    /**
-     * Выход из системы (логаут)
-     */
-    LOGOUT
+    public static Action find(String name) {
+        switch (name) {
+            case "authenticate" -> {
+                return Action.AUTHENTICATION;
+            }
+            case "register" -> {
+                return Action.REGISTRATION;
+            }
+            case "save" -> {
+                return Action.ADD_MEASUREMENT;
+            }
+            case "findLast" -> {
+                return Action.WATCH_LAST;
+            }
+            case "findByMonth" -> {
+                return Action.WATCH_BY_MONTH;
+            }
+            case "findAllById" -> {
+                return Action.WATCH_HISTORY;
+            }
+            case "findByPersonId" -> {
+                return Action.WATCH_COUNTERS;
+            }
+        }
+
+        return null;
+    }
 }

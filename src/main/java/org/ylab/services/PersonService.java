@@ -25,7 +25,6 @@ public class PersonService implements org.ylab.domain.usecases.PersonUseCase {
 
     private final PasswordEncoder passwordUseCase;
     private final IPersonRepo personRepo;
-    private final OperationUseCase operationUseCase;
 
 
 
@@ -33,11 +32,10 @@ public class PersonService implements org.ylab.domain.usecases.PersonUseCase {
      * Конструктор класса PersonUseCase, инициализирующий репозиторий пользователей, использование паролей, операций,
      * сервис счетчиков и типов счетчиков.
      */
-    public PersonService(PasswordService passwordUseCase, PersonRepo personRepo,
-                         OperationService operationUseCase) {
+    public PersonService(PasswordService passwordUseCase, PersonRepo personRepo
+    ) {
         this.passwordUseCase = passwordUseCase;
         this.personRepo = personRepo;
-        this.operationUseCase = operationUseCase;
 
     }
 
@@ -65,8 +63,7 @@ public class PersonService implements org.ylab.domain.usecases.PersonUseCase {
             person.setRole(Role.USER);
             personRepo.save(person);
 
-
-            operationUseCase.save(new Operation(personRepo.findIdByEmail(person.getEmail()).get(), Action.REGISTRATION, LocalDateTime.now()));
+           // operationUseCase.save(new Operation(personRepo.findIdByEmail(person.getEmail()).get(), Action.REGISTRATION, LocalDateTime.now()));
         } else {
             throw new BadCredentialsException();
         }

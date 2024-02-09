@@ -51,7 +51,6 @@ public class MeasurementServlet extends HttpServlet {
     public MeasurementServlet() {
         ConnectionAdapter connectionAdapter = new ConnectionAdapter();
         this.measurementUseCase = new MeasurementService(new MeasurementRepo(connectionAdapter),
-                new OperationService(new OperationRepo(connectionAdapter)),
                 new CounterService(new CounterRepo(connectionAdapter),
                         new CounterTypeService(new CounterTypeRepo(connectionAdapter))));
         this.objectMapper = new ObjectMapper();
