@@ -35,7 +35,7 @@ class CounterTypeServiceTest {
         CounterType counterType = new CounterType("hot");
         Mockito.when(counterTypeRepo.findOne("hot"))
                 .thenReturn(Optional.empty());
-        counterTypeUseCase.save(counterType);
+        counterTypeUseCase.saveCounterType(counterType);
         Mockito.verify(counterTypeRepo, Mockito
                 .times(1))
                 .save(counterType);
@@ -47,7 +47,7 @@ class CounterTypeServiceTest {
         Mockito.when(counterTypeRepo.findOne("hot"))
                 .thenReturn(Optional.of(counterType));
         Assertions.assertThrows(CounterTypeAlreadyExistsException.class,
-                () -> counterTypeUseCase.save(counterType));
+                () -> counterTypeUseCase.saveCounterType(counterType));
     }
 
 }

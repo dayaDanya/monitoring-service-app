@@ -29,7 +29,7 @@ class CounterServiceTest {
         Counter counter = new Counter(1, new CounterType("BAD_TYPE"));
         Mockito.when(counterTypeUseCase.findOne(counter.getCounterType().getName()))
                 .thenReturn(Optional.empty());
-        Assertions.assertThrows(CounterTypeNotFoundException.class, () -> counterUseCase.save(counter));
+        Assertions.assertThrows(CounterTypeNotFoundException.class, () -> counterUseCase.saveCounter(counter));
     }
     @DisplayName("Проверяет, что при передаче правильных параметров, " +
             "сущность будет сохранена")
@@ -38,7 +38,7 @@ class CounterServiceTest {
         Counter counter = new Counter(1, new CounterType("COLD"));
         Mockito.when(counterTypeUseCase.findOne(counter.getCounterType().getName()))
                 .thenReturn(Optional.of(new CounterType("COLD")));
-        counterUseCase.save(counter);
+        counterUseCase.saveCounter(counter);
         Mockito.verify(counterRepo, Mockito.times(1))
                 .save(counter);
     }

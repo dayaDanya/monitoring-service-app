@@ -20,7 +20,7 @@ public interface CounterUseCase {
      * @param counter Счетчик, который требуется сохранить.
      * @throws CounterTypeNotFoundException Возникает, если связанный тип счетчика не найден.
      */
-    void save(Counter counter);
+    void saveCounter(Counter counter);
 
     /**
      * Метод для поиска списка счетчиков по идентификатору человека.

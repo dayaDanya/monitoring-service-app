@@ -10,7 +10,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import org.ylab.domain.dto.MeasurementInDto;
 import org.ylab.domain.models.Measurement;
 import org.ylab.exceptions.BadMeasurementAmountException;
 import org.ylab.exceptions.CounterNotFoundException;
@@ -91,7 +90,7 @@ class MeasurementServiceTest {
         Map<Long,Measurement> map = Map.of(2L, hot);
         Mockito.when(measurementRepo.findAll())
                         .thenReturn(map);
-        Assertions.assertEquals(1, measurementUseCase.findAll().size());
+        Assertions.assertEquals(1, measurementUseCase.findAllMeasurements().size());
     }
 
 }

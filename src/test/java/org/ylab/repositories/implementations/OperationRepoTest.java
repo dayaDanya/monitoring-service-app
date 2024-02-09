@@ -71,7 +71,7 @@ class OperationRepoTest {
     @DisplayName("Проверяет результат поиска операций по айди пользователя")
     void findAllById() {
         Operation ofUser1 = new Operation(1, Action.AUTHENTICATION, LocalDateTime.now());
-        Operation ofUser2 = new Operation(1, Action.LOGOUT, LocalDateTime.now());
+        Operation ofUser2 = new Operation(1, Action.REGISTRATION, LocalDateTime.now());
         repo.save(ofUser1);
         repo.save(ofUser2);
         List<Operation> expected = Arrays.asList(ofUser1, ofUser2);

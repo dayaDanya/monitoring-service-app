@@ -1,5 +1,9 @@
 package org.ylab.domain.enums;
 
+import org.ylab.exceptions.ActionNotFoundException;
+
+import java.util.Optional;
+
 /**
  * Перечисление - действия,
  * определяет различные действия, которые могут быть выполнены в системе
@@ -90,6 +94,6 @@ public enum Action {
             }
         }
 
-        return null;
+        throw new ActionNotFoundException();
     }
 }

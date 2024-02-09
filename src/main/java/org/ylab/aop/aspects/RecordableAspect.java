@@ -4,11 +4,13 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.ylab.domain.enums.Role;
 import org.ylab.domain.models.Operation;
 import org.ylab.domain.models.Person;
 import org.ylab.domain.enums.Action;
 import org.ylab.domain.usecases.OperationUseCase;
 import org.ylab.domain.usecases.PersonUseCase;
+import org.ylab.exceptions.ActionNotFoundException;
 import org.ylab.infrastructure.in.db.ConnectionAdapter;
 import org.ylab.repositories.implementations.OperationRepo;
 import org.ylab.repositories.implementations.PersonRepo;
@@ -43,10 +45,19 @@ public class RecordableAspect {
 
     @AfterReturning("annotatedByRecordable()")
     public void recording(JoinPoint joinPoint) {
-        long id = 0L;
         String name = joinPoint.getSignature().getName();
-        Object[] args = joinPoint.getArgs();
-        if (args != null) {
+        Action action = null;
+        try {
+            action = Action.find(name);
+        } catch (ActionNotFoundException e) {
+            return;
+        }
+        long id = 0L;
+        if (action == Action.GIVE_COUNTER || action == Action.ADD_NEW_COUNTER_TYPE
+                || action == Action.WATCH_AUDIT || action == Action.WATCH_ALL)
+            id = personRepo.findIdByRole(Role.ADMIN).get();
+        else {
+            Object[] args = joinPoint.getArgs();
             for (Object arg : args) {
                 System.out.println(arg.toString());
                 if (arg instanceof Long) {
@@ -55,13 +66,9 @@ public class RecordableAspect {
                 } else if (arg instanceof Person person) {
                     id = personRepo.findIdByEmail(person.getEmail()).get();
                 }
+
             }
-            Action action = Action.find(name);
-            operationUseCase.save(new Operation(id, action, LocalDateTime.now()));
-            //todo просмотреть исключения и зарефакторить
         }
-
-
+        operationUseCase.save(new Operation(id, action, LocalDateTime.now()));
     }
-
 }

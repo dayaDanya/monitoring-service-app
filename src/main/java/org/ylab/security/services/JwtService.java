@@ -7,6 +7,7 @@ import io.jsonwebtoken.security.Keys;
 
 import javax.crypto.SecretKey;
 import jakarta.servlet.http.HttpServletRequest;
+import org.ylab.exceptions.TokenNotActualException;
 
 import java.util.Optional;
 
@@ -21,7 +22,7 @@ public class JwtService {
         //todo expiration
     }
 
-    public static Optional<Long> validateTokenAndGetSubject(HttpServletRequest request) {
+    public static Long validateTokenAndGetSubject(HttpServletRequest request) {
         String token = request.getHeader("Authorization");
         if (token != null && token.startsWith("Bearer ")) {
             token = token.substring(7);
@@ -30,11 +31,11 @@ public class JwtService {
                         .setSigningKey(key)
                         .build()
                         .parseClaimsJws(token);
-                return Optional.of(Long.valueOf(claimsJws.getBody().getSubject()));
+                return Long.valueOf(claimsJws.getBody().getSubject());
             } catch (Exception e) {
-                return Optional.empty();
+                throw new TokenNotActualException();
             }
         }
-        return Optional.empty();
+        throw new TokenNotActualException();
     }
 }

@@ -44,7 +44,7 @@ class PersonControllerTest {
                 postgres.getPassword()));
         CounterTypeService counterTypeUseCase = new CounterTypeService(new CounterTypeRepo(new ConnectionAdapter()));
         OperationService operationUseCase = new OperationService(operationRepo);
-        PersonService personUseCase = new PersonService(new PasswordService(), personRepo, operationUseCase);
+        PersonService personUseCase = new PersonService(new PasswordService(), personRepo);
         personController = new PersonController(personUseCase);
     }
 

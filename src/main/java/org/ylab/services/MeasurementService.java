@@ -25,8 +25,6 @@ import java.util.Optional;
 public class MeasurementService implements MeasurementUseCase {
     private final IMeasurementRepo measurementRepo;
 
-
-
     private final CounterUseCase counterUseCase;
 
     /**
@@ -69,7 +67,7 @@ public class MeasurementService implements MeasurementUseCase {
      *
      * @return Список всех измерений.
      */
-    public Map<Long, Measurement> findAll() {
+    public Map<Long, Measurement> findAllMeasurements() {
         return measurementRepo.findAll();
     }
 

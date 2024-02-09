@@ -1,6 +1,5 @@
 package org.ylab.domain.usecases;
 
-import org.ylab.domain.models.CounterType;
 import org.ylab.domain.models.Measurement;
 import org.ylab.exceptions.CounterNotFoundException;
 import org.ylab.exceptions.MeasurementNotFoundException;
@@ -31,7 +30,7 @@ public interface MeasurementUseCase {
      *
      * @return Список всех измерений.
      */
-    Map<Long, Measurement> findAll();
+    Map<Long, Measurement> findAllMeasurements();
 
     /**
      * Метод для получения списка всех измерений по идентификатору человека.

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +12,7 @@ import org.mapstruct.factory.Mappers;
 import org.ylab.domain.dto.CounterDto;
 import org.ylab.domain.dto.MeasurementInDto;
 import org.ylab.domain.dto.MeasurementOutDto;
+import org.ylab.domain.dto.Response;
 import org.ylab.domain.models.Measurement;
 import org.ylab.domain.usecases.CounterUseCase;
 import org.ylab.domain.usecases.MeasurementUseCase;
@@ -36,7 +36,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @WebServlet("/measurements")
@@ -73,89 +72,97 @@ public class MeasurementServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        Optional<Long> principal = JwtService.validateTokenAndGetSubject(req);
-        if (principal.isEmpty()) {
-            resp.setContentType("application/json");
+        resp.setContentType("application/json");
+        long principal = 0L;
+        try {
+            principal = JwtService.validateTokenAndGetSubject(req);
+        } catch (TokenNotActualException e) {
             resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        } else {
-            BufferedReader reader = req.getReader();
-            StringBuilder jsonBuilder = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                jsonBuilder.append(line);
-            }
-            MeasurementInDto dto = objectMapper.readValue(jsonBuilder.toString(),
-                    MeasurementInDto.class);
-            Measurement measurement = measurementInMapper.dtoToObj(dto);
-            measurement.setSubmissionDate(LocalDateTime.now());
-            try {
-                measurementUseCase.save(measurement, principal.get());
-                resp.setContentType("application/json");
-                resp.setStatus(HttpServletResponse.SC_CREATED);
-            } catch (WrongDateException | TokenNotActualException | BadMeasurementAmountException e) {
-                resp.setContentType("application/json");
-                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                resp.getOutputStream().write(e.getMessage().getBytes());
-            }
+            Response response = new Response(e.getMessage());
+            resp.getOutputStream().write(objectMapper.writeValueAsString(response).getBytes());
         }
+        BufferedReader reader = req.getReader();
+        StringBuilder jsonBuilder = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            jsonBuilder.append(line);
+        }
+        MeasurementInDto dto = objectMapper.readValue(jsonBuilder.toString(),
+                MeasurementInDto.class);
+        Measurement measurement = measurementInMapper.dtoToObj(dto);
+        measurement.setSubmissionDate(LocalDateTime.now());
+        try {
+            measurementUseCase.save(measurement, principal);
+            resp.setContentType("application/json");
+            resp.setStatus(HttpServletResponse.SC_CREATED);
+        } catch (WrongDateException | TokenNotActualException | BadMeasurementAmountException e) {
+            resp.setContentType("application/json");
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getOutputStream().write(e.getMessage().getBytes());
+        }
+
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws  IOException {
         resp.setContentType("application/json");
-        Optional<Long> principal = JwtService.validateTokenAndGetSubject(req);
-        if (principal.isEmpty()) {
+        long principal = 0L;
+        try {
+            principal = JwtService.validateTokenAndGetSubject(req);
+        } catch (TokenNotActualException e) {
             resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        } else {
-            String action = req.getParameter("action");
-            switch (action == null ? "badRequest" : action) {
-                case "all":
-                    Map<Long, MeasurementOutDto> map = measurementUseCase
-                            .findAllById(principal.get())
-                            .entrySet()
-                            .stream()
-                            .collect(Collectors.toMap(Map.Entry::getKey,
-                                    entry -> measurementOutMapper.objToDto(entry.getValue())));
+            Response response = new Response(e.getMessage());
+            resp.getOutputStream().write(objectMapper.writeValueAsString(response).getBytes());
+        }
+        String action = req.getParameter("action");
+        switch (action == null ? "badRequest" : action) {
+            case "all":
+                Map<Long, MeasurementOutDto> map = measurementUseCase
+                        .findAllById(principal)
+                        .entrySet()
+                        .stream()
+                        .collect(Collectors.toMap(Map.Entry::getKey,
+                                entry -> measurementOutMapper.objToDto(entry.getValue())));
 
-                    //todo try catch, зарефакторить на if-else и выделить переменные
-                    resp.setStatus(HttpServletResponse.SC_OK);
-                    resp.getOutputStream().write(
-                            objectMapper.writeValueAsString(map).getBytes());
-                    break;
-                case "last":
-                    String type = req.getParameter("type");
-                    Measurement last = measurementUseCase
-                            .findLast(type, principal.get());
-                    resp.setStatus(HttpServletResponse.SC_OK);
-                    resp.getOutputStream().write(
-                            objectMapper.writeValueAsString(measurementOutMapper
-                                    .objToDto(last)).getBytes());
-                    break;
-                case "month":
-                    int month = Integer.parseInt(req.getParameter("number"));
-                    String type1 = req.getParameter("type");
-                    Measurement byMonth = measurementUseCase.findByMonth(principal.get(),
-                            month, type1);
-                    resp.setStatus(HttpServletResponse.SC_OK);
-                    resp.getOutputStream().write(
-                            objectMapper.writeValueAsString(measurementOutMapper
-                                    .objToDto(byMonth)).getBytes());
-                    break;
-                case "counters":
-                    resp.setStatus(HttpServletResponse.SC_OK);
-                    Map<Long, CounterDto> counters =
-                            counterUseCase.findByPersonId(principal.get())
-                                    .entrySet()
-                                    .stream()
-                                    .collect(Collectors.toMap(Map.Entry::getKey,
-                                            entry -> counterMapper.objToDto(entry.getValue())));
-                    resp.getOutputStream().write(
-                            objectMapper.writeValueAsString(counters).getBytes());
-                    break;
-                case "badRequest":
-                    resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    break;
-            }
+                //todo try catch, зарефакторить на if-else и выделить переменные
+                resp.setStatus(HttpServletResponse.SC_OK);
+                resp.getOutputStream().write(
+                        objectMapper.writeValueAsString(map).getBytes());
+                break;
+            case "last":
+                String type = req.getParameter("type");
+                Measurement last = measurementUseCase
+                        .findLast(type, principal);
+                resp.setStatus(HttpServletResponse.SC_OK);
+                resp.getOutputStream().write(
+                        objectMapper.writeValueAsString(measurementOutMapper
+                                .objToDto(last)).getBytes());
+                break;
+            case "month":
+                int month = Integer.parseInt(req.getParameter("number"));
+                String type1 = req.getParameter("type");
+                Measurement byMonth = measurementUseCase.findByMonth(principal,
+                        month, type1);
+                resp.setStatus(HttpServletResponse.SC_OK);
+                resp.getOutputStream().write(
+                        objectMapper.writeValueAsString(measurementOutMapper
+                                .objToDto(byMonth)).getBytes());
+                break;
+            case "counters":
+                resp.setStatus(HttpServletResponse.SC_OK);
+                Map<Long, CounterDto> counters =
+                        counterUseCase.findByPersonId(principal)
+                                .entrySet()
+                                .stream()
+                                .collect(Collectors.toMap(Map.Entry::getKey,
+                                        entry -> counterMapper.objToDto(entry.getValue())));
+                resp.getOutputStream().write(
+                        objectMapper.writeValueAsString(counters).getBytes());
+                break;
+            case "badRequest":
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                break;
         }
     }
+
 }

@@ -36,7 +36,7 @@ public class OperationService implements OperationUseCase {
      *
      * @return Список всех операций.
      */
-    public Map<Long, Operation> findAll() {
+    public Map<Long, Operation> findAllOperations() {
         return operationRepo.findAll();
     }
 

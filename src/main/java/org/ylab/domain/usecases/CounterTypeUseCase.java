@@ -26,5 +26,5 @@ public interface CounterTypeUseCase {
      *
      * @param counterType Тип счетчика, который требуется сохранить.
      */
-    void save(CounterType counterType);
+    void saveCounterType(CounterType counterType);
 }

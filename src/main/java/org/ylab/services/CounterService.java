@@ -39,7 +39,7 @@ public class CounterService implements CounterUseCase {
      * @param counter Счетчик, который требуется сохранить.
      * @throws CounterTypeNotFoundException Возникает, если связанный тип счетчика не найден.
      */
-    public void save(Counter counter) throws CounterTypeNotFoundException {
+    public void saveCounter(Counter counter) throws CounterTypeNotFoundException {
         Optional<CounterType> found = counterTypeUseCase.findOne(counter.getCounterType().getName());
         counter.setCounterType(found.orElseThrow(CounterTypeNotFoundException::new));
         counter.setCounterTypeId(found.get().getId());

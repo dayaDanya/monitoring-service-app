@@ -45,7 +45,7 @@ class OperationServiceTest {
         Mockito.when(operationRepo.findAll())
                 .thenReturn(ops);
         Assertions.assertEquals(ops,
-                operationUseCase.findAll());
+                operationUseCase.findAllOperations());
     }
 
 

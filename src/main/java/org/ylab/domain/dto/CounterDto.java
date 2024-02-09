@@ -30,6 +30,10 @@ public class CounterDto {
         this.personId = personId;
         this.counterType = new CounterTypeDto(counterType.getName());
     }
+
+    public CounterDto() {
+    }
+
     //todo javadoc
     public long getPersonId() {
         return personId;
