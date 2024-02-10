@@ -33,7 +33,7 @@ public class AdminService {
         this.measurementUseCase = measurementUseCase;
         this.personRepo = personRepo;
     }
-
+    @Recordable
     public void saveCounter(Counter counter) {
         try {
             counterUseCase.saveCounter(counter);
@@ -41,6 +41,7 @@ public class AdminService {
             throw e;
         }
     }
+    @Recordable
     public void saveCounterType(CounterType counterType){
         try {
             counterTypeUseCase.saveCounterType(counterType);
@@ -49,9 +50,11 @@ public class AdminService {
         }
     }
     //todo добавить интерфейс
+    @Recordable
     public Map<Long, Operation> findAllOperations(){
         return operationUseCase.findAllOperations();
     }
+    @Recordable
     public Map<Long, Measurement> findAllMeasurements(){
         return measurementUseCase.findAllMeasurements();
     }

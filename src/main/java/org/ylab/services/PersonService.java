@@ -14,7 +14,7 @@ import java.util.Optional;
 
 /**
  * Класс, представляющий использование сущности Person в рамках бизнес-логики.
- * Реализует методы для регистрации, аутентификации, выхода из системы и поиска информации о пользователе.
+ * Реализует методы для регистрации, аутентификации и поиска информации о пользователе.
  */
 @Recordable
 public class PersonService implements org.ylab.domain.usecases.PersonUseCase {
@@ -52,6 +52,7 @@ public class PersonService implements org.ylab.domain.usecases.PersonUseCase {
      * @param person Объект Person, содержащий информацию о пользователе.
      * @throws BadCredentialsException Выбрасывается в случае неверных учетных данных при регистрации.
      */
+    @Recordable
     @Override
     public void register(Person person) throws BadCredentialsException {
         if (isUnique(person.getEmail())) {
@@ -75,6 +76,7 @@ public class PersonService implements org.ylab.domain.usecases.PersonUseCase {
      * @throws BadCredentialsException Выбрасывается в случае неверных учетных данных при аутентификации.
      */
     @Override
+    @Recordable
     public String authenticate(Person person) throws PersonNotFoundException, BadCredentialsException {
         Optional<Person> found = personRepo.findByEmail(person.getEmail());
         if (found.isEmpty()) {

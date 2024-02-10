@@ -1,7 +1,9 @@
 package org.ylab.aop.aspects;
 
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.ylab.domain.enums.Role;
@@ -38,19 +40,22 @@ public class RecordableAspect {
                 personRepo);
     }
 
-    @Pointcut("within(@org.ylab.aop.annotations.Recordable *) && execution(* *(..))")
-    public void annotatedByRecordable() {
+//    @Pointcut("within(@org.ylab.aop.annotations.Recordable *) && execution(* *(..))")
+//    public void annotatedByRecordable() {
+//
+//    }
 
-    }
-
-    @AfterReturning("annotatedByRecordable()")
-    public void recording(JoinPoint joinPoint) {
+//    @Around("annotatedByRecordable()")
+    @Around("@annotation(org.ylab.aop.annotations.Recordable)")
+    public Object recording(ProceedingJoinPoint joinPoint) throws Throwable {
         String name = joinPoint.getSignature().getName();
         Action action = null;
+        Object result = joinPoint.proceed();
+
         try {
             action = Action.find(name);
         } catch (ActionNotFoundException e) {
-            return;
+            return result;
         }
         long id = 0L;
         if (action == Action.GIVE_COUNTER || action == Action.ADD_NEW_COUNTER_TYPE
@@ -70,5 +75,6 @@ public class RecordableAspect {
             }
         }
         operationUseCase.save(new Operation(id, action, LocalDateTime.now()));
+        return result;
     }
 }

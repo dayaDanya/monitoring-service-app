@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class ConnectionAdapter {
-    Properties properties;
+    private Properties properties;
     private final String URL;
     private final String USER_NAME;
     private final String PASSWORD;
@@ -20,16 +20,7 @@ public class ConnectionAdapter {
     }
 
     public ConnectionAdapter() {
-        properties = new Properties();
-        try {
-            FileInputStream fileInputStream =
-                    new FileInputStream(
-                            "/home/danya/IdeaProjects/monitoring-service-app-web/src/main/resources/application.properties");
-            properties.load(fileInputStream);
-            fileInputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        properties = PropertiesInitializer.initialize();
         URL = properties.getProperty("url");
         USER_NAME = properties.getProperty("db-username");
         PASSWORD = properties.getProperty("db-password");

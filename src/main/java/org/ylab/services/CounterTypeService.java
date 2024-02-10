@@ -16,7 +16,7 @@ public class CounterTypeService implements org.ylab.domain.usecases.CounterTypeU
     /**
      * репозиторий
      */
-    private ICounterTypeRepo repo;
+    private final ICounterTypeRepo repo;
 
     /**
      * Конструктор класса CounterTypeUseCase.

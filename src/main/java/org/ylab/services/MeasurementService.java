@@ -44,6 +44,7 @@ public class MeasurementService implements MeasurementUseCase {
      * @throws WrongDateException       Выбрасывается в случае, если дата измерения не соответствует ожидаемой.
      * @throws CounterNotFoundException Выбрасывается в случае, если связанный счетчик не найден.
      */
+    @Recordable
     public void save(Measurement measurement, long personId) throws WrongDateException, CounterNotFoundException {
         long counterId = counterUseCase
                 .findIdByPersonIdAndCounterType(personId, measurement.getCounterType())
@@ -67,6 +68,7 @@ public class MeasurementService implements MeasurementUseCase {
      *
      * @return Список всех измерений.
      */
+    @Recordable
     public Map<Long, Measurement> findAllMeasurements() {
         return measurementRepo.findAll();
     }
@@ -77,6 +79,7 @@ public class MeasurementService implements MeasurementUseCase {
      * @param personId Идентификатор человека, для которого осуществляется поиск измерений.
      * @return Список измерений, принадлежащих указанному человеку.
      */
+    @Recordable
     public Map<Long, Measurement> findAllById(long personId) {
         Map<Long, Measurement> resultSet = new HashMap<>();
         List<Long> counterIds = counterUseCase.findIdsByPersonId(personId);
@@ -93,6 +96,7 @@ public class MeasurementService implements MeasurementUseCase {
      * @return Последнее измерение указанного типа счетчика, принадлежащее указанному человеку.
      * @throws MeasurementNotFoundException Выбрасывается в случае, если измерение не найдено.
      */
+    @Recordable
     public Measurement findLast(String type, long personId) throws MeasurementNotFoundException {
         long counterId = counterUseCase.findIdByPersonIdAndCounterType(personId, type)
                 .orElseThrow(CounterNotFoundException::new);
@@ -109,6 +113,7 @@ public class MeasurementService implements MeasurementUseCase {
      * @return Измерение за указанный месяц, принадлежащее указанному человеку и типу счетчика.
      * @throws MeasurementNotFoundException Выбрасывается в случае, если измерение не найдено.
      */
+    @Recordable
     public Measurement findByMonth(long personId, int month, String type) throws MeasurementNotFoundException {
         long counterId = counterUseCase.findIdByPersonIdAndCounterType(personId, type)
                 .orElseThrow(CounterNotFoundException::new);
