@@ -6,18 +6,16 @@ import org.ylab.domain.models.Counter;
 import org.ylab.domain.models.CounterType;
 import org.ylab.domain.models.Measurement;
 import org.ylab.domain.models.Operation;
-import org.ylab.domain.usecases.CounterTypeUseCase;
-import org.ylab.domain.usecases.CounterUseCase;
-import org.ylab.domain.usecases.MeasurementUseCase;
-import org.ylab.domain.usecases.OperationUseCase;
+import org.ylab.domain.usecases.*;
 import org.ylab.exceptions.CounterTypeAlreadyExistsException;
 import org.ylab.exceptions.CounterTypeNotFoundException;
 import org.ylab.repositories.IPersonRepo;
 import org.ylab.repositories.implementations.PersonRepo;
 
 import java.util.Map;
+
 @Recordable
-public class AdminService {
+public class AdminService implements AdminUseCase {
     private final CounterUseCase counterUseCase;
     private final CounterTypeUseCase counterTypeUseCase;
 
@@ -26,6 +24,7 @@ public class AdminService {
     private final MeasurementUseCase measurementUseCase;
 
     private final IPersonRepo personRepo;
+
     public AdminService(CounterUseCase counterUseCase, CounterTypeUseCase counterTypeUseCase, OperationUseCase operationUseCase, MeasurementUseCase measurementUseCase, PersonRepo personRepo) {
         this.counterUseCase = counterUseCase;
         this.counterTypeUseCase = counterTypeUseCase;
@@ -33,6 +32,7 @@ public class AdminService {
         this.measurementUseCase = measurementUseCase;
         this.personRepo = personRepo;
     }
+
     @Recordable
     public void saveCounter(Counter counter) {
         try {
@@ -41,21 +41,23 @@ public class AdminService {
             throw e;
         }
     }
+
     @Recordable
-    public void saveCounterType(CounterType counterType){
+    public void saveCounterType(CounterType counterType) {
         try {
             counterTypeUseCase.saveCounterType(counterType);
         } catch (CounterTypeAlreadyExistsException e) {
             throw e;
         }
     }
-    //todo добавить интерфейс
+
     @Recordable
-    public Map<Long, Operation> findAllOperations(){
+    public Map<Long, Operation> findAllOperations() {
         return operationUseCase.findAllOperations();
     }
+
     @Recordable
-    public Map<Long, Measurement> findAllMeasurements(){
+    public Map<Long, Measurement> findAllMeasurements() {
         return measurementUseCase.findAllMeasurements();
     }
 

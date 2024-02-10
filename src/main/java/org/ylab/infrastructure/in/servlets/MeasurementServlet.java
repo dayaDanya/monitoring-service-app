@@ -17,12 +17,14 @@ import org.ylab.domain.models.Measurement;
 import org.ylab.domain.usecases.CounterUseCase;
 import org.ylab.domain.usecases.MeasurementUseCase;
 import org.ylab.exceptions.BadMeasurementAmountException;
+import org.ylab.exceptions.MeasurementNotFoundException;
 import org.ylab.exceptions.TokenNotActualException;
 import org.ylab.exceptions.WrongDateException;
 import org.ylab.infrastructure.in.db.ConnectionAdapter;
 import org.ylab.infrastructure.mappers.CounterMapper;
 import org.ylab.infrastructure.mappers.MeasurementInMapper;
 import org.ylab.infrastructure.mappers.MeasurementOutMapper;
+import org.ylab.infrastructure.utils.ValidationUtil;
 import org.ylab.repositories.implementations.CounterRepo;
 import org.ylab.repositories.implementations.CounterTypeRepo;
 import org.ylab.repositories.implementations.MeasurementRepo;
@@ -81,30 +83,27 @@ public class MeasurementServlet extends HttpServlet {
             Response response = new Response(e.getMessage());
             resp.getOutputStream().write(objectMapper.writeValueAsString(response).getBytes());
         }
-        BufferedReader reader = req.getReader();
-        StringBuilder jsonBuilder = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            jsonBuilder.append(line);
-        }
-        MeasurementInDto dto = objectMapper.readValue(jsonBuilder.toString(),
+        String json = deserialize(req);
+        MeasurementInDto dto = objectMapper.readValue(json,
                 MeasurementInDto.class);
-        Measurement measurement = measurementInMapper.dtoToObj(dto);
-        measurement.setSubmissionDate(LocalDateTime.now());
-        try {
-            measurementUseCase.save(measurement, principal);
-            resp.setContentType("application/json");
-            resp.setStatus(HttpServletResponse.SC_CREATED);
-        } catch (WrongDateException | TokenNotActualException | BadMeasurementAmountException e) {
-            resp.setContentType("application/json");
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            resp.getOutputStream().write(e.getMessage().getBytes());
+        if (ValidationUtil.isNumericValuePositive(dto.getAmount())) {
+            Measurement measurement = measurementInMapper.dtoToObj(dto);
+            measurement.setSubmissionDate(LocalDateTime.now());
+            try {
+                measurementUseCase.save(measurement, principal);
+                resp.setStatus(HttpServletResponse.SC_CREATED);
+            } catch (WrongDateException | TokenNotActualException | BadMeasurementAmountException e) {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.getOutputStream().write(e.getMessage().getBytes());
+            }
+        } else {
+            resp.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
         }
-
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws  IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        System.out.println(req.getPathInfo());
         resp.setContentType("application/json");
         long principal = 0L;
         try {
@@ -115,7 +114,7 @@ public class MeasurementServlet extends HttpServlet {
             resp.getOutputStream().write(objectMapper.writeValueAsString(response).getBytes());
         }
         String action = req.getParameter("action");
-        switch (action == null ? "badRequest" : action) {
+        switch (action == null ? "notFound" : action) {
             case "all":
                 Map<Long, MeasurementOutDto> map = measurementUseCase
                         .findAllById(principal)
@@ -123,46 +122,77 @@ public class MeasurementServlet extends HttpServlet {
                         .stream()
                         .collect(Collectors.toMap(Map.Entry::getKey,
                                 entry -> measurementOutMapper.objToDto(entry.getValue())));
-
-                //todo try catch, зарефакторить на if-else и выделить переменные
-                resp.setStatus(HttpServletResponse.SC_OK);
-                resp.getOutputStream().write(
-                        objectMapper.writeValueAsString(map).getBytes());
+                if (map.isEmpty())
+                    resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+                else {
+                    resp.setStatus(HttpServletResponse.SC_OK);
+                    resp.getOutputStream().write(
+                            objectMapper.writeValueAsString(map).getBytes());
+                }
                 break;
             case "last":
                 String type = req.getParameter("type");
-                Measurement last = measurementUseCase
-                        .findLast(type, principal);
-                resp.setStatus(HttpServletResponse.SC_OK);
-                resp.getOutputStream().write(
-                        objectMapper.writeValueAsString(measurementOutMapper
-                                .objToDto(last)).getBytes());
+                try {
+                    Measurement last = measurementUseCase
+                            .findLast(type, principal);
+                    resp.setStatus(HttpServletResponse.SC_OK);
+                    resp.getOutputStream().write(
+                            objectMapper.writeValueAsString(measurementOutMapper
+                                    .objToDto(last)).getBytes());
+                } catch (MeasurementNotFoundException e) {
+                    resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+                    Response response = new Response(e.getMessage());
+                    resp.getOutputStream().write(objectMapper.writeValueAsString(response).getBytes());
+                }
                 break;
             case "month":
                 int month = Integer.parseInt(req.getParameter("number"));
-                String type1 = req.getParameter("type");
-                Measurement byMonth = measurementUseCase.findByMonth(principal,
-                        month, type1);
-                resp.setStatus(HttpServletResponse.SC_OK);
-                resp.getOutputStream().write(
-                        objectMapper.writeValueAsString(measurementOutMapper
-                                .objToDto(byMonth)).getBytes());
+                if (ValidationUtil.isNumericValuePositive(month)) {
+                    String type1 = req.getParameter("type");
+                    try {
+                        Measurement byMonth = measurementUseCase.findByMonth(principal,
+                                month, type1);
+                        resp.setStatus(HttpServletResponse.SC_OK);
+                        resp.getOutputStream().write(
+                                objectMapper.writeValueAsString(measurementOutMapper
+                                        .objToDto(byMonth)).getBytes());
+                    } catch (MeasurementNotFoundException e) {
+                        resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+                        Response response = new Response(e.getMessage());
+                        resp.getOutputStream().write(objectMapper.writeValueAsString(response).getBytes());
+                    }
+                } else
+                    resp.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
                 break;
             case "counters":
-                resp.setStatus(HttpServletResponse.SC_OK);
                 Map<Long, CounterDto> counters =
                         counterUseCase.findByPersonId(principal)
                                 .entrySet()
                                 .stream()
                                 .collect(Collectors.toMap(Map.Entry::getKey,
                                         entry -> counterMapper.objToDto(entry.getValue())));
-                resp.getOutputStream().write(
-                        objectMapper.writeValueAsString(counters).getBytes());
+                if (counters.isEmpty())
+                    resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+                else {
+                    resp.setStatus(HttpServletResponse.SC_OK);
+                    resp.getOutputStream().write(
+                            objectMapper.writeValueAsString(counters).getBytes());
+                }
                 break;
-            case "badRequest":
-                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            case "notFound":
+                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 break;
         }
+    }
+
+    private String deserialize(HttpServletRequest req) throws IOException {
+        BufferedReader reader = req.getReader();
+        StringBuilder jsonBuilder = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            jsonBuilder.append(line);
+        }
+        return jsonBuilder.toString();
     }
 
 }

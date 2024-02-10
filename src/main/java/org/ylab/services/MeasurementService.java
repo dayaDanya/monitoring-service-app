@@ -59,7 +59,6 @@ public class MeasurementService implements MeasurementUseCase {
         } else {
             measurement.setCounterId(counterId);
             measurementRepo.save(measurement);
-            // operationUseCase.save(new Operation(personId, Action.ADD_MEASUREMENT, LocalDateTime.now()));
         }
     }
 
@@ -84,7 +83,6 @@ public class MeasurementService implements MeasurementUseCase {
         Map<Long, Measurement> resultSet = new HashMap<>();
         List<Long> counterIds = counterUseCase.findIdsByPersonId(personId);
         counterIds.forEach(id -> resultSet.putAll(measurementRepo.findAllByCounterId(id)));
-     //   operationUseCase.save(new Operation(personId, Action.WATCH_HISTORY, LocalDateTime.now()));
         return resultSet;
     }
 
@@ -100,7 +98,6 @@ public class MeasurementService implements MeasurementUseCase {
     public Measurement findLast(String type, long personId) throws MeasurementNotFoundException {
         long counterId = counterUseCase.findIdByPersonIdAndCounterType(personId, type)
                 .orElseThrow(CounterNotFoundException::new);
-       // operationUseCase.save(new Operation(personId, Action.WATCH_LAST, LocalDateTime.now()));
         return measurementRepo.findLast(counterId).orElseThrow(MeasurementNotFoundException::new);
     }
 
@@ -117,7 +114,6 @@ public class MeasurementService implements MeasurementUseCase {
     public Measurement findByMonth(long personId, int month, String type) throws MeasurementNotFoundException {
         long counterId = counterUseCase.findIdByPersonIdAndCounterType(personId, type)
                 .orElseThrow(CounterNotFoundException::new);
-    //    operationUseCase.save(new Operation(personId, Action.WATCH_BY_MONTH, LocalDateTime.now()));
         return measurementRepo.findByMonth(counterId, month).orElseThrow(MeasurementNotFoundException::new);
     }
 

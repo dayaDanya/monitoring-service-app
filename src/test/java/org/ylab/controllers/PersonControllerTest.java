@@ -1,22 +1,5 @@
 package org.ylab.controllers;
 
-import org.junit.jupiter.api.*;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.ylab.domain.dto.PersonInDto;
-import org.ylab.infrastructure.in.db.ConnectionAdapter;
-import org.ylab.infrastructure.in.db.migrations.MigrationUtil;
-import org.ylab.repositories.implementations.CounterTypeRepo;
-import org.ylab.repositories.implementations.OperationRepo;
-import org.ylab.repositories.implementations.PersonRepo;
-import org.ylab.repositories.implementations.TokenRepo;
-import org.ylab.services.*;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
 class PersonControllerTest {
 //
 //    PersonController personController;

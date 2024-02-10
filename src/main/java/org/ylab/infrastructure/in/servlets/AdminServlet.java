@@ -108,14 +108,12 @@ public class AdminServlet extends HttpServlet {
                     resp.getOutputStream().write(objectMapper.writeValueAsString(response).getBytes());
                 }
             } else {
-                resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
             }
         } else
-            resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
 
     }
-
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json");
@@ -130,7 +128,6 @@ public class AdminServlet extends HttpServlet {
         if (adminService.isAdmin(principal)) {
             String pathInfo = req.getPathInfo();
             if (pathInfo.equals("/measurements")) {
-                //todo как передавать ид в аспект
                 Map<Long, MeasurementOutDto> measurements;
                 measurements = adminService
                         .findAllMeasurements()
@@ -139,8 +136,13 @@ public class AdminServlet extends HttpServlet {
                         .collect(Collectors.toMap(
                                 Map.Entry::getKey,
                                 entry -> measurementOutMapper.objToDto(entry.getValue())));
-                resp.getOutputStream().write(objectMapper.writeValueAsString(measurements).getBytes());
-
+                if (measurements.isEmpty())
+                    resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+                else {
+                    resp.setStatus(HttpServletResponse.SC_OK);
+                    resp.getOutputStream().write(
+                            objectMapper.writeValueAsString(measurements).getBytes());
+                }
             } else if (pathInfo.equals("/operations")) {
                 Map<Long, OperationOutDto> operations = adminService
                         .findAllOperations()
@@ -149,7 +151,13 @@ public class AdminServlet extends HttpServlet {
                         .collect(Collectors.toMap(
                                 Map.Entry::getKey,
                                 entry -> operationOutMapper.objToDto(entry.getValue())));
-                resp.getOutputStream().write(objectMapper.writeValueAsString(operations).getBytes());
+                if (operations.isEmpty())
+                    resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+                else {
+                    resp.setStatus(HttpServletResponse.SC_OK);
+                    resp.getOutputStream().write(
+                            objectMapper.writeValueAsString(operations).getBytes());
+                }
             } else {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             }
