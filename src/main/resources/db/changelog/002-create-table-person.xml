@@ -29,15 +29,15 @@
             </column>
         </addColumn>
     </changeSet>
-    <changeSet id="002-2-insert-admin" author="dayaDanya">
+<!--    <changeSet id="002-2-insert-admin" author="dayaDanya">-->
 
-        <insert schemaName="entities" tableName="person">
-            <column name="email" value="admin"/>
-            <column name="password"
-                    value="agSlkyvn99dVB6pKeD6MVA==:EvJ6J8w/LwveTJ+WA5AgTu9OzI7+FNakNFuZO8JqDCM2OUWL/82UXOAwVjPEpkxH5Apw65Pdp8iogVfDwIXbDQ=="/>
-            <column name="role" value="ADMIN"/>
-        </insert>
-    </changeSet>
+<!--        <insert schemaName="entities" tableName="person">-->
+<!--            <column name="email" value="admin"/>-->
+<!--            <column name="password"-->
+<!--                    value="agSlkyvn99dVB6pKeD6MVA==:EvJ6J8w/LwveTJ+WA5AgTu9OzI7+FNakNFuZO8JqDCM2OUWL/82UXOAwVjPEpkxH5Apw65Pdp8iogVfDwIXbDQ=="/>-->
+<!--            <column name="role" value="ADMIN"/>-->
+<!--        </insert>-->
+<!--    </changeSet>-->
     <changeSet id="002-3-add-trigger" author="dayaDanya">
         <createProcedure procedureName="add_counters"
         schemaName="entities">

@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.ylab.domain.models.CounterType;
 import org.ylab.exceptions.CounterTypeAlreadyExistsException;
 import org.ylab.repositories.implementations.CounterTypeRepo;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.Optional;
 
@@ -48,6 +49,7 @@ class CounterTypeServiceTest {
                 .thenReturn(Optional.of(counterType));
         Assertions.assertThrows(CounterTypeAlreadyExistsException.class,
                 () -> counterTypeUseCase.saveCounterType(counterType));
+
     }
 
 }

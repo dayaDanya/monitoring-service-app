@@ -23,14 +23,14 @@
                              columnNames="name"/>
 
     </changeSet>
-    <changeSet id="003-2-insert-basic-types" author="dayaDanya">
+<!--    <changeSet id="003-2-insert-basic-types" author="dayaDanya">-->
 
-        <insert schemaName="entities" tableName="counter_type">
-            <column name="name" value="HOT"/>
-        </insert><insert schemaName="entities" tableName="counter_type">
-            <column name="name" value="COLD"/>
-        </insert><insert schemaName="entities" tableName="counter_type">
-            <column name="name" value="HEAT"/>
-        </insert>
-    </changeSet>
+<!--        <insert schemaName="entities" tableName="counter_type">-->
+<!--            <column name="name" value="HOT"/>-->
+<!--        </insert><insert schemaName="entities" tableName="counter_type">-->
+<!--            <column name="name" value="COLD"/>-->
+<!--        </insert><insert schemaName="entities" tableName="counter_type">-->
+<!--            <column name="name" value="HEAT"/>-->
+<!--        </insert>-->
+<!--    </changeSet>-->
 </databaseChangeLog>
