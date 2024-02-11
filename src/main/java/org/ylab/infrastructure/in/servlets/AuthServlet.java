@@ -22,6 +22,9 @@ import org.ylab.services.PersonService;
 
 import java.io.IOException;
 
+/**
+ *  Сервлет аутентификации
+ */
 @WebServlet("/authentication")
 public class AuthServlet extends HttpServlet {
     private final PersonUseCase personUseCase;
@@ -30,7 +33,9 @@ public class AuthServlet extends HttpServlet {
 
     private final RequestDeserializer deserializer;
 
-
+    /**
+     *  Конструктор
+     */
     public AuthServlet() {
         ConnectionAdapter connectionAdapter = new ConnectionAdapter();
         this.personUseCase = new PersonService(new PasswordService(),
@@ -41,6 +46,12 @@ public class AuthServlet extends HttpServlet {
         deserializer = new RequestDeserializer();
     }
 
+    /**
+     *  Метод аутентификации пользователя
+     * @param req
+     * @param resp
+     * @throws IOException
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json");
@@ -50,7 +61,8 @@ public class AuthServlet extends HttpServlet {
         Person person = personInputMapper.dtoToObj(personDto);
         try {
             String token = personUseCase.authenticate(person);
-            resp.getOutputStream().write(token.getBytes());
+            Response response = new Response(token);
+            resp.getOutputStream().write(objectMapper.writeValueAsString(response).getBytes());
             resp.setStatus(HttpServletResponse.SC_OK);
         } catch (BadCredentialsException | PersonNotFoundException e) {
             Response response = new Response(e.getMessage());

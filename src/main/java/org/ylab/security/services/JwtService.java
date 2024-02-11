@@ -11,16 +11,34 @@ import org.ylab.exceptions.TokenNotActualException;
 
 import java.util.Optional;
 
+/**
+ * Сервис генерации JWT-токенов
+ */
 public class JwtService {
+    /**
+     * секретный ключ
+     */
     private static final SecretKey key = Keys.secretKeyFor(io.jsonwebtoken.SignatureAlgorithm.HS256);
+
+    /**
+     * Метод генерирующий токен на основе данных пользователя
+     * @param subject данные пользователя
+     * @return jwt-токен
+     */
     public static String generateToken(String subject) {
         return Jwts.builder()
-                .setSubject(subject)
+                .setSubject(subject)                         
                 .signWith(key)
                 .compact();
         //todo expiration
     }
 
+    /**
+     * сервер проверяющий токен
+     * @param request запрос
+     * @return id пользователя
+     * @exception TokenNotActualException в случае если переданный запрос не прошел проверку
+     */
     public static Long validateTokenAndGetSubject(HttpServletRequest request) {
         String token = request.getHeader("Authorization");
         if (token != null && token.startsWith("Bearer ")) {

@@ -33,6 +33,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Сервлет для админской панели
+ */
 @WebServlet("/admin-panel/*")
 public class AdminServlet extends HttpServlet {
     private final AdminService adminService;
@@ -49,6 +52,9 @@ public class AdminServlet extends HttpServlet {
 
     private final RequestDeserializer deserializer;
 
+    /**
+     *  конструктор
+     */
     public AdminServlet() {
         ConnectionAdapter connectionAdapter = new ConnectionAdapter();
         CounterTypeUseCase counterTypeUseCase = new CounterTypeService(new CounterTypeRepo(connectionAdapter));
@@ -74,6 +80,14 @@ public class AdminServlet extends HttpServlet {
         this.deserializer = new RequestDeserializer();
     }
 
+    /**
+     * Реализация обработки post-запроса
+     * /counters - выдача нового счетчика
+     * /counter-types - создание нового типа счетчика
+     * @param req
+     * @param resp
+     * @throws IOException
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json");
@@ -117,6 +131,15 @@ public class AdminServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
 
     }
+
+    /**
+     * реализация обработки GET-запросов
+     * /measurements возвращает все измерения
+     * /operations просмотр аудита
+     * @param req
+     * @param resp
+     * @throws IOException
+     */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json");
@@ -162,10 +185,10 @@ public class AdminServlet extends HttpServlet {
                             objectMapper.writeValueAsString(operations).getBytes());
                 }
             } else {
-                resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
             }
         } else {
-            resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
         }
     }
 

@@ -40,6 +40,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Сервлет для взаимодействия с записями и счетчиками пользователя
+ */
 @WebServlet("/measurements")
 public class MeasurementServlet extends HttpServlet {
     private final MeasurementUseCase measurementUseCase;
@@ -75,6 +78,12 @@ public class MeasurementServlet extends HttpServlet {
         deserializer= new RequestDeserializer();
     }
 
+    /**
+     * Обработка post-запроса: добавление измерения
+     * @param req
+     * @param resp
+     * @throws IOException
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json");
@@ -104,6 +113,17 @@ public class MeasurementServlet extends HttpServlet {
 
     }
 
+    /**
+     * Обработка get-запросов
+     * /action=all - просмотр всех добавленных измерений
+     * /action=last?type=(HOT/COLD/HEAT) - просмотр последнего измерения для выбранного счетчика
+     * /action=month?number=(1..12)&type=(HOT/COLD/HEAT) - просмотр измерения для выбранного счетчика
+     * за конкретный месяц
+     * /action=counters - просмотр закрепленных за пользователем счетчиков
+     * @param req
+     * @param resp
+     * @throws IOException
+     */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         System.out.println(req.getPathInfo());

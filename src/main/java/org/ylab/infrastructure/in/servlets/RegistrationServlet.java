@@ -24,6 +24,9 @@ import org.ylab.services.PersonService;
 
 import java.io.IOException;
 
+/**
+ * Сервлет регистрации
+ */
 @WebServlet("/register")
 public class RegistrationServlet extends HttpServlet {
     private final PersonUseCase personUseCase;
@@ -32,7 +35,9 @@ public class RegistrationServlet extends HttpServlet {
 
     private final RequestDeserializer deserializer;
 
-
+    /**
+     *  Конструктор
+     */
     public RegistrationServlet() {
         ConnectionAdapter connectionAdapter = new ConnectionAdapter();
         this.personUseCase = new PersonService(new PasswordService(),
@@ -43,6 +48,12 @@ public class RegistrationServlet extends HttpServlet {
         deserializer = new RequestDeserializer();
     }
 
+    /**
+     * Обработка post-запроса регистрации пользователя
+     * @param req
+     * @param resp
+     * @throws IOException
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String json = deserializer.deserialize(req.getReader());
