@@ -17,7 +17,7 @@ class PersonRepoTest {
     private PersonRepo personRepo;
     @Container
     private static PostgreSQLContainer postgres =
-            new PostgreSQLContainer<>("postgres:13.3");
+            new PostgreSQLContainer<>("postgres:14-alpine3.15");
 
     @BeforeAll
     static void beforeAll() {
@@ -64,6 +64,7 @@ class PersonRepoTest {
     @DisplayName("Проверяет правильность поиска по  id")
     void findById_equal() {
         Person expected = new Person("email", "password");
+        expected.setRole(Role.USER);
         personRepo.save(expected);
         long id = personRepo.findIdByEmail("email").get();
         expected.setId(id);

@@ -24,6 +24,7 @@ import org.ylab.infrastructure.in.db.ConnectionAdapter;
 import org.ylab.infrastructure.mappers.CounterMapper;
 import org.ylab.infrastructure.mappers.MeasurementInMapper;
 import org.ylab.infrastructure.mappers.MeasurementOutMapper;
+import org.ylab.infrastructure.utils.RequestDeserializer;
 import org.ylab.infrastructure.utils.ValidationUtil;
 import org.ylab.repositories.implementations.CounterRepo;
 import org.ylab.repositories.implementations.CounterTypeRepo;
@@ -33,7 +34,6 @@ import org.ylab.services.CounterService;
 import org.ylab.services.CounterTypeService;
 import org.ylab.services.MeasurementService;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -83,22 +83,22 @@ public class MeasurementServlet extends HttpServlet {
             Response response = new Response(e.getMessage());
             resp.getOutputStream().write(objectMapper.writeValueAsString(response).getBytes());
         }
-        String json = deserialize(req);
+        String json = RequestDeserializer.deserialize(req.getReader());
         MeasurementInDto dto = objectMapper.readValue(json,
                 MeasurementInDto.class);
-        if (ValidationUtil.isNumericValuePositive(dto.getAmount())) {
+        try {
+            ValidationUtil.checkIsNumericValuePositive(dto.getAmount());
             Measurement measurement = measurementInMapper.dtoToObj(dto);
             measurement.setSubmissionDate(LocalDateTime.now());
-            try {
-                measurementUseCase.save(measurement, principal);
-                resp.setStatus(HttpServletResponse.SC_CREATED);
-            } catch (WrongDateException | TokenNotActualException | BadMeasurementAmountException e) {
-                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                resp.getOutputStream().write(e.getMessage().getBytes());
-            }
-        } else {
-            resp.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
+            measurementUseCase.save(measurement, principal);
+            resp.setStatus(HttpServletResponse.SC_CREATED);
+        } catch (NumberFormatException | WrongDateException | TokenNotActualException |
+                 BadMeasurementAmountException e) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            Response response = new Response(e.getMessage());
+            resp.getOutputStream().write(objectMapper.writeValueAsBytes(response));
         }
+
     }
 
     @Override
@@ -147,22 +147,21 @@ public class MeasurementServlet extends HttpServlet {
                 break;
             case "month":
                 int month = Integer.parseInt(req.getParameter("number"));
-                if (ValidationUtil.isNumericValuePositive(month)) {
-                    String type1 = req.getParameter("type");
-                    try {
-                        Measurement byMonth = measurementUseCase.findByMonth(principal,
-                                month, type1);
-                        resp.setStatus(HttpServletResponse.SC_OK);
-                        resp.getOutputStream().write(
-                                objectMapper.writeValueAsString(measurementOutMapper
-                                        .objToDto(byMonth)).getBytes());
-                    } catch (MeasurementNotFoundException e) {
-                        resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
-                        Response response = new Response(e.getMessage());
-                        resp.getOutputStream().write(objectMapper.writeValueAsString(response).getBytes());
-                    }
-                } else
-                    resp.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
+                String type1 = req.getParameter("type");
+                try {
+                    ValidationUtil.checkIsNumericValuePositive(month);
+                    Measurement byMonth = measurementUseCase.findByMonth(principal,
+                            month, type1);
+                    resp.setStatus(HttpServletResponse.SC_OK);
+                    resp.getOutputStream().write(
+                            objectMapper.writeValueAsString(measurementOutMapper
+                                    .objToDto(byMonth)).getBytes());
+                } catch (NumberFormatException | MeasurementNotFoundException e) {
+                    resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+                    Response response = new Response(e.getMessage());
+                    resp.getOutputStream().write(objectMapper.writeValueAsString(response).getBytes());
+                }
+
                 break;
             case "counters":
                 Map<Long, CounterDto> counters =
@@ -185,14 +184,5 @@ public class MeasurementServlet extends HttpServlet {
         }
     }
 
-    private String deserialize(HttpServletRequest req) throws IOException {
-        BufferedReader reader = req.getReader();
-        StringBuilder jsonBuilder = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            jsonBuilder.append(line);
-        }
-        return jsonBuilder.toString();
-    }
 
 }

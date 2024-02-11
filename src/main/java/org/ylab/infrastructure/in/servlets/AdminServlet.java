@@ -22,11 +22,11 @@ import org.ylab.infrastructure.mappers.CounterMapper;
 import org.ylab.infrastructure.mappers.CounterTypeMapper;
 import org.ylab.infrastructure.mappers.MeasurementOutMapper;
 import org.ylab.infrastructure.mappers.OperationOutMapper;
+import org.ylab.infrastructure.utils.RequestDeserializer;
 import org.ylab.repositories.implementations.*;
 import org.ylab.security.services.JwtService;
 import org.ylab.services.*;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -86,7 +86,7 @@ public class AdminServlet extends HttpServlet {
         if (adminService.isAdmin(principal)) {
             String pathInfo = req.getPathInfo();
             if (pathInfo.equals("/counters")) {
-                String json = deserialize(req);
+                String json = RequestDeserializer.deserialize(req.getReader());
                 CounterDto dto = objectMapper.readValue(json, CounterDto.class);
                 try {
                     adminService.saveCounter(counterMapper.dtoToObj(dto));
@@ -97,7 +97,7 @@ public class AdminServlet extends HttpServlet {
                     resp.getOutputStream().write(objectMapper.writeValueAsString(response).getBytes());
                 }
             } else if (pathInfo.equals("/counter-types")) {
-                String json = deserialize(req);
+                String json = RequestDeserializer.deserialize(req.getReader());
                 CounterTypeDto dto = objectMapper.readValue(json, CounterTypeDto.class);
                 try {
                     adminService.saveCounterType(counterTypeMapper.dtoToObj(dto));
@@ -166,14 +166,5 @@ public class AdminServlet extends HttpServlet {
         }
     }
 
-    private String deserialize(HttpServletRequest req) throws IOException {
-        BufferedReader reader = req.getReader();
-        StringBuilder jsonBuilder = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            jsonBuilder.append(line);
-        }
-        return jsonBuilder.toString();
-    }
 
 }

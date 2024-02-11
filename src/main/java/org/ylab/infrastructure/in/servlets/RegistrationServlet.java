@@ -8,18 +8,20 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.mapstruct.factory.Mappers;
 import org.ylab.domain.dto.PersonInDto;
+import org.ylab.domain.dto.Response;
 import org.ylab.domain.models.Person;
 import org.ylab.domain.usecases.PersonUseCase;
 import org.ylab.exceptions.BadCredentialsException;
+import org.ylab.exceptions.EmailFormatException;
+import org.ylab.exceptions.PasswordLengthException;
 import org.ylab.infrastructure.in.db.ConnectionAdapter;
 import org.ylab.infrastructure.mappers.PersonInputMapper;
-import org.ylab.repositories.implementations.OperationRepo;
+import org.ylab.infrastructure.utils.RequestDeserializer;
+import org.ylab.infrastructure.utils.ValidationUtil;
 import org.ylab.repositories.implementations.PersonRepo;
-import org.ylab.services.OperationService;
 import org.ylab.services.PasswordService;
 import org.ylab.services.PersonService;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 
 @WebServlet("/register")
@@ -40,21 +42,21 @@ public class RegistrationServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        BufferedReader reader = req.getReader();
-        StringBuilder jsonBuilder = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            jsonBuilder.append(line);
-        }
-        PersonInDto personDto = objectMapper.readValue(jsonBuilder.toString(),
+        String json = RequestDeserializer.deserialize(req.getReader());
+        PersonInDto personDto = objectMapper.readValue(json,
                 PersonInDto.class);
-        Person person = personInputMapper.dtoToObj(personDto);
         try {
+            ValidationUtil.checkIsEmail(personDto.getEmail());
+            ValidationUtil.checkIsPasswordLongEnough(personDto.getPassword());
+            Person person = personInputMapper.dtoToObj(personDto);
             personUseCase.register(person);
             resp.setStatus(HttpServletResponse.SC_CREATED);
             resp.setContentType("application/json");
-        } catch (BadCredentialsException e) {
+        } catch (EmailFormatException | PasswordLengthException |BadCredentialsException e) {
             resp.setStatus(HttpServletResponse.SC_CONFLICT);
+            Response response = new Response(e.getMessage());
+            resp.getOutputStream().write(objectMapper.writeValueAsBytes(response));
         }
+
     }
 }
