@@ -51,6 +51,8 @@ public class MeasurementServlet extends HttpServlet {
 
     private final ObjectMapper objectMapper;
 
+    private final RequestDeserializer deserializer;
+
 
     public MeasurementServlet() {
         ConnectionAdapter connectionAdapter = new ConnectionAdapter();
@@ -70,6 +72,7 @@ public class MeasurementServlet extends HttpServlet {
         this.measurementOutMapper = Mappers.getMapper(MeasurementOutMapper.class);
         counterUseCase = new CounterService(counterRepo, counterTypeUseCase);
         counterMapper = Mappers.getMapper(CounterMapper.class);
+        deserializer= new RequestDeserializer();
     }
 
     @Override
@@ -83,7 +86,7 @@ public class MeasurementServlet extends HttpServlet {
             Response response = new Response(e.getMessage());
             resp.getOutputStream().write(objectMapper.writeValueAsString(response).getBytes());
         }
-        String json = RequestDeserializer.deserialize(req.getReader());
+        String json = deserializer.deserialize(req.getReader());
         MeasurementInDto dto = objectMapper.readValue(json,
                 MeasurementInDto.class);
         try {

@@ -30,6 +30,8 @@ public class RegistrationServlet extends HttpServlet {
     private final PersonInputMapper personInputMapper;
     private final ObjectMapper objectMapper;
 
+    private final RequestDeserializer deserializer;
+
 
     public RegistrationServlet() {
         ConnectionAdapter connectionAdapter = new ConnectionAdapter();
@@ -38,11 +40,12 @@ public class RegistrationServlet extends HttpServlet {
         this.personInputMapper = Mappers.getMapper(PersonInputMapper.class);
         this.objectMapper = new ObjectMapper();
         this.objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+        deserializer = new RequestDeserializer();
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String json = RequestDeserializer.deserialize(req.getReader());
+        String json = deserializer.deserialize(req.getReader());
         PersonInDto personDto = objectMapper.readValue(json,
                 PersonInDto.class);
         try {

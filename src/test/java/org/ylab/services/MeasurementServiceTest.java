@@ -32,8 +32,6 @@ class MeasurementServiceTest {
     @Mock
     CounterService counterUseCase;
 
-    @Mock
-    OperationService operationUseCase;
 
     @Test
     @DisplayName("Сохранение: счетчик не существует - " +

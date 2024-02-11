@@ -28,7 +28,7 @@ class CounterTypeServiceTest {
 
         Mockito.when(counterTypeRepo.findOne("hot"))
                         .thenReturn(Optional.of(counterType));
-        Assertions.assertEquals(counterType, counterTypeUseCase.findOne(counterType.getName()).get());
+        assertThat(counterType.equals( counterTypeUseCase.findOne(counterType.getName()).get()));
     }
     @DisplayName("Проверяет то, что при добавлении нового типа счетчика, репозиторий отработает")
     @Test

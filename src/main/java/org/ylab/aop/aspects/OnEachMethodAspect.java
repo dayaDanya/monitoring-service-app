@@ -5,13 +5,25 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 
+/**
+ *  Аспект логгирования
+ */
 @Aspect
 public class OnEachMethodAspect {
+    /**
+     * Срез - при выполнении любого метода
+     */
     @Pointcut("execution(* *(..))")
     public void eachMethod() {
 
     }
 
+    /**
+     * Совет
+     * @param proceedingJoinPoint выполняющийся метод
+     * @return результат joinPoint
+     * @throws Throwable
+     */
     @Around("eachMethod()")
     public Object recording(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         System.out.println("Calling method " + proceedingJoinPoint.getSignature());

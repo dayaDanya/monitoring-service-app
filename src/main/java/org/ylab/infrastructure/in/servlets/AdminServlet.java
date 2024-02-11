@@ -47,6 +47,8 @@ public class AdminServlet extends HttpServlet {
 
     private final ObjectMapper objectMapper;
 
+    private final RequestDeserializer deserializer;
+
     public AdminServlet() {
         ConnectionAdapter connectionAdapter = new ConnectionAdapter();
         CounterTypeUseCase counterTypeUseCase = new CounterTypeService(new CounterTypeRepo(connectionAdapter));
@@ -69,6 +71,7 @@ public class AdminServlet extends HttpServlet {
                 new LocalDateTimeDeserializer(DateTimeFormatter.ISO_DATE_TIME));
         this.objectMapper.registerModule(javaTimeModule);
         this.objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+        this.deserializer = new RequestDeserializer();
     }
 
     @Override
@@ -86,7 +89,7 @@ public class AdminServlet extends HttpServlet {
         if (adminService.isAdmin(principal)) {
             String pathInfo = req.getPathInfo();
             if (pathInfo.equals("/counters")) {
-                String json = RequestDeserializer.deserialize(req.getReader());
+                String json = deserializer.deserialize(req.getReader());
                 CounterDto dto = objectMapper.readValue(json, CounterDto.class);
                 try {
                     adminService.saveCounter(counterMapper.dtoToObj(dto));
@@ -97,7 +100,7 @@ public class AdminServlet extends HttpServlet {
                     resp.getOutputStream().write(objectMapper.writeValueAsString(response).getBytes());
                 }
             } else if (pathInfo.equals("/counter-types")) {
-                String json = RequestDeserializer.deserialize(req.getReader());
+                String json = deserializer.deserialize(req.getReader());
                 CounterTypeDto dto = objectMapper.readValue(json, CounterTypeDto.class);
                 try {
                     adminService.saveCounterType(counterTypeMapper.dtoToObj(dto));

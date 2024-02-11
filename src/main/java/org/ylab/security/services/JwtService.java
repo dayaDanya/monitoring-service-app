@@ -16,7 +16,6 @@ public class JwtService {
     public static String generateToken(String subject) {
         return Jwts.builder()
                 .setSubject(subject)
-
                 .signWith(key)
                 .compact();
         //todo expiration

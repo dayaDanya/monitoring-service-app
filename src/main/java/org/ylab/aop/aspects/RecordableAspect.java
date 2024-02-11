@@ -22,6 +22,9 @@ import org.ylab.services.PersonService;
 
 import java.time.LocalDateTime;
 
+/**
+ * Аспект аудита
+ */
 @Aspect
 public class RecordableAspect {
     private final OperationUseCase operationUseCase;
@@ -30,6 +33,9 @@ public class RecordableAspect {
     private final ConnectionAdapter connectionAdapter;
     private final PersonRepo personRepo;
 
+    /**
+     * Конструктор
+     */
     public RecordableAspect() {
         connectionAdapter = new ConnectionAdapter();
         this.operationUseCase = new OperationService(
@@ -40,12 +46,12 @@ public class RecordableAspect {
                 personRepo);
     }
 
-//    @Pointcut("within(@org.ylab.aop.annotations.Recordable *) && execution(* *(..))")
-//    public void annotatedByRecordable() {
-//
-//    }
-
-//    @Around("annotatedByRecordable()")
+    /**
+     * Совет
+     * @param joinPoint выполняющийся метод
+     * @return returning value of joinPoint
+     * @throws Throwable
+     */
     @Around("@annotation(org.ylab.aop.annotations.Recordable)")
     public Object recording(ProceedingJoinPoint joinPoint) throws Throwable {
         String name = joinPoint.getSignature().getName();

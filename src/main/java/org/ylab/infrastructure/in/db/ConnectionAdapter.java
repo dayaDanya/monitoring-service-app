@@ -1,30 +1,46 @@
 package org.ylab.infrastructure.in.db;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
+/**
+ * Классом являющийся адаптером для подключения к бд
+ */
 public class ConnectionAdapter {
-    private Properties properties;
     private final String URL;
     private final String USER_NAME;
     private final String PASSWORD;
 
+    /**
+     * Конструктор с параметрами
+     * @param URL адрес БД
+     * @param USER_NAME пользователь БД
+     * @param PASSWORD пароль пользователя
+     */
     public ConnectionAdapter(String URL, String USER_NAME, String PASSWORD) {
         this.URL = URL;
         this.USER_NAME = USER_NAME;
         this.PASSWORD = PASSWORD;
     }
 
+    /**
+     * Конструктор инициализирующий параметры для подключения к БД
+     * с помощью .properties файла
+     */
     public ConnectionAdapter() {
-        properties = PropertiesInitializer.initialize();
+        Properties properties = PropertiesInitializer.initialize();
         URL = properties.getProperty("url");
         USER_NAME = properties.getProperty("db-username");
         PASSWORD = properties.getProperty("db-password");
     }
+
+    /**
+     * Метод предоставлющий инициализированный объект Connection
+     * @return Connection
+     * @throws SQLException В случае передачи неподходящих параметров
+     */
     public  Connection getConnection() throws SQLException {
         try {
             Class.forName("org.postgresql.Driver");

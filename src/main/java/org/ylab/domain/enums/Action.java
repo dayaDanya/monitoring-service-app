@@ -52,11 +52,23 @@ public enum Action {
      * Выдача нового счетчика
      */
     GIVE_COUNTER,
-    //todo javadoc
+    /**
+     * Просмотр аудита
+     */
     WATCH_AUDIT,
-
+    /**
+     * Просмотр списка счетчиков
+     */
     WATCH_COUNTERS;
 
+    /**
+     * Метод ищущий Action соответствующий определенному
+     * методу бизнес-логики. Используется в аудите.
+     * @param name название метода бизнес-логики
+     * @return Action
+     * @exception ActionNotFoundException выбрасывается в случае несоответствия
+     * ни одного action переданному названию метода
+     */
     public static Action find(String name) {
         switch (name) {
             case "authenticate" -> {
