@@ -55,4 +55,14 @@ public class ValidationUtil {
         if(password.length() < 8 )
             throw new PasswordLengthException();
     }
+
+    /**
+     *  Метод проверяющий что строка не пустая
+     * @param value строка
+     * @exception RuntimeException если строка пустая
+     */
+    public static void checkIsNotEmpty(String value){
+        if(value.isEmpty())
+            throw new RuntimeException("Counter type should not be empty.");
+    }
 }

@@ -23,6 +23,7 @@ import org.ylab.infrastructure.mappers.CounterTypeMapper;
 import org.ylab.infrastructure.mappers.MeasurementOutMapper;
 import org.ylab.infrastructure.mappers.OperationOutMapper;
 import org.ylab.infrastructure.utils.RequestDeserializer;
+import org.ylab.infrastructure.utils.ValidationUtil;
 import org.ylab.repositories.implementations.*;
 import org.ylab.security.services.JwtService;
 import org.ylab.services.*;
@@ -53,7 +54,7 @@ public class AdminServlet extends HttpServlet {
     private final RequestDeserializer deserializer;
 
     /**
-     *  конструктор
+     * конструктор
      */
     public AdminServlet() {
         ConnectionAdapter connectionAdapter = new ConnectionAdapter();
@@ -84,6 +85,7 @@ public class AdminServlet extends HttpServlet {
      * Реализация обработки post-запроса
      * /counters - выдача нового счетчика
      * /counter-types - создание нового типа счетчика
+     *
      * @param req
      * @param resp
      * @throws IOException
@@ -106,6 +108,13 @@ public class AdminServlet extends HttpServlet {
                 String json = deserializer.deserialize(req.getReader());
                 CounterDto dto = objectMapper.readValue(json, CounterDto.class);
                 try {
+                    ValidationUtil.checkIsNotEmpty(dto.getCounterType().getName());
+                } catch (RuntimeException e) {
+                    Response response = new Response(e.getMessage());
+                    resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    resp.getOutputStream().write(objectMapper.writeValueAsString(response).getBytes());
+                }
+                try {
                     adminService.saveCounter(counterMapper.dtoToObj(dto));
                     resp.setStatus(HttpServletResponse.SC_CREATED);
                 } catch (CounterTypeNotFoundException e) {
@@ -116,6 +125,13 @@ public class AdminServlet extends HttpServlet {
             } else if (pathInfo.equals("/counter-types")) {
                 String json = deserializer.deserialize(req.getReader());
                 CounterTypeDto dto = objectMapper.readValue(json, CounterTypeDto.class);
+                try {
+                    ValidationUtil.checkIsNotEmpty(dto.getName());
+                } catch (RuntimeException e) {
+                    Response response = new Response(e.getMessage());
+                    resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    resp.getOutputStream().write(objectMapper.writeValueAsString(response).getBytes());
+                }
                 try {
                     adminService.saveCounterType(counterTypeMapper.dtoToObj(dto));
                     resp.setStatus(HttpServletResponse.SC_CREATED);
@@ -136,6 +152,7 @@ public class AdminServlet extends HttpServlet {
      * реализация обработки GET-запросов
      * /measurements возвращает все измерения
      * /operations просмотр аудита
+     *
      * @param req
      * @param resp
      * @throws IOException
