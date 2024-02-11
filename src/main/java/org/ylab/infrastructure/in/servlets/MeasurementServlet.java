@@ -80,9 +80,9 @@ public class MeasurementServlet extends HttpServlet {
 
     /**
      * Обработка post-запроса: добавление измерения
-     * @param req
-     * @param resp
-     * @throws IOException
+     * @param req запрос пользователя
+     * @param resp ответ сервера
+     * @throws IOException ошибка ввода вывода
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -120,9 +120,9 @@ public class MeasurementServlet extends HttpServlet {
      * /action=month?number=(1..12)&type=(HOT/COLD/HEAT) - просмотр измерения для выбранного счетчика
      * за конкретный месяц
      * /action=counters - просмотр закрепленных за пользователем счетчиков
-     * @param req
-     * @param resp
-     * @throws IOException
+     * @param req запрос пользователя
+     * @param resp ответ сервера
+     * @throws IOException ошибка ввода вывода
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {

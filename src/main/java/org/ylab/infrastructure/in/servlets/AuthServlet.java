@@ -48,9 +48,9 @@ public class AuthServlet extends HttpServlet {
 
     /**
      *  Метод аутентификации пользователя
-     * @param req
-     * @param resp
-     * @throws IOException
+     * @param req запрос пользователя
+     * @param resp ответ сервера
+     * @throws IOException ошибка ввода вывода
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {

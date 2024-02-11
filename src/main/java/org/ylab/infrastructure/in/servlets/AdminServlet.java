@@ -86,9 +86,9 @@ public class AdminServlet extends HttpServlet {
      * /counters - выдача нового счетчика
      * /counter-types - создание нового типа счетчика
      *
-     * @param req
-     * @param resp
-     * @throws IOException
+     * @param req запрос пользователя
+     * @param resp ответ сервера
+     * @throws IOException ошибка ввода вывода
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -153,9 +153,9 @@ public class AdminServlet extends HttpServlet {
      * /measurements возвращает все измерения
      * /operations просмотр аудита
      *
-     * @param req
-     * @param resp
-     * @throws IOException
+     * @param req запрос пользователя
+     * @param resp ответ сервера
+     * @throws IOException ошибка ввода вывода
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {

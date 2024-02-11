@@ -50,9 +50,9 @@ public class RegistrationServlet extends HttpServlet {
 
     /**
      * Обработка post-запроса регистрации пользователя
-     * @param req
-     * @param resp
-     * @throws IOException
+     * @param req запрос пользователя
+     * @param resp ответ сервера
+     * @throws IOException ошибка ввода вывода
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
