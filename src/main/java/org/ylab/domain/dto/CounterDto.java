@@ -1,5 +1,6 @@
 package org.ylab.domain.dto;
 
+import org.ylab.annotations.Default;
 import org.ylab.domain.models.Counter;
 import org.ylab.domain.models.CounterType;
 
@@ -24,29 +25,29 @@ public class CounterDto {
      * @param personId Идентификатор пользователя
      * @param counterType Тип счетчика
      */
+    @Default
     public CounterDto(long personId, CounterType counterType) {
         this.personId = personId;
         this.counterType = new CounterTypeDto(counterType.getName());
     }
 
-    /**
-     * Конструктор счетчика на основе объекта Counter
-     * @param counter Объект счетчика
-     */
-    public CounterDto(Counter counter) {
-        this.personId = counter.getPersonId();
-        this.counterType = new CounterTypeDto(counter.getCounterType().getName());
+    public CounterDto() {
     }
 
-    /**
-     * Переопределение метода toString для удобного вывода информации о счетчике
-     * @return Строковое представление объекта CounterDto
-     */
-    @Override
-    public String toString() {
-        return "CounterDto{" +
-                "personId=" + personId +
-                ", counterType=" + counterType +
-                '}';
+    //todo javadoc
+    public long getPersonId() {
+        return personId;
+    }
+
+    public void setPersonId(long personId) {
+        this.personId = personId;
+    }
+
+    public CounterTypeDto getCounterType() {
+        return counterType;
+    }
+
+    public void setCounterType(CounterTypeDto counterType) {
+        this.counterType = counterType;
     }
 }

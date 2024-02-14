@@ -1,5 +1,7 @@
 package org.ylab.domain.models;
 
+import org.ylab.annotations.Default;
+
 /**
  * Сущность - счетчик
  * Класс описывающий счетчик, имеющий поля
@@ -30,6 +32,7 @@ public class Counter {
      * @param personId айди пользователя
      * @param counterType тип счетчика
      */
+    @Default
     public Counter(long personId, CounterType counterType) {
         this.personId = personId;
         this.counterType = counterType;

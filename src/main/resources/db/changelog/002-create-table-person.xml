@@ -29,64 +29,63 @@
             </column>
         </addColumn>
     </changeSet>
-    <changeSet id="002-2-insert-admin" author="dayaDanya">
+<!--    <changeSet id="002-2-insert-admin" author="dayaDanya">-->
 
-        <insert schemaName="entities" tableName="person">
-            <column name="email" value="admin"/>
-            <column name="password"
-                    value="agSlkyvn99dVB6pKeD6MVA==:EvJ6J8w/LwveTJ+WA5AgTu9OzI7+FNakNFuZO8JqDCM2OUWL/82UXOAwVjPEpkxH5Apw65Pdp8iogVfDwIXbDQ=="/>
-            <column name="role" value="ADMIN"/>
-        </insert>
-    </changeSet>
-    <changeSet id="002-3-add-trigger" author="dayaDanya">
-        <createProcedure procedureName="add_counters"
-        schemaName="entities">
-            CREATE
-            OR REPLACE FUNCTION insert_into_counter()
-    RETURNS TRIGGER AS $$
-    DECLARE
-            counter_type_id_hot INTEGER;
-        counter_type_id_cold INTEGER;
-        counter_type_id_heat INTEGER;
-            BEGIN
-            SELECT id INTO counter_type_id_hot
-            FROM entities.counter_type
-            WHERE name = 'HOT';
-            SELECT id
-            INTO counter_type_id_cold
-            FROM entities.counter_type
-            WHERE name = 'COLD';
-            SELECT id
-            INTO counter_type_id_heat
-            FROM entities.counter_type
-            WHERE name = 'HEAT';
+<!--        <insert schemaName="entities" tableName="person">-->
+<!--            <column name="email" value="admin"/>-->
+<!--            <column name="password"-->
+<!--                    value="agSlkyvn99dVB6pKeD6MVA==:EvJ6J8w/LwveTJ+WA5AgTu9OzI7+FNakNFuZO8JqDCM2OUWL/82UXOAwVjPEpkxH5Apw65Pdp8iogVfDwIXbDQ=="/>-->
+<!--            <column name="role" value="ADMIN"/>-->
+<!--        </insert>-->
+<!--    </changeSet>-->
+<!--    <changeSet id="002-3-add-trigger" author="dayaDanya">-->
+<!--        <createProcedure procedureName="add_counters"-->
+<!--        schemaName="entities">-->
+<!--            CREATE-->
+<!--            OR REPLACE FUNCTION insert_into_counter()-->
+<!--    RETURNS TRIGGER AS $$-->
+<!--    DECLARE-->
+<!--            counter_type_id_hot INTEGER;-->
+<!--        counter_type_id_cold INTEGER;-->
+<!--        counter_type_id_heat INTEGER;-->
+<!--            BEGIN-->
+<!--            SELECT id INTO counter_type_id_hot-->
+<!--            FROM entities.counter_type-->
+<!--            WHERE name = 'HOT';-->
+<!--            SELECT id-->
+<!--            INTO counter_type_id_cold-->
+<!--            FROM entities.counter_type-->
+<!--            WHERE name = 'COLD';-->
+<!--            SELECT id-->
+<!--            INTO counter_type_id_heat-->
+<!--            FROM entities.counter_type-->
+<!--            WHERE name = 'HEAT';-->
 
-            INSERT INTO entities.counter (person_id, counter_type_id, counter_type)
-            VALUES (NEW.id, counter_type_id_hot, 'HOT');
-            INSERT INTO entities.counter (person_id, counter_type_id, counter_type)
-            VALUES (NEW.id, counter_type_id_cold, 'COLD');
-            INSERT INTO entities.counter (person_id, counter_type_id, counter_type)
-            VALUES (NEW.id, counter_type_id_heat, 'HEAT');
+<!--            INSERT INTO entities.counter (person_id, counter_type_id, counter_type)-->
+<!--            VALUES (NEW.id, counter_type_id_hot, 'HOT');-->
+<!--            INSERT INTO entities.counter (person_id, counter_type_id, counter_type)-->
+<!--            VALUES (NEW.id, counter_type_id_cold, 'COLD');-->
+<!--            INSERT INTO entities.counter (person_id, counter_type_id, counter_type)-->
+<!--            VALUES (NEW.id, counter_type_id_heat, 'HEAT');-->
 
-            RETURN NEW;
-            END;
-    $$
-            LANGUAGE plpgsql;
-        </createProcedure>
+<!--            RETURN NEW;-->
+<!--            END;-->
+<!--    $$-->
+<!--            LANGUAGE plpgsql;-->
+<!--        </createProcedure>-->
 
 
-    </changeSet>
+<!--    </changeSet>-->
 
-    <changeSet id="002-4-create-trigger" author="dayaDanya">
-                <sql>
-                    <!-- Создание триггера -->
-                    CREATE TRIGGER add_counter_trigger
-                        AFTER INSERT
-                        ON entities.person
-                        FOR EACH ROW
-                        EXECUTE PROCEDURE insert_into_counter();
-                </sql>
-    </changeSet>
+<!--    <changeSet id="002-4-create-trigger" author="dayaDanya">-->
+<!--                <sql>-->
+<!--                    CREATE TRIGGER add_counter_trigger-->
+<!--                        AFTER INSERT-->
+<!--                        ON entities.person-->
+<!--                        FOR EACH ROW-->
+<!--                        EXECUTE PROCEDURE insert_into_counter();-->
+<!--                </sql>-->
+<!--    </changeSet>-->
     <changeSet id="002-5-add-token_column" author="dayaDanya">
         <addColumn schemaName="entities" tableName="person">
             <column name="token" type="VARCHAR(255)">

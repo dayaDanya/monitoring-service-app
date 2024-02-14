@@ -16,7 +16,7 @@ public class CounterTypeService implements org.ylab.domain.usecases.CounterTypeU
     /**
      * репозиторий
      */
-    private ICounterTypeRepo repo;
+    private final ICounterTypeRepo repo;
 
     /**
      * Конструктор класса CounterTypeUseCase.
@@ -42,7 +42,7 @@ public class CounterTypeService implements org.ylab.domain.usecases.CounterTypeU
      *
      * @param counterType Тип счетчика, который требуется сохранить.
      */
-    public void save(CounterType counterType) {
+    public void saveCounterType(CounterType counterType) {
         if (findOne(counterType.getName()).isEmpty())
             repo.save(counterType);
         else throw new CounterTypeAlreadyExistsException(counterType.getName());

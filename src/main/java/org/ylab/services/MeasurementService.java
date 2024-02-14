@@ -1,12 +1,9 @@
 package org.ylab.services;
 
-import org.ylab.domain.models.CounterType;
+import org.ylab.aop.annotations.Recordable;
 import org.ylab.domain.models.Measurement;
-import org.ylab.domain.models.Operation;
-import org.ylab.domain.models.enums.Action;
 import org.ylab.domain.usecases.CounterUseCase;
 import org.ylab.domain.usecases.MeasurementUseCase;
-import org.ylab.domain.usecases.OperationUseCase;
 import org.ylab.exceptions.BadMeasurementAmountException;
 import org.ylab.exceptions.CounterNotFoundException;
 import org.ylab.exceptions.MeasurementNotFoundException;
@@ -24,10 +21,9 @@ import java.util.Optional;
  * Класс, представляющий использование сущности Measurement в рамках бизнес-логики.
  * Реализует методы для сохранения измерений, поиска и отображения данных о измерениях.
  */
+@Recordable
 public class MeasurementService implements MeasurementUseCase {
     private final IMeasurementRepo measurementRepo;
-
-    private final OperationUseCase operationUseCase;
 
     private final CounterUseCase counterUseCase;
 
@@ -35,10 +31,8 @@ public class MeasurementService implements MeasurementUseCase {
      * Конструктор класса MeasurementUseCase, инициализирующий репозиторий измерений, использование операций и использование счетчиков.
      */
     public MeasurementService(MeasurementRepo measurementRepo,
-                              OperationService operationUseCase,
                               CounterService counterUseCase) {
         this.measurementRepo = measurementRepo;
-        this.operationUseCase = operationUseCase;
         this.counterUseCase = counterUseCase;
     }
 
@@ -50,6 +44,7 @@ public class MeasurementService implements MeasurementUseCase {
      * @throws WrongDateException       Выбрасывается в случае, если дата измерения не соответствует ожидаемой.
      * @throws CounterNotFoundException Выбрасывается в случае, если связанный счетчик не найден.
      */
+    @Recordable
     public void save(Measurement measurement, long personId) throws WrongDateException, CounterNotFoundException {
         long counterId = counterUseCase
                 .findIdByPersonIdAndCounterType(personId, measurement.getCounterType())
@@ -58,13 +53,12 @@ public class MeasurementService implements MeasurementUseCase {
         if (lastMeasurementDate.isPresent() && isNotNextMonth(lastMeasurementDate.get(), measurement.getSubmissionDate())) {
             throw new WrongDateException(lastMeasurementDate.get());
         } else if (lastMeasurementDate.isPresent()
-                && findLast( new CounterType(measurement.getCounterType()), personId)
+                && findLast( measurement.getCounterType(), personId)
                 .getAmount() >= measurement.getAmount() ) {
             throw new BadMeasurementAmountException();
         } else {
             measurement.setCounterId(counterId);
             measurementRepo.save(measurement);
-            operationUseCase.save(new Operation(personId, Action.ADD_MEASUREMENT, LocalDateTime.now()));
         }
     }
 
@@ -73,7 +67,8 @@ public class MeasurementService implements MeasurementUseCase {
      *
      * @return Список всех измерений.
      */
-    public Map<Long, Measurement> findAll() {
+    @Recordable
+    public Map<Long, Measurement> findAllMeasurements() {
         return measurementRepo.findAll();
     }
 
@@ -83,11 +78,11 @@ public class MeasurementService implements MeasurementUseCase {
      * @param personId Идентификатор человека, для которого осуществляется поиск измерений.
      * @return Список измерений, принадлежащих указанному человеку.
      */
+    @Recordable
     public Map<Long, Measurement> findAllById(long personId) {
         Map<Long, Measurement> resultSet = new HashMap<>();
         List<Long> counterIds = counterUseCase.findIdsByPersonId(personId);
         counterIds.forEach(id -> resultSet.putAll(measurementRepo.findAllByCounterId(id)));
-        operationUseCase.save(new Operation(personId, Action.WATCH_HISTORY, LocalDateTime.now()));
         return resultSet;
     }
 
@@ -99,10 +94,10 @@ public class MeasurementService implements MeasurementUseCase {
      * @return Последнее измерение указанного типа счетчика, принадлежащее указанному человеку.
      * @throws MeasurementNotFoundException Выбрасывается в случае, если измерение не найдено.
      */
-    public Measurement findLast(CounterType type, long personId) throws MeasurementNotFoundException {
-        long counterId = counterUseCase.findIdByPersonIdAndCounterType(personId, type.getName())
+    @Recordable
+    public Measurement findLast(String type, long personId) throws MeasurementNotFoundException {
+        long counterId = counterUseCase.findIdByPersonIdAndCounterType(personId, type)
                 .orElseThrow(CounterNotFoundException::new);
-        operationUseCase.save(new Operation(personId, Action.WATCH_LAST, LocalDateTime.now()));
         return measurementRepo.findLast(counterId).orElseThrow(MeasurementNotFoundException::new);
     }
 
@@ -115,10 +110,10 @@ public class MeasurementService implements MeasurementUseCase {
      * @return Измерение за указанный месяц, принадлежащее указанному человеку и типу счетчика.
      * @throws MeasurementNotFoundException Выбрасывается в случае, если измерение не найдено.
      */
-    public Measurement findByMonth(long personId, int month, CounterType type) throws MeasurementNotFoundException {
-        long counterId = counterUseCase.findIdByPersonIdAndCounterType(personId, type.getName())
+    @Recordable
+    public Measurement findByMonth(long personId, int month, String type) throws MeasurementNotFoundException {
+        long counterId = counterUseCase.findIdByPersonIdAndCounterType(personId, type)
                 .orElseThrow(CounterNotFoundException::new);
-        operationUseCase.save(new Operation(personId, Action.WATCH_BY_MONTH, LocalDateTime.now()));
         return measurementRepo.findByMonth(counterId, month).orElseThrow(MeasurementNotFoundException::new);
     }
 

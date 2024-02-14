@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.ylab.domain.models.CounterType;
 import org.ylab.exceptions.CounterTypeAlreadyExistsException;
 import org.ylab.repositories.implementations.CounterTypeRepo;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.Optional;
 
@@ -27,7 +28,7 @@ class CounterTypeServiceTest {
 
         Mockito.when(counterTypeRepo.findOne("hot"))
                         .thenReturn(Optional.of(counterType));
-        Assertions.assertEquals(counterType, counterTypeUseCase.findOne(counterType.getName()).get());
+        assertThat(counterType.equals( counterTypeUseCase.findOne(counterType.getName()).get()));
     }
     @DisplayName("Проверяет то, что при добавлении нового типа счетчика, репозиторий отработает")
     @Test
@@ -35,7 +36,7 @@ class CounterTypeServiceTest {
         CounterType counterType = new CounterType("hot");
         Mockito.when(counterTypeRepo.findOne("hot"))
                 .thenReturn(Optional.empty());
-        counterTypeUseCase.save(counterType);
+        counterTypeUseCase.saveCounterType(counterType);
         Mockito.verify(counterTypeRepo, Mockito
                 .times(1))
                 .save(counterType);
@@ -47,7 +48,8 @@ class CounterTypeServiceTest {
         Mockito.when(counterTypeRepo.findOne("hot"))
                 .thenReturn(Optional.of(counterType));
         Assertions.assertThrows(CounterTypeAlreadyExistsException.class,
-                () -> counterTypeUseCase.save(counterType));
+                () -> counterTypeUseCase.saveCounterType(counterType));
+
     }
 
 }

@@ -1,7 +1,8 @@
 package org.ylab.domain.dto;
 
+import org.ylab.annotations.Default;
 import org.ylab.domain.models.Operation;
-import org.ylab.domain.models.enums.Action;
+import org.ylab.domain.enums.Action;
 
 import java.time.LocalDateTime;
 
@@ -28,36 +29,40 @@ public class OperationOutDto {
 
     /**
      * Конструктор выходных данных для операции на основе идентификатора пользователя, действия и даты
+     *
      * @param personId Идентификатор пользователя
-     * @param action Действие, совершенное в рамках операции
-     * @param date Дата выполнения операции
+     * @param action   Действие, совершенное в рамках операции
+     * @param date     Дата выполнения операции
      */
+    @Default
     public OperationOutDto(long personId, Action action, LocalDateTime date) {
         this.personId = personId;
         this.action = action;
         this.date = date;
     }
 
-    /**
-     * Конструктор выходных данных для операции на основе объекта Operation
-     * @param operation Объект Operation
-     */
-    public OperationOutDto(Operation operation) {
-        this.personId = operation.getPersonId();
-        this.action = operation.getAction();
-        this.date = operation.getDate();
+    //todo javadoc
+    public long getPersonId() {
+        return personId;
     }
 
-    /**
-     * Переопределение метода toString для удобного вывода информации о операции
-     * @return Строковое представление объекта OperationOutDto
-     */
-    @Override
-    public String toString() {
-        return "OperationOutDto{" +
-                "personId=" + personId +
-                ", action=" + action +
-                ", date=" + date +
-                '}';
+    public void setPersonId(long personId) {
+        this.personId = personId;
+    }
+
+    public Action getAction() {
+        return action;
+    }
+
+    public void setAction(Action action) {
+        this.action = action;
+    }
+
+    public LocalDateTime getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDateTime date) {
+        this.date = date;
     }
 }

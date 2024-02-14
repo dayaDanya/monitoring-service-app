@@ -4,9 +4,9 @@ import org.junit.jupiter.api.*;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.ylab.domain.models.Operation;
-import org.ylab.domain.models.enums.Action;
+import org.ylab.domain.enums.Action;
 import org.ylab.infrastructure.in.db.ConnectionAdapter;
-import org.ylab.infrastructure.in.db.MigrationUtil;
+import org.ylab.infrastructure.in.db.migrations.MigrationUtil;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -71,7 +71,7 @@ class OperationRepoTest {
     @DisplayName("Проверяет результат поиска операций по айди пользователя")
     void findAllById() {
         Operation ofUser1 = new Operation(1, Action.AUTHENTICATION, LocalDateTime.now());
-        Operation ofUser2 = new Operation(1, Action.LOGOUT, LocalDateTime.now());
+        Operation ofUser2 = new Operation(1, Action.REGISTRATION, LocalDateTime.now());
         repo.save(ofUser1);
         repo.save(ofUser2);
         List<Operation> expected = Arrays.asList(ofUser1, ofUser2);

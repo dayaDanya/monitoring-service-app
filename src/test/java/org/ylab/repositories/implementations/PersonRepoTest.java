@@ -4,9 +4,9 @@ import org.junit.jupiter.api.*;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.ylab.domain.models.Person;
-import org.ylab.domain.models.enums.Role;
+import org.ylab.domain.enums.Role;
 import org.ylab.infrastructure.in.db.ConnectionAdapter;
-import org.ylab.infrastructure.in.db.MigrationUtil;
+import org.ylab.infrastructure.in.db.migrations.MigrationUtil;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -17,7 +17,7 @@ class PersonRepoTest {
     private PersonRepo personRepo;
     @Container
     private static PostgreSQLContainer postgres =
-            new PostgreSQLContainer<>("postgres:13.3");
+            new PostgreSQLContainer<>("postgres:14-alpine3.15");
 
     @BeforeAll
     static void beforeAll() {
@@ -64,6 +64,7 @@ class PersonRepoTest {
     @DisplayName("Проверяет правильность поиска по  id")
     void findById_equal() {
         Person expected = new Person("email", "password");
+        expected.setRole(Role.USER);
         personRepo.save(expected);
         long id = personRepo.findIdByEmail("email").get();
         expected.setId(id);

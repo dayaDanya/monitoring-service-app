@@ -19,6 +19,9 @@ public class CounterTypeDto {
         this.name = name;
     }
 
+    public CounterTypeDto() {
+    }
+
     /**
      * Геттер для наименования типа счетчика
      * @return Наименование типа счетчика
@@ -35,14 +38,5 @@ public class CounterTypeDto {
         this.name = name;
     }
 
-    /**
-     * Переопределение метода toString для удобного вывода информации о типе счетчика
-     * @return Строковое представление объекта CounterTypeDto
-     */
-    @Override
-    public String toString() {
-        return "CounterTypeDto{" +
-                "name='" + name + '\'' +
-                '}';
-    }
+
 }

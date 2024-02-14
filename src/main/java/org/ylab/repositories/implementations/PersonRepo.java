@@ -1,7 +1,7 @@
 package org.ylab.repositories.implementations;
 
 import org.ylab.domain.models.Person;
-import org.ylab.domain.models.enums.Role;
+import org.ylab.domain.enums.Role;
 import org.ylab.infrastructure.in.db.ConnectionAdapter;
 import org.ylab.repositories.IPersonRepo;
 
@@ -128,6 +128,23 @@ public class PersonRepo implements IPersonRepo {
         return Optional.empty();
     }
 
+    @Override
+    public Optional<Long> findIdByRole(Role role) {
+        try (Connection connection = connectionAdapter
+                .getConnection()) {
+            String selectDataSQL = "SELECT id FROM entities.person WHERE role = ? ";
+            PreparedStatement statement = connection.prepareStatement(selectDataSQL);
+            statement.setString(1, role.name());
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next())
+                return Optional.of(resultSet.getLong("id"));
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return Optional.empty();
+    }
 
 
 }

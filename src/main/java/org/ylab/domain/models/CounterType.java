@@ -1,5 +1,7 @@
 package org.ylab.domain.models;
 
+import org.ylab.annotations.Default;
+
 /**
  * Сущность - тип счетчика,
  * по заданию имеем три типа: HOT, COLD, HEAT
@@ -18,6 +20,7 @@ public class CounterType {
      * конструктор
      * @param name название типа
      */
+    @Default
     public CounterType(String name) {
         this.name = name;
     }

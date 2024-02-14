@@ -1,5 +1,6 @@
 package org.ylab.services;
 
+import org.ylab.aop.annotations.Recordable;
 import org.ylab.domain.models.Counter;
 import org.ylab.domain.models.CounterType;
 import org.ylab.domain.usecases.CounterTypeUseCase;
@@ -38,7 +39,7 @@ public class CounterService implements CounterUseCase {
      * @param counter Счетчик, который требуется сохранить.
      * @throws CounterTypeNotFoundException Возникает, если связанный тип счетчика не найден.
      */
-    public void save(Counter counter) throws CounterTypeNotFoundException {
+    public void saveCounter(Counter counter) throws CounterTypeNotFoundException {
         Optional<CounterType> found = counterTypeUseCase.findOne(counter.getCounterType().getName());
         counter.setCounterType(found.orElseThrow(CounterTypeNotFoundException::new));
         counter.setCounterTypeId(found.get().getId());
@@ -51,6 +52,7 @@ public class CounterService implements CounterUseCase {
      * @param personId Идентификатор человека, для которого осуществляется поиск счетчиков.
      * @return Map счетчиков, принадлежащих указанному человеку.
      */
+    @Recordable
     public Map<Long, Counter> findByPersonId(long personId) {
         return counterRepo.findByPersonId(personId);
     }

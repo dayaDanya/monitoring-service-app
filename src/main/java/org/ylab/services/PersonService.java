@@ -1,42 +1,37 @@
 package org.ylab.services;
 
-import org.ylab.domain.models.Operation;
+import org.ylab.aop.annotations.Recordable;
 import org.ylab.domain.models.Person;
-import org.ylab.domain.models.enums.Action;
-import org.ylab.domain.models.enums.Role;
-import org.ylab.domain.usecases.OperationUseCase;
+import org.ylab.domain.enums.Role;
 import org.ylab.domain.usecases.PasswordEncoder;
-import org.ylab.domain.usecases.TokenUseCase;
 import org.ylab.exceptions.BadCredentialsException;
 import org.ylab.exceptions.PersonNotFoundException;
 import org.ylab.repositories.IPersonRepo;
 import org.ylab.repositories.implementations.PersonRepo;
+import org.ylab.security.services.JwtService;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 /**
  * Класс, представляющий использование сущности Person в рамках бизнес-логики.
- * Реализует методы для регистрации, аутентификации, выхода из системы и поиска информации о пользователе.
+ * Реализует методы для регистрации, аутентификации и поиска информации о пользователе.
  */
+@Recordable
 public class PersonService implements org.ylab.domain.usecases.PersonUseCase {
 
     private final PasswordEncoder passwordUseCase;
     private final IPersonRepo personRepo;
-    private final OperationUseCase operationUseCase;
-    private final TokenUseCase tokenService;
+
 
 
     /**
      * Конструктор класса PersonUseCase, инициализирующий репозиторий пользователей, использование паролей, операций,
-     * токен-сервиса, использование счетчиков и типов счетчиков.
+     * сервис счетчиков и типов счетчиков.
      */
-    public PersonService(PasswordService passwordUseCase, PersonRepo personRepo,
-                         OperationService operationUseCase, TokenService tokenService) {
+    public PersonService(PasswordService passwordUseCase, PersonRepo personRepo
+    ) {
         this.passwordUseCase = passwordUseCase;
         this.personRepo = personRepo;
-        this.operationUseCase = operationUseCase;
-        this.tokenService = tokenService;
 
     }
 
@@ -57,6 +52,7 @@ public class PersonService implements org.ylab.domain.usecases.PersonUseCase {
      * @param person Объект Person, содержащий информацию о пользователе.
      * @throws BadCredentialsException Выбрасывается в случае неверных учетных данных при регистрации.
      */
+    @Recordable
     @Override
     public void register(Person person) throws BadCredentialsException {
         if (isUnique(person.getEmail())) {
@@ -64,8 +60,7 @@ public class PersonService implements org.ylab.domain.usecases.PersonUseCase {
             person.setRole(Role.USER);
             personRepo.save(person);
 
-
-            operationUseCase.save(new Operation(personRepo.findIdByEmail(person.getEmail()).get(), Action.REGISTRATION, LocalDateTime.now()));
+           // operationUseCase.save(new Operation(personRepo.findIdByEmail(person.getEmail()).get(), Action.REGISTRATION, LocalDateTime.now()));
         } else {
             throw new BadCredentialsException();
         }
@@ -81,6 +76,7 @@ public class PersonService implements org.ylab.domain.usecases.PersonUseCase {
      * @throws BadCredentialsException Выбрасывается в случае неверных учетных данных при аутентификации.
      */
     @Override
+    @Recordable
     public String authenticate(Person person) throws PersonNotFoundException, BadCredentialsException {
         Optional<Person> found = personRepo.findByEmail(person.getEmail());
         if (found.isEmpty()) {
@@ -88,12 +84,10 @@ public class PersonService implements org.ylab.domain.usecases.PersonUseCase {
         } else if (!passwordUseCase.isPswCorrect(person.getPassword(), found.get().getPassword())) {
             throw new BadCredentialsException();
         } else {
-            operationUseCase.save(new Operation(found.get().getId(), Action.AUTHENTICATION, LocalDateTime.now()));
-            return tokenService.getToken(found.get().getId());
+           // operationUseCase.save(new Operation(found.get().getId(), Action.AUTHENTICATION, LocalDateTime.now()));
+            return JwtService.generateToken(String.valueOf(found.get().getId()));
         }
     }
-
-
 
     /**
      * Метод для поиска пользователя по его идентификатору.

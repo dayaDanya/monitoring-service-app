@@ -24,7 +24,7 @@ public interface OperationUseCase {
      *
      * @return Список всех операций.
      */
-    Map<Long, Operation> findAll();
+    Map<Long, Operation> findAllOperations();
 
 }
 

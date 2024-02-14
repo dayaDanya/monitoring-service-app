@@ -1,5 +1,6 @@
 package org.ylab.repositories;
 
+import org.ylab.domain.enums.Role;
 import org.ylab.domain.models.Person;
 
 import java.util.Optional;
@@ -39,6 +40,13 @@ public interface IPersonRepo {
      * @return Пользователь (Optional)
      */
     Optional<Person> findById(long id);
+    /**
+     * Поиск id пользователя по роли.
+     *
+     * @param role роль пользователя
+     * @return id Пользователя (Optional)
+     */
+    Optional<Long> findIdByRole(Role role);
 
 
 }
