@@ -36,7 +36,7 @@ public class RegistrationServlet extends HttpServlet {
     private final RequestDeserializer deserializer;
 
     /**
-     *  Конструктор
+     * Конструктор
      */
     public RegistrationServlet() {
         ConnectionAdapter connectionAdapter = new ConnectionAdapter();
@@ -50,7 +50,8 @@ public class RegistrationServlet extends HttpServlet {
 
     /**
      * Обработка post-запроса регистрации пользователя
-     * @param req запрос пользователя
+     *
+     * @param req  запрос пользователя
      * @param resp ответ сервера
      * @throws IOException ошибка ввода вывода
      */
@@ -66,7 +67,7 @@ public class RegistrationServlet extends HttpServlet {
             personUseCase.register(person);
             resp.setStatus(HttpServletResponse.SC_CREATED);
             resp.setContentType("application/json");
-        } catch (EmailFormatException | PasswordLengthException |BadCredentialsException e) {
+        } catch (EmailFormatException | PasswordLengthException | BadCredentialsException e) {
             resp.setStatus(HttpServletResponse.SC_CONFLICT);
             Response response = new Response(e.getMessage());
             resp.getOutputStream().write(objectMapper.writeValueAsBytes(response));
