@@ -1,5 +1,7 @@
 package org.ylab.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.ylab.aop.annotations.Recordable;
 import org.ylab.domain.models.Measurement;
 import org.ylab.domain.usecases.CounterUseCase;
@@ -21,6 +23,7 @@ import java.util.Optional;
  * Класс, представляющий использование сущности Measurement в рамках бизнес-логики.
  * Реализует методы для сохранения измерений, поиска и отображения данных о измерениях.
  */
+@Service
 @Recordable
 public class MeasurementService implements MeasurementUseCase {
     private final IMeasurementRepo measurementRepo;
@@ -30,6 +33,7 @@ public class MeasurementService implements MeasurementUseCase {
     /**
      * Конструктор класса MeasurementUseCase, инициализирующий репозиторий измерений, использование операций и использование счетчиков.
      */
+    @Autowired
     public MeasurementService(MeasurementRepo measurementRepo,
                               CounterService counterUseCase) {
         this.measurementRepo = measurementRepo;

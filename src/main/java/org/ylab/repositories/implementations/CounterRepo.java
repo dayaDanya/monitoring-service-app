@@ -1,5 +1,6 @@
 package org.ylab.repositories.implementations;
 
+import org.springframework.stereotype.Repository;
 import org.ylab.domain.models.Counter;
 import org.ylab.domain.models.CounterType;
 import org.ylab.infrastructure.in.db.ConnectionAdapter;
@@ -15,9 +16,10 @@ import java.util.*;
  * репозиторий счетчиков, то есть слой взаимодействия с бд счетчиков
  * на данный момент реализован с помощью коллекции
  */
+@Repository
 public class CounterRepo implements ICounterRepo {
 
-    private ConnectionAdapter connectionAdapter;
+    private final ConnectionAdapter connectionAdapter;
 
     /**
      * конструктор

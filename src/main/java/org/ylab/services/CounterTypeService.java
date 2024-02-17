@@ -1,5 +1,7 @@
 package org.ylab.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.ylab.domain.models.CounterType;
 import org.ylab.exceptions.CounterTypeAlreadyExistsException;
 import org.ylab.repositories.ICounterTypeRepo;
@@ -11,6 +13,7 @@ import java.util.Optional;
  * Класс, представляющий использование сущности CounterType в рамках бизнес-логики.
  * Реализует методы для поиска и сохранения данных о типах счетчиков.
  */
+@Service
 public class CounterTypeService implements org.ylab.domain.usecases.CounterTypeUseCase {
 
     /**
@@ -22,6 +25,7 @@ public class CounterTypeService implements org.ylab.domain.usecases.CounterTypeU
      * Конструктор класса CounterTypeUseCase.
      * Инициализирует репозиторий для работы с типами счетчиков.
      */
+    @Autowired
     public CounterTypeService(CounterTypeRepo repo) {
         this.repo = repo;
     }

@@ -1,10 +1,11 @@
 package org.ylab.controllers;
 
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.ylab.domain.dto.CounterDto;
 import org.ylab.domain.dto.MeasurementInDto;
@@ -28,8 +29,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/measurements")
-public class MeasurementsController {
+@RequestMapping(value = "/measurements", produces = MediaType.APPLICATION_JSON_VALUE)
+public class MeasurementController {
     private final MeasurementUseCase measurementUseCase;
     private final CounterUseCase counterUseCase;
     private final MeasurementInMapper measurementInMapper;
@@ -37,11 +38,11 @@ public class MeasurementsController {
     private final CounterMapper counterMapper;
 
     @Autowired
-    public MeasurementsController(MeasurementUseCase measurementUseCase,
-                                  CounterUseCase counterUseCase,
-                                  MeasurementInMapper measurementInMapper,
-                                  MeasurementOutMapper measurementOutMapper,
-                                  CounterMapper counterMapper) {
+    public MeasurementController(MeasurementUseCase measurementUseCase,
+                                 CounterUseCase counterUseCase,
+                                 MeasurementInMapper measurementInMapper,
+                                 MeasurementOutMapper measurementOutMapper,
+                                 CounterMapper counterMapper) {
         this.measurementUseCase = measurementUseCase;
         this.counterUseCase = counterUseCase;
         this.measurementInMapper = measurementInMapper;
@@ -49,16 +50,17 @@ public class MeasurementsController {
         this.counterMapper = counterMapper;
     }
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> add(@RequestBody MeasurementInDto dto) {
+    @PostMapping()
+    public ResponseEntity<?> add(@RequestHeader(name = "Authorization") String token,
+                                 @RequestBody MeasurementInDto dto) {
         long principal = 0L;
         try {
-            principal = JwtService.validateTokenAndGetSubject(req);
+            principal = JwtService.validateTokenAndGetSubject(token);
         } catch (TokenNotActualException e) {
             Response response = new Response(e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
         }
-        //todo разобраться с jwt
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         try {
             ValidationUtil.checkIsNumericValuePositive(dto.getAmount());
             Measurement measurement = measurementInMapper.dtoToObj(dto);
@@ -72,15 +74,16 @@ public class MeasurementsController {
         }
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getAllMeasurements() {
+    @GetMapping()
+    public ResponseEntity<?> getAllMeasurements(@RequestHeader(name = "Authorization") String token) {
         long principal = 0L;
         try {
-            principal = JwtService.validateTokenAndGetSubject(req);
+            principal = JwtService.validateTokenAndGetSubject(token);
         } catch (TokenNotActualException e) {
             Response response = new Response(e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
         }
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         //todo мапить с помощью mapstruct, а не stream
         Map<Long, MeasurementOutDto> map = measurementUseCase
                 .findAllById(principal)
@@ -95,15 +98,16 @@ public class MeasurementsController {
         }
     }
 
-    @GetMapping(value = "/counters", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getCounters() {
+    @GetMapping(value = "/counters")
+    public ResponseEntity<?> getCounters(@RequestHeader(name = "Authorization") String token) {
         long principal = 0L;
         try {
-            principal = JwtService.validateTokenAndGetSubject(req);
+            principal = JwtService.validateTokenAndGetSubject(token);
         } catch (TokenNotActualException e) {
             Response response = new Response(e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
         }
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Map<Long, CounterDto> counters =
                 counterUseCase.findByPersonId(principal)
                         .entrySet()
@@ -117,11 +121,13 @@ public class MeasurementsController {
         }
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getLast(@RequestParam(value = "type") String type) {
+    @GetMapping(value = "/{type}")
+    public ResponseEntity<?> getLast(@RequestHeader(name = "Authorization") String token,
+            @PathVariable(value = "type") String type) {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         long principal = 0L;
         try {
-            principal = JwtService.validateTokenAndGetSubject(req);
+            principal = JwtService.validateTokenAndGetSubject(token);
         } catch (TokenNotActualException e) {
             Response response = new Response(e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
@@ -134,16 +140,18 @@ public class MeasurementsController {
             return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
         }
     }
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getByMonth(@RequestParam(value = "type") String type,
-                                        @RequestParam(value = "month") int month) {
+    @GetMapping("/{type}/{month}")
+    public ResponseEntity<?> getByMonth(@RequestHeader(name = "Authorization") String token,
+                                        @PathVariable(value = "type") String type,
+                                        @PathVariable(value = "month") int month) {
         long principal = 0L;
         try {
-            principal = JwtService.validateTokenAndGetSubject(req);
+            principal = JwtService.validateTokenAndGetSubject(token);
         } catch (TokenNotActualException e) {
             Response response = new Response(e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
         }
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         try {
             ValidationUtil.checkIsNumericValuePositive(month);
             Measurement byMonth = measurementUseCase.findByMonth(principal,

@@ -1,5 +1,7 @@
 package org.ylab.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.ylab.aop.annotations.Recordable;
 import org.ylab.domain.enums.Role;
 import org.ylab.domain.models.Counter;
@@ -17,6 +19,7 @@ import java.util.Map;
  * Интерфейс, представляющий действия админа в рамках бизнес логики.
  */
 @Recordable
+@Service
 public class AdminService implements AdminUseCase {
     private final CounterUseCase counterUseCase;
     private final CounterTypeUseCase counterTypeUseCase;
@@ -35,6 +38,7 @@ public class AdminService implements AdminUseCase {
      * @param measurementUseCase
      * @param personRepo
      */
+    @Autowired
     public AdminService(CounterUseCase counterUseCase, CounterTypeUseCase counterTypeUseCase, OperationUseCase operationUseCase, MeasurementUseCase measurementUseCase, PersonRepo personRepo) {
         this.counterUseCase = counterUseCase;
         this.counterTypeUseCase = counterTypeUseCase;

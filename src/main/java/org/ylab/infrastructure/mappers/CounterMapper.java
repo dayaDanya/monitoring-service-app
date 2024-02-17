@@ -1,6 +1,7 @@
 package org.ylab.infrastructure.mappers;
 
 import org.mapstruct.Mapper;
+import org.springframework.stereotype.Component;
 import org.ylab.domain.dto.CounterDto;
 import org.ylab.domain.models.Counter;
 

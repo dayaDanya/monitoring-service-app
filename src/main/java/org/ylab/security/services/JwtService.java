@@ -55,4 +55,19 @@ public class JwtService {
         }
         throw new TokenNotActualException();
     }
+    public static Long validateTokenAndGetSubject(String token) {
+        if (token != null && token.startsWith("Bearer ")) {
+            token = token.substring(7);
+            try {
+                Jws<Claims> claimsJws = Jwts.parserBuilder()
+                        .setSigningKey(key)
+                        .build()
+                        .parseClaimsJws(token);
+                return Long.valueOf(claimsJws.getBody().getSubject());
+            } catch (Exception e) {
+                throw new TokenNotActualException();
+            }
+        }
+        throw new TokenNotActualException();
+    }
 }

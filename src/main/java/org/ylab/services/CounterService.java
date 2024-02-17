@@ -1,5 +1,7 @@
 package org.ylab.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.ylab.aop.annotations.Recordable;
 import org.ylab.domain.models.Counter;
 import org.ylab.domain.models.CounterType;
@@ -17,6 +19,7 @@ import java.util.Optional;
  * Класс, представляющий использование сущности Counter в рамках бизнес-логики.
  * Реализует методы для сохранения счетчиков, поиска по различным критериям и связанных операций.
  */
+@Service
 public class CounterService implements CounterUseCase {
 
     private final ICounterRepo counterRepo;
@@ -25,6 +28,7 @@ public class CounterService implements CounterUseCase {
     /**
      * Конструктор класса CounterUseCase, инициализирующий репозиторий счетчиков и использование типов счетчиков.
      */
+    @Autowired
     public CounterService(CounterRepo counterRepo,
                           CounterTypeService counterTypeUseCase) {
         this.counterRepo = counterRepo;

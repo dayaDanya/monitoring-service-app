@@ -70,7 +70,7 @@ class PersonServiceTest {
     @DisplayName("Аутентификация: новый email - выбрасывает исключение PersonNotFoundException")
     void authenticate_withNewEmail_throwsException() {
         Person person = new Person("user@user.com", "password");
-        Assertions.assertThrows(PersonNotFoundException.class, () -> personUseCase.authenticate(person));
+        Assertions.assertThrows(PersonNotFoundException.class, () -> personUseCase.authorize(person));
     }
 
     @Test
@@ -78,7 +78,7 @@ class PersonServiceTest {
     void authenticate_withWrongPassword_throwsException() {
         Person person = new Person("user@user.com", "password_wrong");
         Mockito.when(personRepo.findByEmail("user@user.com")).thenReturn(Optional.of(person));
-        Assertions.assertThrows(BadCredentialsException.class, () -> personUseCase.authenticate(person));
+        Assertions.assertThrows(BadCredentialsException.class, () -> personUseCase.authorize(person));
     }
 
 }

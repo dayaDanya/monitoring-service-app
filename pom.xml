@@ -19,7 +19,7 @@
     <testcontainers.version>1.19.1</testcontainers.version>
     <jjwt.version>0.11.2</jjwt.version>
     <servlet.version>6.0.0</servlet.version>
-    <spring-framework.version>6.0.13</spring-framework.version>
+    <spring-framework.version>6.0.8</spring-framework.version>
     <testcontainerspostgres.version>1.15.3</testcontainerspostgres.version>
     <jackson.version>2.15.3</jackson.version>
     <aspectj.version>1.9.7</aspectj.version>
@@ -44,6 +44,31 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-webmvc</artifactId>
+      <version>${spring-framework.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-core</artifactId>
+      <version>${spring-framework.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-web</artifactId>
+      <version>${spring-framework.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-config</artifactId>
+      <version>${spring-framework.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-jdbc</artifactId>
+      <version>${spring-framework.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aop</artifactId>
       <version>${spring-framework.version}</version>
     </dependency>
     <dependency>
@@ -132,6 +157,11 @@
     <dependency>
       <groupId>org.aspectj</groupId>
       <artifactId>aspectjrt</artifactId>
+      <version>${aspectj.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.aspectj</groupId>
+      <artifactId>aspectjweaver</artifactId>
       <version>${aspectj.version}</version>
     </dependency>
     <dependency>

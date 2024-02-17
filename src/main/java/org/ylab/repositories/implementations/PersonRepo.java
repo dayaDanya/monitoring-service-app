@@ -1,5 +1,7 @@
 package org.ylab.repositories.implementations;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.ylab.domain.models.Person;
 import org.ylab.domain.enums.Role;
 import org.ylab.infrastructure.in.db.ConnectionAdapter;
@@ -14,12 +16,14 @@ import java.util.Optional;
 /**
  * Репозиторий для сущности Person.
  */
+@Repository
 public class PersonRepo implements IPersonRepo {
-    private ConnectionAdapter connectionAdapter;
+    private final ConnectionAdapter connectionAdapter;
 
     /**
      * конструктор
      */
+    @Autowired
     public PersonRepo(ConnectionAdapter connectionAdapter) {
         this.connectionAdapter = connectionAdapter;
     }

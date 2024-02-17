@@ -1,5 +1,7 @@
 package org.ylab.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.ylab.domain.models.Operation;
 import org.ylab.domain.usecases.OperationUseCase;
 import org.ylab.repositories.IOperationRepo;
@@ -11,13 +13,14 @@ import java.util.Map;
  * Класс, представляющий использование сущности Operation в рамках бизнес-логики.
  * Реализует методы для сохранения операций и получения списка операций.
  */
-
+@Service
 public class OperationService implements OperationUseCase {
     private final IOperationRepo operationRepo;
 
     /**
      * Конструктор класса OperationUseCase, инициализирующий репозиторий операций.
      */
+    @Autowired
     public OperationService(OperationRepo operationRepo) {
         this.operationRepo = operationRepo;
     }

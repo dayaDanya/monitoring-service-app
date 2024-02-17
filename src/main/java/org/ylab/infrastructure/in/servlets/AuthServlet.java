@@ -60,7 +60,7 @@ public class AuthServlet extends HttpServlet {
                 PersonInDto.class);
         Person person = personInputMapper.dtoToObj(personDto);
         try {
-            String token = personUseCase.authenticate(person);
+            String token = personUseCase.authorize(person);
             Response response = new Response(token);
             resp.getOutputStream().write(objectMapper.writeValueAsString(response).getBytes());
             resp.setStatus(HttpServletResponse.SC_OK);

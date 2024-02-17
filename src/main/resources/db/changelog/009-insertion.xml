@@ -58,11 +58,10 @@
     $$
             LANGUAGE plpgsql;
         </createProcedure>
-
-
     </changeSet>
 
     <changeSet id="002-4-create-trigger" author="dayaDanya">
+
         <sql>
             CREATE TRIGGER add_counter_trigger
                 AFTER INSERT

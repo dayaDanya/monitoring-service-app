@@ -1,5 +1,6 @@
 package org.ylab.services;
 
+import org.springframework.stereotype.Service;
 import org.ylab.domain.usecases.PasswordEncoder;
 
 import javax.crypto.SecretKeyFactory;
@@ -14,6 +15,7 @@ import java.util.Base64;
  * Класс, представляющий использование сущности PasswordEncoder в рамках бизнес-логики.
  * Реализует методы для шифрования пароля и проверки корректности введенного пароля.
  */
+@Service
 public class PasswordService implements PasswordEncoder {
 
     /**

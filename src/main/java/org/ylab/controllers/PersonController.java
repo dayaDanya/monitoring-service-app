@@ -1,11 +1,8 @@
 package org.ylab.controllers;
 
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,7 +30,7 @@ public class PersonController {
     public ResponseEntity<?> authorize(@RequestBody PersonInDto personDto){
         Person person = personInputMapper.dtoToObj(personDto);
         try {
-            String token = personUseCase.authenticate(person);
+            String token = personUseCase.authorize(person);
             Response response = new Response(token);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (BadCredentialsException | PersonNotFoundException e) {

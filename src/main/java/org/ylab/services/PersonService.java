@@ -1,5 +1,6 @@
 package org.ylab.services;
 
+import org.springframework.stereotype.Service;
 import org.ylab.aop.annotations.Recordable;
 import org.ylab.domain.models.Person;
 import org.ylab.domain.enums.Role;
@@ -16,6 +17,7 @@ import java.util.Optional;
  * Класс, представляющий использование сущности Person в рамках бизнес-логики.
  * Реализует методы для регистрации, аутентификации и поиска информации о пользователе.
  */
+@Service
 @Recordable
 public class PersonService implements org.ylab.domain.usecases.PersonUseCase {
 
@@ -77,7 +79,7 @@ public class PersonService implements org.ylab.domain.usecases.PersonUseCase {
      */
     @Override
     @Recordable
-    public String authenticate(Person person) throws PersonNotFoundException, BadCredentialsException {
+    public String authorize(Person person) throws PersonNotFoundException, BadCredentialsException {
         Optional<Person> found = personRepo.findByEmail(person.getEmail());
         if (found.isEmpty()) {
             throw new PersonNotFoundException();

@@ -1,5 +1,7 @@
 package org.ylab.repositories.implementations;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.ylab.domain.models.Operation;
 import org.ylab.domain.enums.Action;
 import org.ylab.infrastructure.in.db.ConnectionAdapter;
@@ -13,19 +15,15 @@ import java.util.Map;
 /**
  * Репозиторий для сущности Operation.
  */
+@Repository
 public class OperationRepo implements IOperationRepo {
 
-    private ConnectionAdapter connectionAdapter;
-
-//    Properties properties;
-//    private final String URL;
-//    private final String USER_NAME;
-//    private final String PASSWORD;
-
+    private final ConnectionAdapter connectionAdapter;
 
     /**
      * Конструктор
      */
+    @Autowired
     public OperationRepo(ConnectionAdapter connectionAdapter) {
         this.connectionAdapter = connectionAdapter;
     }

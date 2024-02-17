@@ -1,5 +1,7 @@
 package org.ylab.repositories.implementations;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.ylab.domain.models.Measurement;
 import org.ylab.infrastructure.in.db.ConnectionAdapter;
 import org.ylab.repositories.IMeasurementRepo;
@@ -14,12 +16,14 @@ import java.util.Optional;
  * Репозиторий измерений, представляющий слой взаимодействия с базой данных измерений.
  *
  */
+@Repository
 public class MeasurementRepo implements IMeasurementRepo {
-    private ConnectionAdapter connectionAdapter;
+    private final ConnectionAdapter connectionAdapter;
 
     /**
      * конструктор
      */
+    @Autowired
     public MeasurementRepo(ConnectionAdapter connectionAdapter) {
         this.connectionAdapter = connectionAdapter;
     }

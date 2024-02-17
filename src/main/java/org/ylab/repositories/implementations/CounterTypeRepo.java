@@ -1,5 +1,6 @@
 package org.ylab.repositories.implementations;
 
+import org.springframework.stereotype.Repository;
 import org.ylab.domain.models.CounterType;
 import org.ylab.infrastructure.in.db.ConnectionAdapter;
 import org.ylab.repositories.ICounterTypeRepo;
@@ -14,9 +15,10 @@ import java.util.Optional;
  * Репозиторий типов счетчиков, представляющий слой взаимодействия с базой данных типов счетчиков.
  *
  */
+@Repository
 public class CounterTypeRepo implements ICounterTypeRepo {
 
-    private ConnectionAdapter connectionAdapter;
+    private final ConnectionAdapter connectionAdapter;
 
     /**
      * конструктор

@@ -1,58 +1,55 @@
 package org.ylab.aop.aspects;
 
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.ylab.domain.enums.Action;
 import org.ylab.domain.enums.Role;
 import org.ylab.domain.models.Operation;
 import org.ylab.domain.models.Person;
-import org.ylab.domain.enums.Action;
 import org.ylab.domain.usecases.OperationUseCase;
-import org.ylab.domain.usecases.PersonUseCase;
 import org.ylab.exceptions.ActionNotFoundException;
-import org.ylab.infrastructure.in.db.ConnectionAdapter;
-import org.ylab.repositories.implementations.OperationRepo;
-import org.ylab.repositories.implementations.PersonRepo;
-import org.ylab.services.OperationService;
-import org.ylab.services.PasswordService;
-import org.ylab.services.PersonService;
+import org.ylab.repositories.IPersonRepo;
 
 import java.time.LocalDateTime;
 
 /**
  * Аспект аудита
  */
+@Component
 @Aspect
 public class RecordableAspect {
     private final OperationUseCase operationUseCase;
 
-    private final PersonUseCase personUseCase;
-    private final ConnectionAdapter connectionAdapter;
-    private final PersonRepo personRepo;
+    private final IPersonRepo personRepo;
 
     /**
      * Конструктор
      */
-    public RecordableAspect() {
-        connectionAdapter = new ConnectionAdapter();
-        this.operationUseCase = new OperationService(
-                new OperationRepo(
-                        connectionAdapter));
-        personRepo = new PersonRepo(connectionAdapter);
-        personUseCase = new PersonService(new PasswordService(),
-                personRepo);
+    @Autowired
+    public RecordableAspect(OperationUseCase operationUseCase,
+                            IPersonRepo personRepo) {
+        this.operationUseCase = operationUseCase;
+        this.personRepo = personRepo;
+    }
+
+    @Pointcut("within(@org.ylab.aop.annotations.Recordable *) && execution(* *(..))")
+    public void annotatedByRecordable() {
+
     }
 
     /**
      * Совет
+     *
      * @param joinPoint выполняющийся метод
      * @return returning value of joinPoint
      * @throws Throwable
      */
-    @Around("@annotation(org.ylab.aop.annotations.Recordable)")
+    @Around("annotatedByRecordable()")
+//    @Around("@annotation(org.ylab.aop.annotations.Recordable)")
     public Object recording(ProceedingJoinPoint joinPoint) throws Throwable {
         String name = joinPoint.getSignature().getName();
         Action action = null;
