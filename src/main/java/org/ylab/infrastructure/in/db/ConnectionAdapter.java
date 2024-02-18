@@ -1,5 +1,7 @@
 package org.ylab.infrastructure.in.db;
 
+import org.ylab.infrastructure.yamlpojos.YmlPojo;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -27,13 +29,13 @@ public class ConnectionAdapter {
 
     /**
      * Конструктор инициализирующий параметры для подключения к БД
-     * с помощью .properties файла
+     * с помощью .yml файла
      */
     public ConnectionAdapter() {
-        Properties properties = PropertiesInitializer.initialize();
-        URL = properties.getProperty("url");
-        USER_NAME = properties.getProperty("db-username");
-        PASSWORD = properties.getProperty("db-password");
+        YmlPojo ymlPojo = PropertiesInitializer.initialize();
+        URL = ymlPojo.getDataSource().getUrl();
+        USER_NAME = ymlPojo.getDataSource().getUsername();
+        PASSWORD = ymlPojo.getDataSource().getPassword();
     }
 
     /**

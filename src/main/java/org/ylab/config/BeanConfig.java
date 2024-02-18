@@ -6,9 +6,13 @@ import org.springframework.context.annotation.Configuration;
 import org.ylab.domain.models.Operation;
 import org.ylab.infrastructure.in.db.ConnectionAdapter;
 import org.ylab.infrastructure.mappers.*;
+import org.ylab.infrastructure.yamlpojos.YmlPojo;
 
 @Configuration
 public class BeanConfig {
+
+    @Bean
+    public YmlPojo
     @Bean
     public ConnectionAdapter connectionAdapter(){
         return new ConnectionAdapter();

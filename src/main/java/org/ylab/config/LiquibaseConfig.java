@@ -1,30 +1,39 @@
 package org.ylab.config;
 
-import com.sun.jdi.connect.spi.Connection;
 import liquibase.integration.spring.SpringLiquibase;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.ylab.infrastructure.in.db.ConnectionAdapter;
+import org.yaml.snakeyaml.Yaml;
+import org.ylab.infrastructure.yamlpojos.Datasource;
+import org.ylab.infrastructure.yamlpojos.Liquibase;
+import org.ylab.infrastructure.yamlpojos.YmlPojo;
 
 import javax.sql.DataSource;
+import java.io.InputStream;
+import java.util.Map;
 
 @Configuration
 public class LiquibaseConfig {
 
-    @Value("${liquibase.change-log}")
-    private String changeLog;
-
-    @Value("${datasource.url}")
-    private String url;
-    @Value("${datasource.username}")
-    private String username;
-    @Value("${datasource.password}")
-    private String password;
-    @Value("${datasource.driver}")
-    private String driver;
-
+//    @Value("${liquibase.change-log}")
+//    private String changeLog;
+//
+//    @Value("${datasource.url}")
+//    private String url;
+//    @Value("${datasource.username}")
+//    private String username;
+//    @Value("${datasource.password}")
+//    private String password;
+//    @Value("${datasource.driver}")
+//    private String driver;
+    private YmlPojo ymlPojo;
+    @Autowired
+    public LiquibaseConfig(YmlPojo ymlPojo) {
+        this.ymlPojo = ymlPojo;
+    }
 
     @Bean
     public DataSource dataSource() {
@@ -43,4 +52,5 @@ public class LiquibaseConfig {
         System.out.println("Liquibase created");
         return liquibase;
     }
+
 }

@@ -1,0 +1,8 @@
+datasource:
+    driver: org.postgresql.Driver
+    password: dayadanya
+    url: jdbc:postgresql://localhost:5432/monitoring-service-app
+    username: dayadanya
+liquibase:
+    change-log: classpath:/db/changelog/changelog.xml
+
