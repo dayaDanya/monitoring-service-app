@@ -1,5 +1,7 @@
 package org.ylab.infrastructure.in.db;
 
+import org.yaml.snakeyaml.Yaml;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -16,7 +18,7 @@ public class PropertiesInitializer {
         Properties properties = new Properties();
 
         try (InputStream in = Thread.currentThread().getContextClassLoader()
-                .getResourceAsStream("application.properties");) {
+                .getResourceAsStream("application.properties")) {
 
             properties.load(in);
         } catch (IOException e) {
@@ -25,4 +27,14 @@ public class PropertiesInitializer {
 
         return properties;
     }
+//    public static Yaml initialize(){
+//        Yaml yaml = new Yaml();
+//        try (InputStream in = Thread.currentThread().getContextClassLoader()
+//                .getResourceAsStream("application.yaml")) {
+//            yaml.load(in);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//        return yaml;
+//    }
 }

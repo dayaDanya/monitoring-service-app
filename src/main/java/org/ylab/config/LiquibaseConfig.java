@@ -1,26 +1,28 @@
 package org.ylab.config;
 
+import com.sun.jdi.connect.spi.Connection;
 import liquibase.integration.spring.SpringLiquibase;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.ylab.infrastructure.in.db.ConnectionAdapter;
 
 import javax.sql.DataSource;
 
 @Configuration
 public class LiquibaseConfig {
 
-    @Value("${spring.liquibase.change-log}")
+    @Value("${liquibase.change-log}")
     private String changeLog;
 
-    @Value("${spring.datasource.url}")
+    @Value("${datasource.url}")
     private String url;
-    @Value("${spring.datasource.username}")
+    @Value("${datasource.username}")
     private String username;
-    @Value("${spring.datasource.password}")
+    @Value("${datasource.password}")
     private String password;
-    @Value("${spring.datasource.driver}")
+    @Value("${datasource.driver}")
     private String driver;
 
 
