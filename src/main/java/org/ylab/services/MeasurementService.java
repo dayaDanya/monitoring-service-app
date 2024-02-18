@@ -24,7 +24,7 @@ import java.util.Optional;
  * Реализует методы для сохранения измерений, поиска и отображения данных о измерениях.
  */
 @Service
-@Recordable
+//@Recordable
 public class MeasurementService implements MeasurementUseCase {
     private final IMeasurementRepo measurementRepo;
 

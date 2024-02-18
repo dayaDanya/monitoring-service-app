@@ -19,8 +19,8 @@ import java.time.LocalDateTime;
 /**
  * Аспект аудита
  */
-@Component
 @Aspect
+@Component
 public class RecordableAspect {
     private final OperationUseCase operationUseCase;
 
@@ -36,7 +36,9 @@ public class RecordableAspect {
         this.personRepo = personRepo;
     }
 
-    @Pointcut("within(@org.ylab.aop.annotations.Recordable *) && execution(* *(..))")
+    @Pointcut("within(@org.ylab.aop.annotations.Recordable *)")
+//    @Pointcut("within(@org.ylab.aop.annotations.Recordable *) && execution(* *(..))")
+    //@Pointcut("@annotation(org.ylab.aop.annotations.Recordable)")
     public void annotatedByRecordable() {
 
     }
@@ -49,7 +51,7 @@ public class RecordableAspect {
      * @throws Throwable
      */
     @Around("annotatedByRecordable()")
-//    @Around("@annotation(org.ylab.aop.annotations.Recordable)")
+    // @Around("@annotation(org.ylab.aop.annotations.Recordable)")
     public Object recording(ProceedingJoinPoint joinPoint) throws Throwable {
         String name = joinPoint.getSignature().getName();
         Action action = null;

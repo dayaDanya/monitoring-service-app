@@ -18,7 +18,7 @@ import java.util.Optional;
  * Реализует методы для регистрации, аутентификации и поиска информации о пользователе.
  */
 @Service
-@Recordable
+//@Recordable
 public class PersonService implements org.ylab.domain.usecases.PersonUseCase {
 
     private final PasswordEncoder passwordUseCase;

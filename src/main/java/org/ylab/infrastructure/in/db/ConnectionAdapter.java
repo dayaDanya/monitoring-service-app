@@ -31,9 +31,9 @@ public class ConnectionAdapter {
      */
     public ConnectionAdapter() {
         Properties properties = PropertiesInitializer.initialize();
-        URL = properties.getProperty("url");
-        USER_NAME = properties.getProperty("db-username");
-        PASSWORD = properties.getProperty("db-password");
+        URL = properties.getProperty("spring.datasource.url");
+        USER_NAME = properties.getProperty("spring.datasource.username");
+        PASSWORD = properties.getProperty("spring.datasource.password");
     }
 
     /**

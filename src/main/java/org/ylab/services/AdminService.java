@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * Интерфейс, представляющий действия админа в рамках бизнес логики.
  */
-@Recordable
+//@Recordable
 @Service
 public class AdminService implements AdminUseCase {
     private final CounterUseCase counterUseCase;
