@@ -16,7 +16,6 @@ import java.util.List;
 @EnableWebMvc
 @EnableAspectJAutoProxy
 @Configuration
-@PropertySource("classpath:application.properties")
 public class WebConfig implements WebMvcConfigurer {
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {

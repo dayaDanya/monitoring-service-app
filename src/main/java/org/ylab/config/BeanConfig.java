@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.ylab.domain.models.Operation;
 import org.ylab.infrastructure.in.db.ConnectionAdapter;
+import org.ylab.infrastructure.in.db.PropertiesInitializer;
 import org.ylab.infrastructure.mappers.*;
 import org.ylab.infrastructure.yamlpojos.YmlPojo;
 
@@ -12,7 +13,9 @@ import org.ylab.infrastructure.yamlpojos.YmlPojo;
 public class BeanConfig {
 
     @Bean
-    public YmlPojo
+    public YmlPojo ymlPojo(){
+        return PropertiesInitializer.initialize();
+    }
     @Bean
     public ConnectionAdapter connectionAdapter(){
         return new ConnectionAdapter();

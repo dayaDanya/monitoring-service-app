@@ -18,17 +18,7 @@ import java.util.Map;
 @Configuration
 public class LiquibaseConfig {
 
-//    @Value("${liquibase.change-log}")
-//    private String changeLog;
-//
-//    @Value("${datasource.url}")
-//    private String url;
-//    @Value("${datasource.username}")
-//    private String username;
-//    @Value("${datasource.password}")
-//    private String password;
-//    @Value("${datasource.driver}")
-//    private String driver;
+
     private YmlPojo ymlPojo;
     @Autowired
     public LiquibaseConfig(YmlPojo ymlPojo) {
@@ -38,17 +28,17 @@ public class LiquibaseConfig {
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(driver);
-        dataSource.setUrl(url);
-        dataSource.setUsername(username);
-        dataSource.setPassword(password);
+        dataSource.setDriverClassName(ymlPojo.getDataSource().getDriver());
+        dataSource.setUrl(ymlPojo.getDataSource().getUrl());
+        dataSource.setUsername(ymlPojo.getDataSource().getUsername());
+        dataSource.setPassword(ymlPojo.getDataSource().getPassword());
         return dataSource;
     }
     @Bean
     public SpringLiquibase liquibase(DataSource dataSource) {
         SpringLiquibase liquibase = new SpringLiquibase();
         liquibase.setDataSource(dataSource);
-        liquibase.setChangeLog(changeLog);
+        liquibase.setChangeLog(ymlPojo.getLiquibase().getChangeLog());
         System.out.println("Liquibase created");
         return liquibase;
     }
